@@ -1,0 +1,21 @@
+https://www.mysql.com/products/		Analisis de productos MySQL
+
+https://www.mysql.com/products/community/		Descripción de la CommunityEdition
+
+https://dev.mysql.com/downloads/		Posibles descargas dentro de la opcion CommunityEdition
+
+https://dev.mysql.com/downloads/mysql/	Download Comunity server, donde hay varias opciones, un instaler y zips
+Aquí descargamos el Zip de 64bits
+
+https://dev.mysql.com/downloads/windows/installer/5.7.html	Download de instaler server. Te permite descargar un instalador
+para que a medida que descarga instala, o te permite descargar el producto. Evidentemente el segundo ocupa mucho mas. Además
+pone que aunque el instalador es 32 bits, puede instalar ambos, 32 y 64 bits. Descargo el instalable offline (sin conexión).
+
+https://dev.mysql.com/downloads/workbench/	Descargamos el workbench. En este caso, nos aparece la opción de instalar todo mysql.
+Nosotros descargamos el instalable y el zip de la parte inferior (unos 28 MB)
+
+https://dev.mysql.com/downloads/shell/ Descargamos una novedosa mySQL Shell.
+
+http://www.oracle.com/technetwork/developer-tools/datamodeler/downloads/datamodeler-087275.html   Data modeler con Jdk incluído
+
+http://www.oracle.com/technetwork/developer-tools/sql-developer/downloads/index.html	SQL Developer con JDK incluído

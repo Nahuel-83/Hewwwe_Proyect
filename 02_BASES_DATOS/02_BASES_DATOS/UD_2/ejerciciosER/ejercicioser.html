@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="es"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd"
+><!-- InstanceBegin template="/Templates/plantilla2007.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<link rel="icon" href="http://jorgesanchez.net/imagenes/favicon.png" type="image/png" />
+<link rel="shortcut icon" href="http://jorgesanchez.net/favicon.ico" type="image/x-icon" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Author" content="Jorge Sanchez" />
+<meta name="Generator" content="Macromedia Dreamweaver 8" />
+<meta name="locality" content="Palencia, España" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta name="lang" content="es" />
+<!-- InstanceBeginEditable name="Titulo" -->
+<title>Jorge Sanchez, profesor de inform&aacute;tica. Manuales, ejercicios y documentos sobre cursos de inform&aacute;tica</title>
+<!-- InstanceEndEditable -->
+<!-- InstanceBeginEditable name="head" -->
+<meta http-equiv="Description" content="Pagina sobre Jorge Sanchez, profesor de inform&aacute;tica de Palencia. P&aacute;gina que contiene manuales, ejercicios y otras documentaci&oacute;n sobre areas de la informatica como windows, word, excel, access, photoshop, programaci&oacute;n, java y bases de datos" />
+<meta name="Keywords" content="jorge sanchez s&aacute;nchez profesor palencia villamuriel formacion formaci&oacute;n curso cursos manual manuales ejercicios windows word excel access java photoshop internet documentacion c c++ java oracle" />
+<!-- InstanceEndEditable -->
+
+</head>
+
+
+<div id="cuerpo">&nbsp;	
+<!-- cuerpo principal -->
+    <!-- InstanceBeginEditable name="cuerpoEditable" --> <h2>Ejercicio 1. Biblioteca v1</h2>
+<p>Crear un dise&ntilde;o entidad relaci&oacute;n (estando prohíbido utilizar símbolos del modelo extendido) que permita gestionar los datos de una biblioteca de modo que</p>
+    <ul>
+      <li>Las personas socias de la biblioteca disponen de un código de socio y además necesitar almacenar su dni, dirección, teléfono, nombre y apellidos</li>
+      <li>La biblioteca almacena libros que presta a los socios y socias, de ellos se almacena su título, su editorial, el año en el que se escribió el libro, el nombre completo del autor (o autores), el año en que se editó y en qué editorial fue y el ISBN.</li>
+      <li>Necesitamos poder indicar si un volumen en la biblioteca está deteriorado o no</li>
+      <li>Queremos controlar cada préstamo que se realiza almacenando la fecha en la que se realiza, la fecha tope para devolver (que son 15 días más que la fecha en la que se realiza el préstamo) y la fecha real en la que se devuelve el libro</li>
+    </ul>
+    <p><a href="ejerciciosER/bibliosencilla.html">Ver soluci&oacute;n </a></p>
+<h2>Ejercicio 2. Academia de clases</h2>
+    <p>Crear un dise&ntilde;o entidad relaci&oacute;n que permita controlar el sistema de informaci&oacute;n de una academia de cursos siguiendo estas premisas: </p>
+    <ul>
+      <li>Se dan clases a trabajadores y desempleados. Los datos que se almacenan de los alumnos son el DNI, direcci&oacute;n, nombre, tel&eacute;fono y la edad </li>
+      <li>Adem&aacute;s de los que trabajan necesitamos saber el CIF, nombre, tel&eacute;fono y direcci&oacute;n de la empresa en la que trabajan </li>
+      <li>Los cursos que imparte la academia se identifican con un c&oacute;digo de curso. Adem&aacute;s se almacena el programa del curso, las horas de duraci&oacute;n del mismo, el t&iacute;tulo y cada vez que se imparte se anotar&aacute; las fechas de inicio y fin del curso junto con un n&uacute;mero concreto de curso (distinto del c&oacute;digo) y los datos del profesor o profesora (s&oacute;lo uno por curso) que son: dni, nombre, apellidos, direcci&oacute;n y tel&eacute;fono </li>
+      <li> Se almacena la nota obtenida por cada alumno en cada curso teniendo en cuenta que un mismo alumno o alumna puede realizar varios cursos y en cada cual obtendr&aacute; una nota. </li>
+    </ul>
+    <p><a href="ejerciciosER/clases.html">Ver soluci&oacute;n </a></p>
+    <h2>Ejercicio 3. Geograf&iacute;a</h2>
+    <p>Crear un dise&ntilde;o entidad relaci&oacute;n que permita almacenar datos  geogr&aacute;ficos referidos a Espa&ntilde;a:</p>
+    <ul>
+      <li>Se almacenar&aacute; el nombre y poblaci&oacute;n de cada  localidad, junto con su nombre y los datos de la provincia a la que pertenece  la localidad, su nombre, poblaci&oacute;n y superficie.</li>
+      <li>Necesitamos tambi&eacute;n conocer los datos de cada  comunidad aut&oacute;noma, nombre, poblaci&oacute;n y superficie y por supuesto las  localidades y provincias de la misma</li>
+      <li>Para identificar a la provincia se usar&aacute;n los  dos primeros d&iacute;gitos del c&oacute;digo postal. Es decir 34 ser&aacute; el c&oacute;digo de Palencia y  28 el de Madrid</li>
+      <li>Necesitamos saber qu&eacute; localidad es la capital de  cada provincia y cu&aacute;les lo son de cada comunidad</li>
+    </ul>
+    <p><a href="ejerciciosER/geografia.html">Ver soluci&oacute;n </a></p>
+    <h2>Ejercicio 4. Guerras</h2>
+    <p>Diseñar un modelo entidad/relación que almacene los datos de todas las guerras de la historia de modo que:</p>
+    <ul>
+      <li>Se almacene el año en el que empezó la guerra y el año en que terminó, así como su nombre y el de los paises contendientes, pudiendo indicar además quienes fueron las ganadores</li>
+      <li>Hay que tener en cuenta que los paises se pueden unir a la guerra a uno u otro bando (suponemos que solo hay dos bandos) después de comenzada la guerra (como EEUU en la 2ª guerra mundial) y que incluso pueden abandonar la guerra antes de que esta finalice (como Rusia en la 1ª guerra mundial)</li>
+      <li>Los paises que se almacenan en la base de datos pueden no ser paises actualmente (como Prusia, Aragón, Asiria,etc.) por lo que se ha contemplado que en la base de datos se almacenen los años en los que el país ha sido independiente, teniendo en cuenta que hay paises que ha habido momentos en los que ha sido independiente y otros en los que no (por ejemplo Croacia). Bstará con almacenar los periodos en los que ha sido independiente.</li>
+	</ul>
+    <p><a href="ejerciciosER/guerras.html">Ver soluci&oacute;n </a></p>
+
+    <h2>Ejercicio 5. Almac&eacute;n v1</h2>
+    <p>Se trata de crear una base de datos sobre un almac&eacute;n de  piezas de modo que:</p>
+    <ul>
+      <li>Cada pieza se identifica con dos letras (tipo,  por ejemplo <em>TU</em>=tuerca) y un n&uacute;mero (modelo, por ejemplo 6)</li>
+      <li>Almacenamos un atributo que permite saber la  descripci&oacute;n de cada tipo de pieza. Es decir el tipo <em>TU</em> tendr&aacute;  la descripci&oacute;n <em>tuerca.</em></li>
+      <li>Necesitamos conocer el precio al que vendemos  cada pieza. </li>
+      <li>Adem&aacute;s hay piezas que se componen de otras piezas,  por ejemplo una puerta se compone de una hoja de madera, una bisagra y un  picaporte. Incluso una pieza puede estar compuesta de otras piezas que ha su  vez pueden estar compuestas por otras y as&iacute; sucesivamente</li>
+      <li>Tenemos una serie de almacenes de los que  guardamos su n&uacute;mero, descripci&oacute;n, direcci&oacute;n y el nombre de cada estanter&iacute;a de  almac&eacute;n. Cada estanter&iacute;a se identifica por tres letras.</li>
+      <li>Necesitaremos saber la cantidad de piezas que  tenemos en cada almac&eacute;n y saber en qu&eacute; estanter&iacute;as est&aacute;n las piezas buscadas</li>
+    </ul>
+    <p><a href="ejerciciosER/almacen.html">Ver soluci&oacute;n </a></p>
+    <h2>Ejercicio 6. Biblioteca v2</h2>
+    <p>Se trata de crear una base de datos sobre el funcionamiento  de una biblioteca</p>
+    <ul>
+      <li>Almacenaremos el DNI, nombre, apellidos, c&oacute;digo  de socio, direcci&oacute;n y tel&eacute;fonos (pueden ser varios, pero al menos uno)</li>
+      <li>La biblioteca presta libros, CDs y pel&iacute;culas. De  todos ellos se almacena un c&oacute;digo de art&iacute;culo distinto para cada pieza en la  biblioteca. Es decir si tenemos tres libros del Quijote, los tres tendr&aacute;n un n&uacute;mero  distinto de art&iacute;culo.</li>
+      <li>Adem&aacute;s almacenamos el nombre de cada art&iacute;culo,  el a&ntilde;o en el que se hizo la obra (sea del tipo que sea) un resumen de la obra y  los datos de los autores del mismo. Se considera autor de la pel&iacute;cula al  director, de la m&uacute;sica al int&eacute;rprete y del libro al escritor. Pero de todos  ellos se guarda la misma informaci&oacute;n: nombre y pa&iacute;s.</li>
+      <li>De los libros adem&aacute;s se guarda el n&uacute;mero de  p&aacute;ginas, de los CDs el n&uacute;mero de canciones y de la pel&iacute;cula la duraci&oacute;n</li>
+      <li>Anotamos si un art&iacute;culo concreto est&aacute;  deteriorado y un comentario sobre el posible deterioro</li>
+      <li>Cuando se presta un art&iacute;culo, se anota fecha en  la que se presta y la fecha tope para devolverle. Cuando el socio le devuelve,  se anota la fecha de devoluci&oacute;n.</li>
+      <li>No hay tope sobre el n&uacute;mero de art&iacute;culos que  puede prestarse a un socio e incluso el socio podr&iacute;a llevarse varias veces el  mismo art&iacute;culo en distintos pr&eacute;stamos</li>
+    </ul>
+    <p><a href="ejerciciosER/biblioteca.html">Ver soluci&oacute;n </a></p>
+    <h2>Ejercicio 7. Organigrama</h2>
+    <p>Crear el esquema entidad/relaci&oacute;n que represente el  organigrama de una empresa, de modo que:</p>
+    <ul>
+      <li>Aparezcan los datos de todos los empleados y  empleadas: dni, n&ordm; de seguridad social, c&oacute;digo de trabajador, nombre,  apellidos, direcci&oacute;n, tel&eacute;fono y departamento en el que trabajan indicado por  su c&oacute;digo y nombre. </li>
+      <li>Tambi&eacute;n hay que tener en cuenta que cada trabajador  puede tener un responsable (que en realidad es otro trabajador)</li>
+      <li>Los departamentos poseen un &uacute;nico coordinador  del mismo</li>
+      <li>Necesitamos almacenar la categor&iacute;a profesional de  los trabajadores y trabajadoras, teniendo en cuenta que la categor&iacute;a a veces cambia  al cambiar el contrato, de los contratos se almacena la fecha de inicio del  mismo y la fecha final (un contrato en vigor tendr&aacute; como fecha final el valor  nulo).</li>
+      <li>Tambi&eacute;n controlaremos las n&oacute;minas que ha recibido  el trabajador de las que sabemos la fecha, el salario y a qu&eacute; trabajador van  dirigidas y la categor&iacute;a del mismo.</li>
+    </ul>
+    <p><a href="ejerciciosER/organigrama.html">Ver soluci&oacute;n </a></p>
+     <h2>Ejercicio 8. Vuelos</h2>
+    <p>Crear el esquema entidad/relaci&oacute;n que permita gestionar reservas  de vuelos, de modo que:</p>
+    <ul>
+      <li>Los clientes pueden reservar vuelos. Con la  reserva se pueden reservar varias plazas, pero no poseeremos el n&uacute;mero de  asiento hasta obtener la tarjeta de embarque. En ese instante se asignar&aacute; el  asiento que tiene como identificaci&oacute;n la fila, columna y la planta en la que  est&aacute; situado.</li>
+      <li>Se pueden obtener tarjetas de embarque sin tener  reserva</li>
+      <li>Las tarjetas de embarque se refieren a un &uacute;nico  cliente. De modo que aunque reserv&aacute;ramos nueve plazas, cada cliente podr&aacute; sacar  su tarjeta de embarque indicando el n&uacute;mero de reserva, la fecha de la misma y  sus datos personales (dni, nombre, apellidos, direcci&oacute;n y tel&eacute;fono). Adem&aacute;s la  persona que reserva debe indicar una tarjeta de cr&eacute;dito que quedar&aacute; asociada a  esa persona.</li>
+      <li>El vuelo que se reserva tiene un c&oacute;digo &uacute;nico, una  fecha y una hora de salida y de llegada y un aeropuerto de salida y otro de  llegada</li>
+      <li>Los aeropuertos poseen un c&oacute;digo &uacute;nico, adem&aacute;s  del nombre y la localidad y el pa&iacute;s en el que se encuentran</li>
+      <li>Se guarda informaci&oacute;n sobre los aviones, c&oacute;digo  y n&uacute;mero de plazas. Los vuelos s&oacute;lo les puede realizar un avi&oacute;n determinado,  pero el mismo avi&oacute;n puede realizar (como es l&oacute;gico) otros vuelos</li>
+    </ul>
+    <p><a href="ejerciciosER/vuelos.html">Ver soluci&oacute;n </a></p>
+      <h2>Ejercicio 9. Recetas  de cocina</h2>
+    <p>Crear el esquema entidad/relaci&oacute;n que permita gestionar los  datos sobre preparaci&oacute;n de rectas de cocina</p>
+<p><a href="ejerciciosER/recetas.html">Ver soluci&oacute;n </a></p>
+<h2>Ejercicio 10. Futbol</h2>
+
+    <p>Crear el esquema entidad/relaci&oacute;n que permita crear el dise&ntilde;o de una base de datos que almacena informaci&oacute;n sobre los partidos de una liga de futbol una temporada. Hay que tener en cuenta que en dicha liga los jugadores no pueden cambiar de equipo</p>
+<p><a href="ejerciciosER/futbol.html">Ver soluci&oacute;n </a></p>
+<h2>Ejercicio 11. Accidentes geogr&aacute;ficos</h2>
+
+    <p>Realizar un esquema  entidad/relaci&oacute;n que sirva para almacenar informaci&oacute;n geogr&aacute;fica. Para ello hay  que tener en cuenta </p>
+    <ul>
+      <ul>
+        <li>Se almacenan los  siguientes accidentes geogr&aacute;ficos: r&iacute;os, lagos y monta&ntilde;as</li>
+        <li>De cada accidente se  almacenan su posici&oacute;n horizontal y vertical seg&uacute;n el eje de la tierra, adem&aacute;s  de su nombre</li>
+        <li>De los r&iacute;os se almacena su  longitud, de las monta&ntilde;as su altura y de los lagos su extensi&oacute;n</li>
+        <li>Se almacena tambi&eacute;n  informaci&oacute;n sobre cada pa&iacute;s, su nombre, su extensi&oacute;n y su poblaci&oacute;n</li>
+        <li>Se desea almacenar  informaci&oacute;n que permite saber en qu&eacute; pa&iacute;s est&aacute; cada accidente geogr&aacute;fico,  teniendo en cuenta que cada accidente puede estar en m&aacute;s de un pa&iacute;s.</li>
+        <li>Se almacena tambi&eacute;n los  nombres de cada localidad  del planeta. Y se almacena  por qu&eacute; localidades pasa cada r&iacute;o. </li>
+      </ul>
+    </ul>
+<p><a href="ejerciciosER/accidentes.html">Ver soluci&oacute;n </a></p>
+<h2>Ejercicio 12. Empresa de software</h2>
+
+    <p>Realizar un esquema entidad/relaci&oacute;n que  permita modelar el sistema de informaci&oacute;n de una empresa de software atendiendo  las siguientes premisas </p>
+    <ul>
+      <li>La empresa crea proyectos  para otras empresas. De dichas empresas se almacena el CIF, nombre, direcci&oacute;n y  tel&eacute;fono as&iacute; como un c&oacute;digo interno de empresa. </li>
+      <li>Los proyectos se inician  en una determinada fecha y finalizan en otra. Adem&aacute;s al planificarle se almacena  la fecha prevista de finalizaci&oacute;n (que puede no coincidir con la finalizaci&oacute;n  real)</li>
+      <li>Los proyectos los realizan  varios trabajadores, cada uno de ellos desempe&ntilde;a una determinada profesi&oacute;n en  el proyecto (analista, jefe de proyecto, programador,&hellip;), dicha profesi&oacute;n tiene  un c&oacute;digo de profesi&oacute;n. En el mismo proyecto puede haber varios analistas,  programadores,&hellip;</li>
+      <li>Todos los trabajadores  tienen un c&oacute;digo de trabajador, un dni, un nombre y apellidos. Su profesi&oacute;n  puede cambiar seg&uacute;n el proyecto: en uno puede ser jefe y en otro un programador</li>
+      <li>Se anota las horas que ha  trabajado cada trabajador en cada proyecto.</li>
+      <li>Puede haber varios  proyectos que comiencen el mismo d&iacute;a.</li>
+      <li>A todas las empresas les  hemos realizado al menos un proyecto</li>
+      <li>Todos los trabajadores han  participado en alg&uacute;n proyecto</li>
+      <li>En la base de datos, la  profesi&oacute;n &ldquo;administrador de dise&ntilde;o&rdquo; no la ha desempe&ntilde;ado todav&iacute;a ning&uacute;n  trabajador o trabajadora </li>
+    </ul>
+<p><a href="ejerciciosER/software.html">Ver soluci&oacute;n </a></p>
+<h2>Ejercicio 13. Empresa de comidas</h2>
+
+    <p>Crear un  dise&ntilde;o entidad/relaci&oacute;n para una empresa de comidas. En la base de datos tienen  que figurar:</p>
+    <ul type="disc">
+      <li>El nombre y apellidos de cada empleado, su dni       y su n&uacute;mero de SS adem&aacute;s del tel&eacute;fono fijo y el m&oacute;vil</li>
+      <li>Algunos empleados/as son cocineros/as. De los       cocineros y cocineras anotamos (adem&aacute;s de los datos propios de cada       empleado) sus a&ntilde;os de servicio en la empresa. </li>
+      <li>Hay empleados/as que son pinches. De los y las       pinches anotamos su fecha de nacimiento.</li>
+      <li>La mayor&iacute;a de trabajadores no son ni pinches ni       cocineros/as</li>
+      <li>En la base de datos figura cada plato (su       nombre como &ldquo;pollo a la carlote&ntilde;a&rdquo;, &ldquo;bacalo al pil-pil&rdquo;,&hellip;), el precio del       plato junto con los ingredientes que lleva. Anotamos tambi&eacute;n si cada plato       es un entrante, un primer plato, segundo plato o postre</li>
+      <li>De los ingredientes necesitamos la cantidad que       necesitamos de &eacute;l en cada plato y en qu&eacute; almac&eacute;n y estanter&iacute;a del mismo le       tenemos. </li>
+      <li>Cada almac&eacute;n se tiene un nombre (despensa       principal, c&aacute;mara frigor&iacute;fica A, c&aacute;mara frigor&iacute;fica B&hellip;), un n&uacute;mero de       almac&eacute;n y una descripci&oacute;n del mismo. </li>
+      <li>Cada estante en el almac&eacute;n se identifica con       dos letras y un tama&ntilde;o en cent&iacute;metros. Dos almacenes distintos pueden       tener dos estantes con las mismas letras.</li>
+      <li>Necesitamos tambi&eacute;n saber qu&eacute; cocineros son       capaces de preparar cada plato. </li>
+      <li>Cada pinche est&aacute; a cargo de un cocinero o       cocinera.</li>
+      <li>La cantidad de ingredientes en cada estanter&iacute;a       de un almac&eacute;n se actualiza en la base de datos al instante. SI cogemos dos       ajos de un estante, figurar&aacute; al instante que tenemos dos ajos menos en ese       estante. Es necesario por lo tanto saber los ingredientes (cu&aacute;les y en qu&eacute;       n&uacute;mero) que tenemos en cada estante.</li>
+    </ul>
+    <p><a href="ejerciciosER/comidas.html">Ver soluci&oacute;n </a></p>
+    <h2>Ejercicio 14. Red social</h2>
+    <p>Crear un dise&ntilde;o entidad/relaci&oacute;n que permita  modelar un sistema que sirva para simular el funcionamiento de una red social,  teniendo en cuenta lo siguiente:</p>
+    <ul>
+      <li>Los usuarios de  la red social se identifican con un identificador y una contrase&ntilde;a. Adem&aacute;s se  almacena de ellos:
+        <ul>
+          <li>Su nombre,  apellidos, direcci&oacute;n, tel&eacute;fono (puede tener varios tel&eacute;fonos) e e-mail (el  e-mail no tiene que poder coincidir con el de otro usuario) y una foto</li>
+          <li>Si los usuarios  son celebridades, de ellos no aparecer&aacute; ni el email ni la direcci&oacute;n ni el  tel&eacute;fono.</li>
+        </ul>
+      </li>
+      <li>Los usuarios  pueden tener una serie de contactos, que en realidad son otros usuarios. De  cada contacto se puede almacenar un comentario que es personal y que sirve para  describir al contacto.</li>
+      <li>Los usuarios  pueden organizar sus contactos en grupos de los cuales se almacena un nombre y  deberemos saber los contactos que contiene. El mismo contacto puede formar  parte de varios grupos.</li>
+      <li>Adem&aacute;s cada  usuario puede tener una lista de usuarios bloqueados a fin de que no puedan  contactar con &eacute;l</li>
+      <li>Los usuarios pueden publicar en la red comentarios, los  cuales se puede hacer que los vea todo el mundo, que los vea uno o varios de  los grupos de contactos del usuario o bien una lista concreta de usuarios. Los  comentarios pueden incluir un texto y una imagen.</li>
+    </ul>
+    <p><a href="ejerciciosER/social.html">Ver soluci&oacute;n </a></p>
+    <h2>Ejercicio 15. Menú diario</h2>
+    <p>Crear un esquema Entidad/relación que  represente un modelo para llevar los datos que maneja un restaurante de menús  diarios. Teniendo en cuenta que:</p>
+    <ul>
+      <li>Sólo interesa llevar los datos de los menús  diarios a la hora de la comida, nada más del restaurante</li>
+      <li>Cada menús se compone de una serie de  posibles platos. cada plato se puede repetir en diferentes días. Los platos  pueden ser primer plato, segundo plato o postres.</li>
+      <li>De cada plato se almacena el nombre (por  ejemplo Arroz negro con setas) y una  pequeña descripción. </li>
+      <li>De los menús almacenamos la fecha en la que  se ofrece el menú, el número de personas que han tomado menú ese día. Además almacenamos  la cantidad de cada plato que se ha tomado ese día. </li>
+      <li>Se almacena también la temperatura que hacía  el día del menú para así poder analizar las temperaturas y los platos exitosos</li>
+    </ul>
+    <p><a href="ejerciciosER/menu.html">Ver soluci&oacute;n </a></p>
+        <h2>Ejercicio 16. Twitter</h2>
+    <p>Crear un esquema Entidad/relación que  represente un modelo para llevar los datos que maneja la red social Twitter: usuarios, mensajes,...</p>    
+    <p><a href="ejerciciosER/twitter.html">Ver soluci&oacute;n </a></p>
+    <h2>Ejercicio 17. Horario escolar</h2>
+    <p>Crear  un esquema Entidad/relación que represente el funcionamiento de un centro  escolar de formación profesional, teniendo en cuenta que:</p>
+    <ul>
+      <li>Sólo interesa llevar el control de ocupación  de las aulas en el horario escolar</li>
+      <li>El horario es de seis horas diarias y en la  base de datos simplemente se anota si es la primera, segunda,… y el día de la  semana del que hablamos (por ejemplo miércoles a tercera hora)</li>
+      <li>Las asignaturas tienen un nombre, un código  interno del centro y un código europeo. La misma asignatura se puede impartir  en dos ciclos distintos y en ese caso tendría el mismo código europeo y nombre,  pero el código interno sería distinto. Hace falta saber en qué curso del ciclo  se imparte la asignatura</li>
+      <li>Los ciclos tienen un nombre, pueden ser de  grado superior,de grado medio o de iniciación profesional; además tienen otro  código interno en el centro. </li>
+      <li>Las asignaturas en cada momento ocupan un  aula, del que tenemos que almacenar un código de aula, un nombre (que no se  repite), un número de aula (que tampoco se repite) y los metros que tiene. A  una hora concreta de la semana, el aula puede estar vacia o bien ocuparse, pero  sólo se puede ocupar por una asignatura</li>
+      <li>Necesitamos saber y anotar en la base de  datos si una asignatura requiere que antes se hayan aprobado otras, para poder  matricularse en ella. Por ejemplo, <strong>Ampliación  de Matemáticas de 2º</strong> a lo mejor requiere aprobar <strong>Matemáticas de 1º</strong>. Puede requerirse terminar más de una asignatura  previamente para poder matricularse de una concreta.</li>
+      <li>Se entiende que la asignatura sólo la puede  impartir un profesor en todo el año, siempre será uno en todo momento el  titular</li>
+      <li>De los profesores se almacena su nombre,  dirección, teléfono, email, DNI, nº de Seguridad Social y un código interno de  profesor así como los años que tiene de antigüedad impartiendo cada asignatura.  Puede ser cada profesora o profesor, tutora de un curso y también se anota la antigüedad  que tiene en esa tarea</li>
+    </ul>
+    <p>Complicamos el esquema anterior en este  sentido</p>
+    <ul>
+      <li>Siendo más realistas, nos damos cuenta de  que en un curso escolar, puede haber varios profesores responsables de una  asignatura (por bajas, ceses, etc.); por lo que anotamos cuándo empezó a  impartir dicho profesor la asignatura y cuando terminó (si no ha terminado, se  dejaría vacío)</li>
+      <li>Asegurar que podemos averiguar gracias al  diseño, que si buscamos a un profesor un día concreto (por ejemplo el 13 de  Mayo de 2012) a una hora concreta (sexta hora), podríamos saber en qué aula va  a estar.</li>
+</ul>
+    <p><a href="ejerciciosER/aulas.html">Ver soluci&oacute;n </a></p>    
+	
+    <h2>Ejercicio 18. Inmuebles</h2>	
+	<p>Crear un diseño  entidad/relación que permita modelar un sistema que sirva para gestionar una empresa  que posee inmuebles.  Para ello </p>
+    <ul>
+      <li>Se almacenan los  clientes usando su DNI, Teléfono fijo, Móvil, Nombre y Apellidos.</li>
+      <li>Se almacenan los  trabajadores y se almacenan los mismos datos. Ocurre además que un trabajador  puede ser un cliente (porque puede alquilar o comprar mediante la inmobiliaria)  a veces.</li>
+      <li>A cada cliente y  trabajador se le asigna un código personal</li>
+      <li>Los clientes  pueden comprar pisos, locales o garajes. En los tres casos se almacena un  código de inmueble (único para cada inmueble), los metros que tienen, una descripción  y su  dirección. </li>
+      <li>Los pisos tienen  un código especial de piso que es distinto para cada piso. </li>
+      <li>En los locales se  indica el uso que puede tener y si tienen servicio o no.</li>
+      <li>De los garajes se  almacena el número de garaje (podría repetirse en distintos edificios) y la  planta en que se encuentra (para el caso de garajes que están en varias  plantas). Los garajes además pueden asociarse a un piso y así cuando se alquile  el piso se incluirá el garaje.</li>
+      <li>La empresa prevé  que podría haber inmuebles que podrían no ser ni locales, ni garajes, ni pisos</li>
+      <li>Los inmuebles se  pueden comprar. Incluso varias veces. Se asigna un código de compra cada vez  que se haga, la fecha y el valor de la compra. La compra puede tener varios  titulares. </li>
+      <li>Cada inmueble se  puede alquilar y en ese caso se asigna un número de alquiler por cada inmueble.  Ese número se puede repetir en distintos inmuebles (es decir puede haber  alquiler nº 18 para el inmueble 40 y el 35). Pero no se repite para el mismo  inmueble.</li>
+      <li>Al alquilar  queremos saber el nombre del agente de la empresa que gestionó el alquiler así  como a qué persona (solo una) estamos alquilando el inmueble.</li>
+      <li>Cada pago de cada  alquiler será almacenado en la base de datos, llevando el año, el mes y el  valor del mismo.</li>
+    </ul>
+    <p class="conBorde"><a href="ejerciciosER/inmuebles.html">Ver soluci&oacute;n </a></p>
+   
+  <!-- InstanceEndEditable -->
+</div>
+	
+	
+    <div id="valida">
+  <p class="imagenes">
+		<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.5/es/">
+		<img alt="Creative Commons License" style="border-width:0" src="../imagenes/88x31.png" /></a>
+		
+  <a href="http://validator.w3.org/check?uri=referer"><img
+      src="http://www.w3.org/Icons/valid-xhtml11" alt="Valid XHTML 1.1" height="31" width="88" /></a>
+		
+     <a href="http://www.spanish-translator-services.com/espanol/t/buttons.html">
+        <img style="height:31px;width:88px;"
+         src="../imagenes/cssos.png" alt="Creado usando CSS!" />
+      </a>
+
+	</p>
+</div>
+
+<div id="pieDerecho"><p class="mail">
+	<a href="mailto:info@jorgesanchez.net">e-mail:info@jorgesanchez.net</a>
+	</p></div>
+</body>
+<!-- InstanceEnd --></html>
