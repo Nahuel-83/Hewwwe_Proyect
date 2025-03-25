@@ -1,5 +1,3 @@
-import React from 'react';
-
 function Home() {
     return (
         <section id="home" className="p-10">

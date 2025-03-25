@@ -1,5 +1,3 @@
-import React from 'react';
-
 function Shop() {
     return (
         <section id="shop" className="p-10 bg-gray-50">

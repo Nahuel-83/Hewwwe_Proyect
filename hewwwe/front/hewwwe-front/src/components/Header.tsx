@@ -7,7 +7,7 @@ function Header() {
             <div className="container mx-auto flex justify-between items-center">
                 <h1 className="text-3xl font-serif text-gray-800">Hewwwe</h1>
                 <nav>
-                    <ul className="flex space-x-6" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                    <ul className="flex justify-center space-x-6 mb-4">
                         <li><Link to="/" className="text-gray-800 hover:text-blue-500">Inicio</Link></li>
                         <li><Link to="/shop" className="text-gray-800 hover:text-blue-500">Tienda</Link></li>
                         <li><Link to="/about" className="text-gray-800 hover:text-blue-500">Nosotros</Link></li>

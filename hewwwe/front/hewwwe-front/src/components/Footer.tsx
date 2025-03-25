@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import './css/all.css';
 
 function Footer() {
@@ -8,10 +9,10 @@ function Footer() {
                 <p className="text-gray-600 mb-4">Encuentra las mejores prendas vintage y de segunda mano.</p>
                 <nav>
                     <ul className="flex justify-center space-x-6 mb-4">
-                        <li><a href="#home" className="text-gray-800 hover:text-blue-500">Inicio</a></li>
-                        <li><a href="#shop" className="text-gray-800 hover:text-blue-500">Tienda</a></li>
-                        <li><a href="#about" className="text-gray-800 hover:text-blue-500">Nosotros</a></li>
-                        <li><a href="#contact" className="text-gray-800 hover:text-blue-500">Contacto</a></li>
+                        <li><Link to="/" className="text-gray-800 hover:text-blue-500">Inicio</Link></li>
+                        <li><Link to="/shop" className="text-gray-800 hover:text-blue-500">Tienda</Link></li>
+                        <li><Link to="/about" className="text-gray-800 hover:text-blue-500">Nosotros</Link></li>
+                        <li><Link to="/contact" className="text-gray-800 hover:text-blue-500">Contacto</Link></li>
                     </ul>
                 </nav>
                 <p className="text-gray-600">&copy; 2025 Hewwwe. Todos los derechos reservados.</p>
