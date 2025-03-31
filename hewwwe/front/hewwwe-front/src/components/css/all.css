@@ -1,9 +1,0 @@
-@import url('https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=Nunito:wght@400;700&display=swap');
-
-h2 {
-    font-family: 'Domine', serif;
-}
-
-body, p, a, ul, li {
-    font-family: 'Nunito', sans-serif;
-}

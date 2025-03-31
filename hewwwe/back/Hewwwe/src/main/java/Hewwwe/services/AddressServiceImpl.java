@@ -51,8 +51,7 @@ public class AddressServiceImpl implements  AddressService{
     public List<Address> getAddressesByUserId(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
-
-        return user.getAddresses(); // Se asume que tienes un método getAddresses en User
+        return user.getAddresses();
     }
 
 }
