@@ -27,13 +27,18 @@ public class Exchange {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long exchangeId;
-    private Date exchangeDate;
     private String status;
+    private Date exchangeDate;
+    private Date completionDate;
 
     // Relaciones
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user; // N-1 con User
+    @JoinColumn(name = "requester_id", nullable = false)
+    private User requester; // N-1 con User
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner; // N-1 con User
 
     @OneToMany(mappedBy = "exchange", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products; // 1-N con Product

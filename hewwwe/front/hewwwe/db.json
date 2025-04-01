@@ -1,0 +1,172 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "john_doe",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "password": "$2a$10$XQxKGKJ5YN/Q4HdLsZ3x8O5v3YeZ3o1yA7y3x9X9X9X9X9X9X9X9X",
+      "avatar": "https://example.com/avatars/john.jpg",
+      "rating": 4.5,
+      "favorites": [2, 3],
+      "uploadedProducts": [1, 4],
+      "location": "New York, USA",
+      "joinedDate": "2025-01-15T10:00:00.000Z",
+      "bio": "Passionate about sustainable fashion"
+    },
+    {
+      "id": 2,
+      "username": "jane_smith",
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "password": "$2a$10$XQxKGKJ5YN/Q4HdLsZ3x8O5v3YeZ3o1yA7y3x9X9X9X9X9X9X9X9X",
+      "avatar": "https://example.com/avatars/jane.jpg",
+      "rating": 4.8,
+      "favorites": [1, 4],
+      "uploadedProducts": [2, 3],
+      "location": "Los Angeles, USA",
+      "joinedDate": "2025-02-01T08:30:00.000Z",
+      "bio": "Fashion enthusiast and vintage collector"
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "Nike Air Max 2025",
+      "description": "Limited edition sneakers in excellent condition",
+      "images": ["https://example.com/images/airmax2025.jpg"],
+      "category": "sneakers",
+      "condition": "excellent",
+      "size": "US 10",
+      "brand": "Nike",
+      "ownerId": 1,
+      "price": 120.00,
+      "originalPrice": 200.00,
+      "status": "available",
+      "views": 45,
+      "favorites": 12,
+      "createdAt": "2025-03-15T14:30:00.000Z",
+      "updatedAt": "2025-03-15T14:30:00.000Z",
+      "tags": ["sneakers", "nike", "limited edition"]
+    },
+    {
+      "id": 2,
+      "name": "Vintage Leather Jacket",
+      "description": "Classic brown leather jacket, barely worn",
+      "images": ["https://example.com/images/leather-jacket.jpg"],
+      "category": "jackets",
+      "condition": "good",
+      "size": "L",
+      "brand": "Levi's",
+      "ownerId": 2,
+      "price": 85.00,
+      "originalPrice": 150.00,
+      "status": "available",
+      "views": 32,
+      "favorites": 8,
+      "createdAt": "2025-03-10T09:15:00.000Z",
+      "updatedAt": "2025-03-10T09:15:00.000Z",
+      "tags": ["vintage", "leather", "jacket"]
+    },
+    {
+      "id": 3,
+      "name": "Supreme T-Shirt",
+      "description": "Authentic Supreme box logo tee",
+      "images": ["https://example.com/images/supreme-tee.jpg"],
+      "category": "t-shirts",
+      "condition": "new",
+      "size": "M",
+      "brand": "Supreme",
+      "ownerId": 2,
+      "price": 60.00,
+      "originalPrice": 100.00,
+      "status": "available",
+      "views": 20,
+      "favorites": 5,
+      "createdAt": "2025-03-12T11:00:00.000Z",
+      "updatedAt": "2025-03-12T11:00:00.000Z",
+      "tags": ["supreme", "t-shirt", "box logo"]
+    },
+    {
+      "id": 4,
+      "name": "Adidas Ultra Boost",
+      "description": "Comfortable running shoes, light use",
+      "images": ["https://example.com/images/ultraboost.jpg"],
+      "category": "sneakers",
+      "condition": "good",
+      "size": "US 9",
+      "brand": "Adidas",
+      "ownerId": 1,
+      "price": 90.00,
+      "originalPrice": 180.00,
+      "status": "available",
+      "views": 35,
+      "favorites": 10,
+      "createdAt": "2025-03-18T13:45:00.000Z",
+      "updatedAt": "2025-03-18T13:45:00.000Z",
+      "tags": ["adidas", "ultra boost", "running shoes"]
+    }
+  ],
+  "trades": [
+    {
+      "id": 1,
+      "requesterId": 1,
+      "receiverId": 2,
+      "offeredProducts": [1],
+      "desiredProducts": [2],
+      "status": "pending",
+      "createdAt": "2025-03-20T10:00:00.000Z",
+      "updatedAt": "2025-03-20T10:00:00.000Z",
+      "messages": [
+        {
+          "id": 1,
+          "userId": 1,
+          "content": "Hi! Would you be interested in trading?",
+          "createdAt": "2025-03-20T10:00:00.000Z"
+        }
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "id": 1,
+      "reviewerId": 1,
+      "reviewedId": 2,
+      "tradeId": 1,
+      "rating": 5,
+      "content": "Great trader! Item was exactly as described",
+      "createdAt": "2025-03-25T15:00:00.000Z"
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Sneakers",
+      "slug": "sneakers",
+      "icon": "👟"
+    },
+    {
+      "id": 2,
+      "name": "Jackets",
+      "slug": "jackets",
+      "icon": "🧥"
+    },
+    {
+      "id": 3,
+      "name": "T-Shirts",
+      "slug": "t-shirts",
+      "icon": "👕"
+    }
+  ],
+  "notifications": [
+    {
+      "id": 1,
+      "userId": 2,
+      "type": "trade_request",
+      "content": "You have a new trade request from John Doe",
+      "read": false,
+      "relatedId": 1,
+      "createdAt": "2025-03-20T10:00:00.000Z"
+    }
+  ]
+}

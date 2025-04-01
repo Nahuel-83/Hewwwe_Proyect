@@ -43,9 +43,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products; // 1-N con Product
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Exchange> exchanges; // 1-N con Exchange
+    @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Exchange> requestedExchanges; // 1-N con Exchange
 
-
-
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Exchange> ownedExchanges; // 1-N con Exchange
 }

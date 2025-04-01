@@ -9,6 +9,7 @@ import Hewwwe.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,7 +48,8 @@ public class UserServiceImpl implements UserService {
             existingUser.setCart(user.getCart());
             existingUser.setAddresses(user.getAddresses());
             existingUser.setProducts(user.getProducts());
-            existingUser.setExchanges(user.getExchanges());
+            existingUser.setRequestedExchanges(user.getRequestedExchanges());
+            existingUser.setOwnedExchanges(user.getOwnedExchanges());
 
             return userRepository.save(existingUser);
         }).orElseThrow(() -> new RuntimeException("User not found"));
@@ -66,7 +68,12 @@ public class UserServiceImpl implements UserService {
     }
 
     public List<Exchange> getExchangesByUserId(Long userId) {
-        return userRepository.findById(userId).map(User::getExchanges).orElse(List.of());
+        return userRepository.findById(userId).map(user -> {
+            List<Exchange> allExchanges = new ArrayList<>();
+            allExchanges.addAll(user.getRequestedExchanges());
+            allExchanges.addAll(user.getOwnedExchanges());
+            return allExchanges;
+        }).orElse(List.of());
     }
 
     @Override
