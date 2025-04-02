@@ -12,4 +12,7 @@ public interface ExchangeService {
     Exchange updateExchange(Exchange exchange);
     void deleteExchange(Long id);
     List<Exchange> getAllExchanges();
+    List<Exchange> getExchangesByRequesterId(Long requesterId);
+    List<Exchange> getExchangesByOwnerId(Long ownerId);
+    Exchange updateExchangeStatus(Long id, String status);
 }
