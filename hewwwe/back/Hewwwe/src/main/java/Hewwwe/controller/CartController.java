@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/carts")
 @RequiredArgsConstructor
 @Tag(name = "Cart Controller", description = "Cart management endpoints")
-@CrossOrigin(origins = "*")
 public class CartController {
 
     private final CartService cartService;

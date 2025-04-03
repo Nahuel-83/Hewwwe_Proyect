@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/addresses")
 @RequiredArgsConstructor
 @Tag(name = "Address Controller", description = "Address management endpoints")
-@CrossOrigin(origins = "*")
 public class AddressController {
 
     private final AddressService addressService;

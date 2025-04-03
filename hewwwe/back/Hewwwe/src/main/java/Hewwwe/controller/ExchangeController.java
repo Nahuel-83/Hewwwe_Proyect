@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/exchanges")
 @RequiredArgsConstructor
 @Tag(name = "Exchange Controller", description = "Exchange management endpoints")
-@CrossOrigin(origins = "*")
 public class ExchangeController {
 
     private final ExchangeService exchangeService;

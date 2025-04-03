@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
 @Tag(name = "Product Controller", description = "Product management endpoints")
-@CrossOrigin(origins = "*")
 public class ProductController {
 
     private final ProductService productService;

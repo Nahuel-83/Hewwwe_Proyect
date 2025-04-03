@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
 @Tag(name = "Category Controller", description = "Category management endpoints")
-@CrossOrigin(origins = "*")
 public class CategoryController {
 
     private final CategoryService categoryService;

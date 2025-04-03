@@ -6,30 +6,30 @@ export default {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        domine: ['Domine', 'serif'],
-        nunito: ['Nunito', 'sans-serif'],
-      },
       colors: {
-        primary: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
-        },
+        'black': '#000000',
+        'white': '#FFFFFF',
+        'electric-blue': '#00F0FF',
+        'neon-pink': '#FF00F5',
       },
-      aspectRatio: {
-        '1': '1',
+      fontFamily: {
+        'domine': ['Domine', 'serif'],
+        'nunito': ['Nunito', 'sans-serif'],
       },
+      animation: {
+        'neon-pulse': 'neonPulse 2s infinite',
+      },
+      keyframes: {
+        neonPulse: {
+          '0%, 100%': { 
+            textShadow: '0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff, 0 0 42px #00F0FF, 0 0 82px #00F0FF, 0 0 92px #00F0FF, 0 0 102px #00F0FF, 0 0 151px #00F0FF'
+          },
+          '50%': { 
+            textShadow: '0 0 4px #fff, 0 0 7px #fff, 0 0 13px #fff, 0 0 25px #00F0FF, 0 0 45px #00F0FF, 0 0 55px #00F0FF, 0 0 70px #00F0FF, 0 0 100px #00F0FF'
+          }
+        }
+      }
     },
   },
-  plugins: [
-    require('@tailwindcss/aspect-ratio'),
-  ],
+  plugins: [],
 }
