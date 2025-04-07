@@ -1,8 +1,14 @@
 export interface Product {
-    id: number;
-    title: string;
-    price: number;
-    image: string;
-    description: string;
-  }
-  
+  productId: number;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  size: string;
+  status: string;
+  publicationDate: string;
+  userId: number;
+  categoryId: number;
+  cartId?: number;
+  exchangeId?: number;
+}

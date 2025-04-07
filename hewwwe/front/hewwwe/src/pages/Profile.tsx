@@ -53,19 +53,19 @@ const Profile: React.FC = () => {
         <div className="mb-6">
           <h2 className="text-xl font-semibold mb-2">Account Information</h2>
           <p className="text-gray-600">Email: {user?.email}</p>
-          <p className="text-gray-600">Name: {user?.displayName || 'Not set'}</p>
+          <p className="text-gray-600">Name: {user?.name || 'Not set'}</p>
         </div>
 
         <form onSubmit={handleProfileUpdate} className="mb-6">
           <div className="mb-4">
-            <label htmlFor="displayName" className="block text-sm font-semibold mb-1">
-              Display Name
+            <label htmlFor="name" className="block text-sm font-semibold mb-1">
+              Name
             </label>
             <input
               type="text"
-              id="displayName"
-              name="displayName"
-              defaultValue={user?.displayName || ''}
+              id="name"
+              name="name"
+              defaultValue={user?.name || ''}
               className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>

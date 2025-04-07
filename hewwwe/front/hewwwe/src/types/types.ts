@@ -41,11 +41,9 @@ export interface Review {
 }
 
 export interface FilterOptions {
-  category?: string;
-  brand?: string[];
+  categoryId?: number;
   size?: string[];
-  condition?: string[];
+  status?: string[];
   minPrice?: number;
   maxPrice?: number;
-  location?: string;
 }

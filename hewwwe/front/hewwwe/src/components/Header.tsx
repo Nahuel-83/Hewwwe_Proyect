@@ -3,7 +3,10 @@ import { Link } from 'react-router-dom';
 
 const Header: React.FC = () => (
   <header className="bg-white shadow-md p-4 flex justify-between items-center">
-    <Link to="/" className="text-xl font-bold text-green-600">VintedClone</Link>
+    <div className="flex flex-col">
+      <Link to="/" className="text-2xl font-bold font-domine text-black">HEWWWE</Link>
+      <span className="text-sm font-nunito text-gray-600">Tres veces imparable</span>
+    </div>
     <input
       className="border px-2 py-1 rounded w-1/2"
       type="text"
