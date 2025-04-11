@@ -1,7 +1,7 @@
 package Hewwwe.services;
 
 import Hewwwe.entity.Invoice;
-import Hewwwe.entity.InvoiceStatus;
+import Hewwwe.entity.enums.InvoiceStatus;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 

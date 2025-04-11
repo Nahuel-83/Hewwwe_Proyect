@@ -1,7 +1,10 @@
 package Hewwwe.entity;
 
+import Hewwwe.entity.enums.Rol;
 import jakarta.persistence.Entity;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,7 +32,8 @@ public class User {
     private String name;
     private String email;
     private String phone;
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Rol role;
     private Date registrationDate;
     private String oauthToken;
 

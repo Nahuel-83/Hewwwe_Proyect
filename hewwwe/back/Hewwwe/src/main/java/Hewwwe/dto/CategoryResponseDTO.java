@@ -5,10 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class CategoryDTO {
-    private Long categoryId;
-    private String name;
-    private String description;
+@NoArgsConstructor
+public class CategoryResponseDTO{
+    Long categoryId;
+    String name;
+    String description;
 }

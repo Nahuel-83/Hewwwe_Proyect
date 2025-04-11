@@ -1,5 +1,6 @@
 package Hewwwe.entity;
 
+import Hewwwe.entity.enums.InvoiceStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

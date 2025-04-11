@@ -1,6 +1,7 @@
 package Hewwwe.controller;
 
-import Hewwwe.dto.AddressDTO;
+import Hewwwe.dto.AddressCreateDTO;
+import Hewwwe.dto.AddressResponseDTO;
 import Hewwwe.entity.Address;
 import Hewwwe.services.AddressService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/addresses")
@@ -28,33 +28,36 @@ public class AddressController {
     @GetMapping
     @Operation(summary = "Get all addresses")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved addresses")
-    public ResponseEntity<List<AddressDTO>> getAllAddresses() {
-        List<AddressDTO> addresses = addressService.getAllAddresses().stream()
-                .map(address -> modelMapper.map(address, AddressDTO.class))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(addresses);
+    public ResponseEntity<List<AddressResponseDTO>> getAllAddresses() {
+        List<Address> addresses = addressService.getAllAddresses();
+        List<AddressResponseDTO> addressDTOs = addresses.stream()
+            .map(address -> modelMapper.map(address, AddressResponseDTO.class))
+            .toList();
+        return ResponseEntity.ok(addressDTOs);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get an address by ID")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved address")
     @ApiResponse(responseCode = "404", description = "Address not found")
-    public ResponseEntity<AddressDTO> getAddressById(@PathVariable Long id) {
+    public ResponseEntity<AddressResponseDTO> getAddressById(@PathVariable Long id) {
         Address address = addressService.getAddressById(id);
-        return ResponseEntity.ok(modelMapper.map(address, AddressDTO.class));
+        AddressResponseDTO addressDTO = modelMapper.map(address, AddressResponseDTO.class);
+        return ResponseEntity.ok(addressDTO);
     }
 
     @PostMapping("/user/{userId}")
     @Operation(summary = "Create a new address for a user")
     @ApiResponse(responseCode = "201", description = "Address created successfully")
     @ApiResponse(responseCode = "400", description = "Invalid input")
-    public ResponseEntity<AddressDTO> createAddress(
+    public ResponseEntity<AddressResponseDTO> createAddress(
             @PathVariable Long userId,
-            @Valid @RequestBody AddressDTO addressDTO) {
+            @Valid @RequestBody AddressCreateDTO addressDTO) {
         try {
             Address address = modelMapper.map(addressDTO, Address.class);
             Address savedAddress = addressService.createAddress(address, userId);
-            return new ResponseEntity<>(modelMapper.map(savedAddress, AddressDTO.class), HttpStatus.CREATED);
+            AddressResponseDTO responseDTO = modelMapper.map(savedAddress, AddressResponseDTO.class);
+            return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
         } catch (Exception e) {
             throw new RuntimeException("Error creating address: " + e.getMessage());
         }
@@ -64,14 +67,15 @@ public class AddressController {
     @Operation(summary = "Update an existing address")
     @ApiResponse(responseCode = "200", description = "Address updated successfully")
     @ApiResponse(responseCode = "404", description = "Address not found")
-    public ResponseEntity<AddressDTO> updateAddress(
+    public ResponseEntity<AddressResponseDTO> updateAddress(
             @PathVariable Long id,
-            @Valid @RequestBody AddressDTO addressDTO) {
+            @Valid @RequestBody AddressResponseDTO addressDTO) {
         try {
             Address address = modelMapper.map(addressDTO, Address.class);
             address.setAddressId(id);
             Address updatedAddress = addressService.updateAddress(address);
-            return ResponseEntity.ok(modelMapper.map(updatedAddress, AddressDTO.class));
+            AddressResponseDTO responseDTO = modelMapper.map(updatedAddress, AddressResponseDTO.class);
+            return ResponseEntity.ok(responseDTO);
         } catch (Exception e) {
             throw new RuntimeException("Error updating address: " + e.getMessage());
         }
@@ -89,10 +93,11 @@ public class AddressController {
     @GetMapping("/user/{userId}")
     @Operation(summary = "Get all addresses for a user")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved user addresses")
-    public ResponseEntity<List<AddressDTO>> getAddressesByUserId(@PathVariable Long userId) {
-        List<AddressDTO> addresses = addressService.getAddressesByUserId(userId).stream()
-                .map(address -> modelMapper.map(address, AddressDTO.class))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(addresses);
+    public ResponseEntity<List<AddressResponseDTO>> getAddressesByUserId(@PathVariable Long userId) {
+        List<Address> addresses = addressService.getAddressesByUserId(userId);
+        List<AddressResponseDTO> addressDTOs = addresses.stream()
+            .map(address -> modelMapper.map(address, AddressResponseDTO.class))
+            .toList();
+        return ResponseEntity.ok(addressDTOs);
     }
 }

@@ -1,6 +1,7 @@
 package Hewwwe.controller;
 
-import Hewwwe.dto.ProductDTO;
+import Hewwwe.dto.ProductCreateDTO;
+import Hewwwe.dto.ProductResponseDTO;
 import Hewwwe.entity.Cart;
 import Hewwwe.entity.Category;
 import Hewwwe.entity.Exchange;
@@ -33,9 +34,9 @@ public class ProductController {
     @GetMapping
     @Operation(summary = "Get all products")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved products")
-    public ResponseEntity<List<ProductDTO>> getAllProducts() {
-        List<ProductDTO> products = productService.findAll().stream()
-                .map(product -> modelMapper.map(product, ProductDTO.class))
+    public ResponseEntity<List<ProductResponseDTO>> getAllProducts() {
+        List<ProductResponseDTO> products = productService.findAll().stream()
+                .map(product -> modelMapper.map(product, ProductResponseDTO.class))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(products);
     }
@@ -44,9 +45,9 @@ public class ProductController {
     @Operation(summary = "Get a product by ID")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved product")
     @ApiResponse(responseCode = "404", description = "Product not found")
-    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
+    public ResponseEntity<ProductResponseDTO> getProductById(@PathVariable Long id) {
         return productService.findById(id)
-                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .map(product -> modelMapper.map(product, ProductResponseDTO.class))
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
     }
@@ -55,12 +56,12 @@ public class ProductController {
     @Operation(summary = "Create a new product")
     @ApiResponse(responseCode = "201", description = "Product created successfully")
     @ApiResponse(responseCode = "400", description = "Invalid input")
-    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDTO) {
+    public ResponseEntity<ProductCreateDTO> createProduct(@Valid @RequestBody ProductCreateDTO productDTO) {
         try {
             Product product = new Product();
             mapDTOToProduct(productDTO, product);
             Product savedProduct = productService.save(product);
-            return new ResponseEntity<>(modelMapper.map(savedProduct, ProductDTO.class), HttpStatus.CREATED);
+            return new ResponseEntity<>(modelMapper.map(savedProduct, ProductCreateDTO.class), HttpStatus.CREATED);
         } catch (ResourceNotFoundException e) {
             throw e;
         } catch (Exception e) {
@@ -72,9 +73,9 @@ public class ProductController {
     @Operation(summary = "Update an existing product")
     @ApiResponse(responseCode = "200", description = "Product updated successfully")
     @ApiResponse(responseCode = "404", description = "Product not found")
-    public ResponseEntity<ProductDTO> updateProduct(
+    public ResponseEntity<ProductCreateDTO> updateProduct(
             @PathVariable Long id,
-            @Valid @RequestBody ProductDTO productDTO) {
+            @Valid @RequestBody ProductCreateDTO productDTO) {
         try {
             if (!productService.existsById(id)) {
                 throw new ResourceNotFoundException("Product not found with id: " + id);
@@ -82,7 +83,7 @@ public class ProductController {
             Product product = new Product();
             mapDTOToProduct(productDTO, product);
             Product updatedProduct = productService.update(id, product);
-            return ResponseEntity.ok(modelMapper.map(updatedProduct, ProductDTO.class));
+            return ResponseEntity.ok(modelMapper.map(updatedProduct, ProductCreateDTO.class));
         } catch (ResourceNotFoundException e) {
             throw e;
         } catch (Exception e) {
@@ -103,9 +104,9 @@ public class ProductController {
     @Operation(summary = "Get products by category")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved products")
     @ApiResponse(responseCode = "404", description = "Category not found")
-    public ResponseEntity<List<ProductDTO>> getProductsByCategory(@PathVariable Long categoryId) {
-        List<ProductDTO> products = productService.findByCategory(categoryId).stream()
-                .map(product -> modelMapper.map(product, ProductDTO.class))
+    public ResponseEntity<List<ProductResponseDTO>> getProductsByCategory(@PathVariable Long categoryId) {
+        List<ProductResponseDTO> products = productService.findByCategory(categoryId).stream()
+                .map(product -> modelMapper.map(product, ProductResponseDTO.class))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(products);
     }
@@ -114,9 +115,9 @@ public class ProductController {
     @Operation(summary = "Get products by user")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved products")
     @ApiResponse(responseCode = "404", description = "User not found")
-    public ResponseEntity<List<ProductDTO>> getProductsByUser(@PathVariable Long userId) {
-        List<ProductDTO> products = productService.findByUser(userId).stream()
-                .map(product -> modelMapper.map(product, ProductDTO.class))
+    public ResponseEntity<List<ProductResponseDTO>> getProductsByUser(@PathVariable Long userId) {
+        List<ProductResponseDTO> products = productService.findByUser(userId).stream()
+                .map(product -> modelMapper.map(product, ProductResponseDTO.class))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(products);
     }
@@ -124,9 +125,9 @@ public class ProductController {
     @GetMapping("/status/{status}")
     @Operation(summary = "Get products by status")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved products")
-    public ResponseEntity<List<ProductDTO>> getProductsByStatus(@PathVariable String status) {
-        List<ProductDTO> products = productService.findByStatus(status).stream()
-                .map(product -> modelMapper.map(product, ProductDTO.class))
+    public ResponseEntity<List<ProductResponseDTO>> getProductsByStatus(@PathVariable String status) {
+        List<ProductResponseDTO> products = productService.findByStatus(status).stream()
+                .map(product -> modelMapper.map(product, ProductResponseDTO.class))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(products);
     }
@@ -134,14 +135,14 @@ public class ProductController {
     @GetMapping("/search")
     @Operation(summary = "Search products by keyword")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved products")
-    public ResponseEntity<List<ProductDTO>> searchProducts(@RequestParam String keyword) {
-        List<ProductDTO> products = productService.searchProducts(keyword).stream()
-                .map(product -> modelMapper.map(product, ProductDTO.class))
+    public ResponseEntity<List<ProductResponseDTO>> searchProducts(@RequestParam String keyword) {
+        List<ProductResponseDTO> products = productService.searchProducts(keyword).stream()
+                .map(product -> modelMapper.map(product, ProductResponseDTO.class))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(products);
     }
 
-    private void mapDTOToProduct(ProductDTO dto, Product product) {
+    private void mapDTOToProduct(ProductCreateDTO dto, Product product) {
         product.setName(dto.getName());
         product.setDescription(dto.getDescription());
         product.setPrice(dto.getPrice());

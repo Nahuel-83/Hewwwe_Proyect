@@ -1,7 +1,7 @@
 package Hewwwe.repository;
 
 import Hewwwe.entity.Invoice;
-import Hewwwe.entity.InvoiceStatus;
+import Hewwwe.entity.enums.InvoiceStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
