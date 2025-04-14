@@ -14,5 +14,4 @@ public interface CategoryService {
     Category updateCategory(Long id, Category categoryDetails);
     void deleteCategory(Long id);
     List<Product> getProductsByCategory(Long categoryId);
-    Product addProductToCategory(Long categoryId, Product product);
 }

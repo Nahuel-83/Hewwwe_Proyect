@@ -50,10 +50,4 @@ public class CategoryServiceImpl implements CategoryService{
         return category.getProducts();
     }
 
-    @Override
-    public Product addProductToCategory(Long categoryId, Product product) {
-        Category category = getCategoryById(categoryId);
-        product.setCategory(category);
-        return productRepository.save(product);
-    }
 }

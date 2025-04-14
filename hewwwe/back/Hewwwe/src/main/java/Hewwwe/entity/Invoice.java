@@ -33,8 +33,8 @@ public class Invoice {
     @JoinColumn(name = "user_id", nullable = false)
     private User user; // N-1 con User
 
-    @ManyToOne
-    @JoinColumn(name = "address_id", nullable = false)
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "address_id", nullable = true)
     private Address address; // N-1 con Address
 
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)

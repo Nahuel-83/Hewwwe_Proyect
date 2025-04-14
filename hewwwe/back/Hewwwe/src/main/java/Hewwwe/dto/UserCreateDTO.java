@@ -3,31 +3,29 @@ package Hewwwe.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserCreateDTO{
+public class UserCreateDTO {
         @NotBlank(message = "Name is required")
-        String name;
-        
+        private String name;
+
         @NotBlank(message = "Email is required")
         @Email(message = "Invalid email format")
-        String email;
-        
+        private String email;
+
         @NotBlank(message = "Phone is required")
-        String phone;
-        
+        private String phone;
+
         @NotBlank(message = "Role is required")
-        String role;
-        
+        private String role;
+
         @NotNull(message = "Registration date is required")
-        Date registrationDate;
-        
-        String oauthToken;
+        private Date registrationDate;
+
+        private String oauthToken;
 }

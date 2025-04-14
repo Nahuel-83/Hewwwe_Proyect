@@ -1,16 +1,15 @@
 package Hewwwe.controller;
 
+import Hewwwe.dto.AddressResponseDTO;
+import Hewwwe.dto.CartResponseDTO;
+import Hewwwe.dto.ExchangeResponseDTO;
+import Hewwwe.dto.ProductResponseDTO;
 import Hewwwe.dto.UserCreateDTO;
 import Hewwwe.dto.UserResponseDTO;
-import Hewwwe.entity.User;
-import Hewwwe.entity.Cart;
-import Hewwwe.entity.Address;
-import Hewwwe.entity.Product;
-import Hewwwe.entity.Exchange;
+import Hewwwe.entity.*;
 import Hewwwe.exception.ResourceNotFoundException;
 import Hewwwe.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +32,6 @@ public class UserController {
 
     @GetMapping
     @Operation(summary = "Get all users")
-    @ApiResponse(responseCode = "200", description = "Successfully retrieved users")
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         List<UserResponseDTO> users = userService.findAll().stream()
                 .map(user -> modelMapper.map(user, UserResponseDTO.class))
@@ -43,8 +41,6 @@ public class UserController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get user by ID")
-    @ApiResponse(responseCode = "200", description = "Successfully retrieved user")
-    @ApiResponse(responseCode = "404", description = "User not found")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
         return userService.findById(id)
                 .map(user -> modelMapper.map(user, UserResponseDTO.class))
@@ -54,8 +50,6 @@ public class UserController {
 
     @PostMapping
     @Operation(summary = "Create a new user")
-    @ApiResponse(responseCode = "201", description = "User created successfully")
-    @ApiResponse(responseCode = "400", description = "Invalid input")
     public ResponseEntity<UserCreateDTO> createUser(@Valid @RequestBody UserCreateDTO userDTO) {
         User user = modelMapper.map(userDTO, User.class);
         User savedUser = userService.save(user);
@@ -64,18 +58,14 @@ public class UserController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing user")
-    @ApiResponse(responseCode = "200", description = "User updated successfully")
-    @ApiResponse(responseCode = "404", description = "User not found")
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserResponseDTO userDTO) {
+    public ResponseEntity<UserCreateDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserCreateDTO userDTO) {
         User user = modelMapper.map(userDTO, User.class);
         User updatedUser = userService.update(id, user);
-        return ResponseEntity.ok(modelMapper.map(updatedUser, UserResponseDTO.class));
+        return ResponseEntity.ok(modelMapper.map(updatedUser, UserCreateDTO.class));
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a user")
-    @ApiResponse(responseCode = "204", description = "User deleted successfully")
-    @ApiResponse(responseCode = "404", description = "User not found")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.delete(id);
         return ResponseEntity.noContent().build();
@@ -83,29 +73,31 @@ public class UserController {
 
     @GetMapping("/{id}/cart")
     @Operation(summary = "Get user's cart")
-    public ResponseEntity<Cart> getUserCart(@PathVariable Long id) {
-        Cart cart = userService.getCartByUserId(id);
-        return ResponseEntity.ok(cart);
+    public ResponseEntity<CartResponseDTO> getUserCart(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getCartByUserId(id));
     }
 
     @GetMapping("/{id}/addresses")
     @Operation(summary = "Get user's addresses")
-    public ResponseEntity<List<Address>> getUserAddresses(@PathVariable Long id) {
-        List<Address> addresses = userService.getAddressesByUserId(id);
-        return ResponseEntity.ok(addresses);
+    public ResponseEntity<List<AddressResponseDTO>> getUserAddresses(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getAddressesByUserId(id));
     }
 
     @GetMapping("/{id}/products")
     @Operation(summary = "Get user's products")
-    public ResponseEntity<List<Product>> getUserProducts(@PathVariable Long id) {
-        List<Product> products = userService.getProductsByUserId(id);
-        return ResponseEntity.ok(products);
+    public ResponseEntity<List<ProductResponseDTO>> getUserProducts(@PathVariable Long id) {
+        try {
+            List<ProductResponseDTO> products = userService.getProductsByUserId(id);
+            return ResponseEntity.ok(products);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
+
 
     @GetMapping("/{id}/exchanges")
     @Operation(summary = "Get user's exchanges (requested + owned)")
-    public ResponseEntity<List<Exchange>> getUserExchanges(@PathVariable Long id) {
-        List<Exchange> exchanges = userService.getExchangesByUserId(id);
-        return ResponseEntity.ok(exchanges);
+    public ResponseEntity<List<ExchangeResponseDTO>> getUserExchanges(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getExchangesByUserId(id));
     }
 }

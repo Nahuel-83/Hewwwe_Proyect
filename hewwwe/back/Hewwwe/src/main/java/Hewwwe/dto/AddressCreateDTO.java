@@ -24,7 +24,4 @@ public class AddressCreateDTO{
 
         @NotBlank(message = "Postal code is required")
         String postalCode;
-
-        @NotNull(message = "User ID is required")
-        Long userId;
 }

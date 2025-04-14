@@ -1,5 +1,9 @@
 package Hewwwe.services;
 
+import Hewwwe.dto.AddressResponseDTO;
+import Hewwwe.dto.CartResponseDTO;
+import Hewwwe.dto.ExchangeResponseDTO;
+import Hewwwe.dto.ProductResponseDTO;
 import Hewwwe.entity.Address;
 import Hewwwe.entity.Cart;
 import Hewwwe.entity.Exchange;
@@ -12,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,37 +49,100 @@ public class UserServiceImpl implements UserService {
             existingUser.setRegistrationDate(user.getRegistrationDate());
             existingUser.setOauthToken(user.getOauthToken());
 
-            // Relaciones
-            existingUser.setCart(user.getCart());
-            existingUser.setAddresses(user.getAddresses());
-            existingUser.setProducts(user.getProducts());
-            existingUser.setRequestedExchanges(user.getRequestedExchanges());
-            existingUser.setOwnedExchanges(user.getOwnedExchanges());
-
             return userRepository.save(existingUser);
         }).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public Cart getCartByUserId(Long userId) {
-        return userRepository.findById(userId).map(User::getCart).orElse(null);
+    public CartResponseDTO getCartByUserId(Long userId) {
+        return userRepository.findById(userId).map(user -> {
+            Cart cart = user.getCart();
+            if (cart == null) return null;
+
+            List<Long> productIds = cart.getProducts().stream()
+                    .map(Product::getProductId)
+                    .collect(Collectors.toList());
+
+            return new CartResponseDTO(
+                    cart.getCartId(),
+                    cart.getCartDate(),
+                    cart.getStatus(),
+                    user.getUserId(),
+                    productIds
+            );
+        }).orElse(null);
     }
 
-    public List<Address> getAddressesByUserId(Long userId) {
-        return userRepository.findById(userId).map(User::getAddresses).orElse(List.of());
+
+    public List<AddressResponseDTO> getAddressesByUserId(Long userId) {
+        return userRepository.findById(userId).map(user ->
+                user.getAddresses().stream().map(address ->
+                        new AddressResponseDTO(
+                                address.getAddressId(),
+                                address.getStreet(),
+                                address.getNumber(),
+                                address.getCity(),
+                                address.getCountry(),
+                                address.getPostalCode(),
+                                user.getUserId()
+                        )
+                ).collect(Collectors.toList())
+        ).orElse(List.of());
     }
 
-    public List<Product> getProductsByUserId(Long userId) {
-        return userRepository.findById(userId).map(User::getProducts).orElse(List.of());
+
+    public List<ProductResponseDTO> getProductsByUserId(Long userId) {
+        return userRepository.findById(userId)
+                .map(user -> user.getProducts().stream().map(product -> {
+                    ProductResponseDTO dto = new ProductResponseDTO();
+                    dto.setProductId(product.getProductId());
+                    dto.setName(product.getName());
+                    dto.setDescription(product.getDescription());
+                    dto.setPrice(product.getPrice());
+                    dto.setImage(product.getImage());
+                    dto.setSize(product.getSize());
+                    dto.setStatus(product.getStatus());
+                    dto.setPublicationDate(product.getPublicationDate());
+
+                    // Cargar IDs de relaciones sin devolver entidades
+                    dto.setUserId(product.getUser().getUserId());
+                    dto.setCategoryId(product.getCategory() != null ? product.getCategory().getCategoryId() : null);
+                    dto.setCartId(product.getCart() != null ? product.getCart().getCartId() : null);
+                    dto.setExchangeId(product.getExchange() != null ? product.getExchange().getExchangeId() : null);
+
+                    return dto;
+                }).collect(Collectors.toList()))
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
     }
 
-    public List<Exchange> getExchangesByUserId(Long userId) {
+
+    public List<ExchangeResponseDTO> getExchangesByUserId(Long userId) {
         return userRepository.findById(userId).map(user -> {
             List<Exchange> allExchanges = new ArrayList<>();
             allExchanges.addAll(user.getRequestedExchanges());
             allExchanges.addAll(user.getOwnedExchanges());
-            return allExchanges;
+
+            return allExchanges.stream().map(exchange -> {
+                ExchangeResponseDTO dto = new ExchangeResponseDTO();
+                dto.setExchangeId(exchange.getExchangeId());
+                dto.setStatus(exchange.getStatus());
+                dto.setExchangeDate(exchange.getExchangeDate());
+                dto.setCompletionDate(exchange.getCompletionDate());
+
+                // IDs de usuarios
+                dto.setRequesterId(exchange.getRequester() != null ? exchange.getRequester().getUserId() : null);
+                dto.setOwnerId(exchange.getOwner() != null ? exchange.getOwner().getUserId() : null);
+
+                // IDs de productos (suponiendo que tienes una lista de productos)
+                List<Long> productIds = exchange.getProducts().stream()
+                        .map(Product::getProductId)
+                        .collect(Collectors.toList());
+                dto.setProductIds(productIds);
+
+                return dto;
+            }).collect(Collectors.toList());
         }).orElse(List.of());
     }
+
 
     @Override
     public void delete(Long id) {

@@ -51,11 +51,11 @@ public class CategoryController {
     @Operation(summary = "Create a new category")
     @ApiResponse(responseCode = "201", description = "Category created successfully")
     @ApiResponse(responseCode = "400", description = "Invalid input")
-    public ResponseEntity<CategoryResponseDTO> createCategory(@Valid @RequestBody CategoryCreateDTO categoryDTO) {
+    public ResponseEntity<CategoryCreateDTO> createCategory(@Valid @RequestBody CategoryCreateDTO categoryDTO) {
         try {
             Category category = modelMapper.map(categoryDTO, Category.class);
             Category savedCategory = categoryService.createCategory(category);
-            return new ResponseEntity<>(modelMapper.map(savedCategory, CategoryResponseDTO.class), HttpStatus.CREATED);
+            return new ResponseEntity<>(modelMapper.map(savedCategory, CategoryCreateDTO.class), HttpStatus.CREATED);
         } catch (Exception e) {
             throw new RuntimeException("Error creating category: " + e.getMessage());
         }
@@ -65,13 +65,13 @@ public class CategoryController {
     @Operation(summary = "Update an existing category")
     @ApiResponse(responseCode = "200", description = "Category updated successfully")
     @ApiResponse(responseCode = "404", description = "Category not found")
-    public ResponseEntity<CategoryResponseDTO> updateCategory(
+    public ResponseEntity<CategoryCreateDTO> updateCategory(
             @PathVariable Long id,
-            @Valid @RequestBody CategoryResponseDTO categoryDTO) {
+            @Valid @RequestBody CategoryCreateDTO categoryDTO) {
         try {
             Category category = modelMapper.map(categoryDTO, Category.class);
             Category updatedCategory = categoryService.updateCategory(id, category);
-            return ResponseEntity.ok(modelMapper.map(updatedCategory, CategoryResponseDTO.class));
+            return ResponseEntity.ok(modelMapper.map(updatedCategory, CategoryCreateDTO.class));
         } catch (Exception e) {
             throw new RuntimeException("Error updating category: " + e.getMessage());
         }
@@ -95,16 +95,5 @@ public class CategoryController {
         return ResponseEntity.ok(products.stream()
                 .map(product -> modelMapper.map(product, ProductResponseDTO.class))
                 .toList());
-    }
-
-    @PostMapping("/{id}/products")
-    @Operation(summary = "Add product to category")
-    @ApiResponse(responseCode = "200", description = "Product added to category successfully")
-    public ResponseEntity<ProductResponseDTO> addProductToCategory(
-            @PathVariable Long id,
-            @Valid @RequestBody ProductCreateDTO productDTO) {
-        Product product = modelMapper.map(productDTO, Product.class);
-        Product savedProduct = categoryService.addProductToCategory(id, product);
-        return ResponseEntity.ok(modelMapper.map(savedProduct, ProductResponseDTO.class));
     }
 }

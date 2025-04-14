@@ -1,5 +1,9 @@
 package Hewwwe.services;
 
+import Hewwwe.dto.AddressResponseDTO;
+import Hewwwe.dto.CartResponseDTO;
+import Hewwwe.dto.ExchangeResponseDTO;
+import Hewwwe.dto.ProductResponseDTO;
 import Hewwwe.entity.Address;
 import Hewwwe.entity.Cart;
 import Hewwwe.entity.Exchange;
@@ -16,9 +20,9 @@ public interface UserService {
     Optional<User> findById(Long id);
     User save(User user);
     User update(Long id, User user);
-    Cart getCartByUserId(Long userId);
-    List<Address> getAddressesByUserId(Long userId);
-    List<Product> getProductsByUserId(Long userId);
-    List<Exchange> getExchangesByUserId(Long userId);
+    CartResponseDTO getCartByUserId(Long userId);
+    List<AddressResponseDTO> getAddressesByUserId(Long userId);
+    List<ProductResponseDTO> getProductsByUserId(Long userId);
+    List<ExchangeResponseDTO> getExchangesByUserId(Long userId);
     void delete(Long id);
 }
