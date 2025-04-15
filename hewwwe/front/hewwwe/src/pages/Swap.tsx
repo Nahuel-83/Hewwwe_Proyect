@@ -3,7 +3,6 @@ import { useAuth } from '../context/AuthContext';
 import { Product } from '../types/Product';
 import ProductCard from '../components/ProductCard';
 import { productService } from '../services/product.service';
-import '../styles/swap.css';
 
 const Swap: React.FC = () => {
   const { user } = useAuth();

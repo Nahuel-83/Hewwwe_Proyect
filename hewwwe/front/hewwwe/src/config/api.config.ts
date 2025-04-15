@@ -20,7 +20,4 @@ export const API_ENDPOINTS = {
   EXCHANGES: '/api/exchanges',
   EXCHANGE_BY_ID: (id: number) => `/api/exchanges/${id}`,
   
-  // Auth
-  LOGIN: '/api/auth/login',
-  REGISTER: '/api/auth/register',
 };

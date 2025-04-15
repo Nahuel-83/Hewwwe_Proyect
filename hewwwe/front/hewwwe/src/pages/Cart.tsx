@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Product } from '../types/Product';
-import '../styles/cart.css';
 
 const Cart: React.FC = () => {
   const navigate = useNavigate();
