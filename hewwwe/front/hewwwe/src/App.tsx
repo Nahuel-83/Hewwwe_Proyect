@@ -1,64 +1,48 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import '@fontsource/domine/700.css';
-import '@fontsource/nunito/400.css';
-import '@fontsource/nunito/600.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Box, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import Navigation from './components/Navigation';
+import ProductsPage from './pages/products/ProductsPage';
+import ProductDetailPage from './pages/products/ProductDetailPage';
+import ProductForm from './pages/products/ProductForm';
+import CategoriesPage from './pages/categories/CategoriesPage';
+import UsersPage from './pages/users/UsersPage';
+import CartPage from './pages/cart/CartPage';
+import ExchangesPage from './pages/exchanges/ExchangesPage';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-// Pages
-import Home from './pages/Home';
-import Product from './pages/Product';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Profile from './pages/Profile';
-import SellItem from './pages/SellItem';
-import Cart from './pages/Cart';
-import Swap from './pages/Swap';
+const theme = createTheme({
+  palette: {
+    mode: 'light',
+  },
+});
 
-// Components
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import ProtectedRoute from './components/ProtectedRoute';
-
-// Context
-import { AuthProvider } from './context/AuthContext';
-
-const App: React.FC = () => {
+function App() {
   return (
-    <AuthProvider>
-      <div className="min-h-screen flex flex-col bg-gray-50 font-nunito">
-        <Navbar />
-        <main className="container mx-auto px-4 py-8 flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/product/:id" element={<Product />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/profile" element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            } />
-            <Route path="/upload" element={
-              <ProtectedRoute>
-                <SellItem />
-              </ProtectedRoute>
-            } />
-            <Route path="/cart" element={
-              <ProtectedRoute>
-                <Cart />
-              </ProtectedRoute>
-            } />
-            <Route path="/swap" element={
-              <ProtectedRoute>
-                <Swap />
-              </ProtectedRoute>
-            } />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </AuthProvider>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <BrowserRouter>
+        <Box sx={{ display: 'flex' }}>
+          <Navigation />
+          <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+            <Routes>
+              <Route path="/" element={<ProductsPage />} />
+              <Route path="/products" element={<ProductsPage />} />
+              <Route path="/products/new" element={<ProductForm />} />
+              <Route path="/products/:id" element={<ProductDetailPage />} />
+              <Route path="/products/:id/edit" element={<ProductForm />} />
+              <Route path="/categories" element={<CategoriesPage />} />
+              <Route path="/users" element={<UsersPage />} />
+              <Route path="/users/:id/cart" element={<CartPage />} />
+              <Route path="/exchanges" element={<ExchangesPage />} />
+            </Routes>
+          </Box>
+        </Box>
+      </BrowserRouter>
+      <ToastContainer position="bottom-right" />
+    </ThemeProvider>
   );
-};
+}
 
 export default App;
