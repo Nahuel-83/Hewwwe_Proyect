@@ -1,0 +1,10 @@
+:root {
+  --color-primary: #003049;
+  --color-primary-light: #669bbc;
+  --color-primary-dark: #780000;
+  --color-secondary: #c1121f;
+  --color-background: #fdf0d5;
+  
+  --font-primary: 'Nunito', Arial, sans-serif;
+  --font-headers: 'Domine', serif;
+}

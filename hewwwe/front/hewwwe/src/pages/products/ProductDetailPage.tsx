@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getProductById } from '../../api/products';
-import { Product } from '../../types/index'; // Asegúrate de ajustar el path
+import { Product } from '../../types/index';
 
 const ProductDetailPage = () => {
   const { id } = useParams<{ id: string }>();

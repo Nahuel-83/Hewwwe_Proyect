@@ -11,14 +11,45 @@ import CartPage from './pages/cart/CartPage';
 import ExchangesPage from './pages/exchanges/ExchangesPage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './styles/global.css';
+import { ThemeProvider as CustomThemeProvider, useTheme } from './contexts/ThemeContext';
+import { ThemeToggle } from './components/ThemeToggle';
 
-const theme = createTheme({
-  palette: {
-    mode: 'light',
-  },
-});
+const AppContent = () => {
+  const { mode } = useTheme();
 
-function App() {
+  const theme = createTheme({
+    palette: {
+      mode,
+      primary: {
+        main: '#003049',
+        light: '#669bbc',
+        dark: '#780000',
+      },
+      secondary: {
+        main: '#c1121f',
+        light: '#fdf0d5',
+      },
+      background: {
+        default: mode === 'light' ? '#fdf0d5' : '#003049',
+        paper: mode === 'light' ? '#fff' : '#780000',
+      },
+      text: {
+        primary: mode === 'light' ? '#003049' : '#fdf0d5',
+        secondary: mode === 'light' ? '#669bbc' : '#c1121f',
+      },
+    },
+    typography: {
+      fontFamily: 'Nunito, Arial, sans-serif',
+      h1: { fontFamily: 'Domine, serif' },
+      h2: { fontFamily: 'Domine, serif' },
+      h3: { fontFamily: 'Domine, serif' },
+      h4: { fontFamily: 'Domine, serif' },
+      h5: { fontFamily: 'Domine, serif' },
+      h6: { fontFamily: 'Domine, serif' },
+    },
+  });
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -26,6 +57,7 @@ function App() {
         <Box sx={{ display: 'flex' }}>
           <Navigation />
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+            <ThemeToggle />
             <Routes>
               <Route path="/" element={<ProductsPage />} />
               <Route path="/products" element={<ProductsPage />} />
@@ -42,6 +74,14 @@ function App() {
       </BrowserRouter>
       <ToastContainer position="bottom-right" />
     </ThemeProvider>
+  );
+};
+
+function App() {
+  return (
+    <CustomThemeProvider>
+      <AppContent />
+    </CustomThemeProvider>
   );
 }
 
