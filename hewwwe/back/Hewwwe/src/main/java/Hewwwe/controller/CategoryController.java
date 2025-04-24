@@ -18,6 +18,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controlador REST que maneja las operaciones relacionadas con las categorías.
+ * Gestiona la creación, actualización y consulta de categorías de productos.
+ */
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
@@ -27,6 +31,11 @@ public class CategoryController {
     private final CategoryService categoryService;
     private final ModelMapper modelMapper;
 
+    /**
+     * Obtiene todas las categorías registradas en el sistema.
+     *
+     * @return ResponseEntity con la lista de categorías
+     */
     @GetMapping
     @Operation(summary = "Get all categories")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved categories")
@@ -37,6 +46,12 @@ public class CategoryController {
         return ResponseEntity.ok(categories);
     }
 
+    /**
+     * Obtiene una categoría por su ID.
+     *
+     * @param id ID de la categoría
+     * @return ResponseEntity con la categoría encontrada
+     */
     @GetMapping("/{id}")
     @Operation(summary = "Get a category by ID")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved category")
@@ -46,6 +61,12 @@ public class CategoryController {
         return ResponseEntity.ok(modelMapper.map(category, CategoryResponseDTO.class));
     }
 
+    /**
+     * Crea una nueva categoría.
+     *
+     * @param categoryDTO DTO con los datos de la categoría a crear
+     * @return ResponseEntity con la categoría creada
+     */
     @PostMapping
     @Operation(summary = "Create a new category")
     @ApiResponse(responseCode = "201", description = "Category created successfully")
@@ -60,6 +81,13 @@ public class CategoryController {
         }
     }
 
+    /**
+     * Actualiza una categoría existente.
+     *
+     * @param id ID de la categoría a actualizar
+     * @param categoryDTO DTO con los datos actualizados de la categoría
+     * @return ResponseEntity con la categoría actualizada
+     */
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing category")
     @ApiResponse(responseCode = "200", description = "Category updated successfully")
@@ -76,6 +104,12 @@ public class CategoryController {
         }
     }
 
+    /**
+     * Elimina una categoría.
+     *
+     * @param id ID de la categoría a eliminar
+     * @return ResponseEntity sin contenido
+     */
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a category")
     @ApiResponse(responseCode = "204", description = "Category deleted successfully")
@@ -85,6 +119,12 @@ public class CategoryController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Obtiene todos los productos de una categoría.
+     *
+     * @param id ID de la categoría
+     * @return ResponseEntity con la lista de productos de la categoría
+     */
     @GetMapping("/{id}/products")
     @Operation(summary = "Get all products in a category")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved category products")

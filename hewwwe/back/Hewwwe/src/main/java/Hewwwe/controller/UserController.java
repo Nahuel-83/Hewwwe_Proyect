@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Controlador REST que maneja las operaciones relacionadas con los usuarios.
+ * Proporciona endpoints para la gestión de usuarios, incluyendo CRUD y operaciones relacionadas.
+ */
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -30,6 +34,11 @@ public class UserController {
     private final UserService userService;
     private final ModelMapper modelMapper;
 
+    /**
+     * Obtiene todos los usuarios registrados en el sistema.
+     *
+     * @return ResponseEntity con la lista de usuarios
+     */
     @GetMapping
     @Operation(summary = "Get all users")
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
@@ -39,6 +48,12 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    /**
+     * Obtiene un usuario por su ID.
+     *
+     * @param id ID del usuario
+     * @return ResponseEntity con los detalles del usuario
+     */
     @GetMapping("/{id}")
     @Operation(summary = "Get user by ID")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
@@ -48,6 +63,12 @@ public class UserController {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
+    /**
+     * Crea un nuevo usuario.
+     *
+     * @param userDTO Datos del usuario a crear
+     * @return ResponseEntity con los detalles del usuario creado
+     */
     @PostMapping
     @Operation(summary = "Create a new user")
     public ResponseEntity<UserCreateDTO> createUser(@Valid @RequestBody UserCreateDTO userDTO) {
@@ -56,6 +77,13 @@ public class UserController {
         return new ResponseEntity<>(modelMapper.map(savedUser, UserCreateDTO.class), HttpStatus.CREATED);
     }
 
+    /**
+     * Actualiza un usuario existente.
+     *
+     * @param id ID del usuario a actualizar
+     * @param userDTO Datos actualizados del usuario
+     * @return ResponseEntity con los detalles del usuario actualizado
+     */
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing user")
     public ResponseEntity<UserCreateDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserCreateDTO userDTO) {
@@ -64,6 +92,12 @@ public class UserController {
         return ResponseEntity.ok(modelMapper.map(updatedUser, UserCreateDTO.class));
     }
 
+    /**
+     * Elimina un usuario por su ID.
+     *
+     * @param id ID del usuario a eliminar
+     * @return ResponseEntity sin contenido
+     */
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a user")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
@@ -71,18 +105,36 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Obtiene el carrito de compras de un usuario.
+     *
+     * @param id ID del usuario
+     * @return ResponseEntity con los detalles del carrito
+     */
     @GetMapping("/{id}/cart")
     @Operation(summary = "Get user's cart")
     public ResponseEntity<CartResponseDTO> getUserCart(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getCartByUserId(id));
     }
 
+    /**
+     * Obtiene las direcciones de un usuario.
+     *
+     * @param id ID del usuario
+     * @return ResponseEntity con la lista de direcciones
+     */
     @GetMapping("/{id}/addresses")
     @Operation(summary = "Get user's addresses")
     public ResponseEntity<List<AddressResponseDTO>> getUserAddresses(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getAddressesByUserId(id));
     }
 
+    /**
+     * Obtiene los productos de un usuario.
+     *
+     * @param id ID del usuario
+     * @return ResponseEntity con la lista de productos
+     */
     @GetMapping("/{id}/products")
     @Operation(summary = "Get user's products")
     public ResponseEntity<List<ProductResponseDTO>> getUserProducts(@PathVariable Long id) {
@@ -94,7 +146,12 @@ public class UserController {
         }
     }
 
-
+    /**
+     * Obtiene los intercambios de un usuario (solicitados y propios).
+     *
+     * @param id ID del usuario
+     * @return ResponseEntity con la lista de intercambios
+     */
     @GetMapping("/{id}/exchanges")
     @Operation(summary = "Get user's exchanges (requested + owned)")
     public ResponseEntity<List<ExchangeResponseDTO>> getUserExchanges(@PathVariable Long id) {

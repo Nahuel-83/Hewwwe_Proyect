@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controlador REST que maneja las operaciones relacionadas con las direcciones.
+ * Gestiona la creación, actualización y eliminación de direcciones de usuarios.
+ */
 @RestController
 @RequestMapping("/api/addresses")
 @RequiredArgsConstructor
@@ -25,6 +29,11 @@ public class AddressController {
     private final AddressService addressService;
     private final ModelMapper modelMapper;
 
+    /**
+     * Obtiene todas las direcciones registradas en el sistema.
+     *
+     * @return ResponseEntity con la lista de direcciones
+     */
     @GetMapping
     @Operation(summary = "Get all addresses")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved addresses")
@@ -36,6 +45,12 @@ public class AddressController {
         return ResponseEntity.ok(addressDTOs);
     }
 
+    /**
+     * Obtiene una dirección específica por su ID.
+     *
+     * @param id ID de la dirección
+     * @return ResponseEntity con la dirección encontrada o un estado 404 si no se encuentra
+     */
     @GetMapping("/{id}")
     @Operation(summary = "Get an address by ID")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved address")
@@ -49,6 +64,13 @@ public class AddressController {
         return ResponseEntity.ok(addressDTO);
     }
 
+    /**
+     * Crea una nueva dirección para un usuario específico.
+     *
+     * @param userId ID del usuario
+     * @param addressDTO DTO con los datos de la dirección a crear
+     * @return ResponseEntity con la dirección creada
+     */
     @PostMapping("/user/{userId}")
     @Operation(summary = "Create a new address for a user")
     @ApiResponse(responseCode = "201", description = "Address created successfully")
@@ -63,6 +85,13 @@ public class AddressController {
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
+    /**
+     * Actualiza una dirección existente.
+     *
+     * @param id ID de la dirección a actualizar
+     * @param addressDTO DTO con los nuevos datos de la dirección
+     * @return ResponseEntity con la dirección actualizada o un estado 404 si no se encuentra
+     */
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing address")
     @ApiResponse(responseCode = "200", description = "Address updated successfully")
@@ -84,6 +113,12 @@ public class AddressController {
         return ResponseEntity.ok(responseDTO);
     }
 
+    /**
+     * Elimina una dirección específica.
+     *
+     * @param id ID de la dirección a eliminar
+     * @return ResponseEntity con un estado 204 si se elimina correctamente o un estado 404 si no se encuentra
+     */
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete an address")
     @ApiResponse(responseCode = "204", description = "Address deleted successfully")
@@ -97,7 +132,5 @@ public class AddressController {
         addressService.deleteAddress(id);
         return ResponseEntity.noContent().build();
     }
-
-
 
 }

@@ -22,6 +22,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Controlador REST que maneja las operaciones relacionadas con los productos.
+ * Gestiona la creación, actualización, eliminación y consulta de productos.
+ */
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
@@ -31,6 +35,11 @@ public class ProductController {
     private final ProductService productService;
     private final ModelMapper modelMapper;
 
+    /**
+     * Obtiene todos los productos disponibles en el sistema.
+     *
+     * @return ResponseEntity con la lista de productos
+     */
     @GetMapping
     @Operation(summary = "Get all products")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved products")
@@ -41,6 +50,12 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    /**
+     * Obtiene un producto por su ID.
+     *
+     * @param id ID del producto
+     * @return ResponseEntity con el producto encontrado
+     */
     @GetMapping("/{id}")
     @Operation(summary = "Get a product by ID")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved product")
@@ -52,6 +67,12 @@ public class ProductController {
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
     }
 
+    /**
+     * Crea un nuevo producto.
+     *
+     * @param productDTO DTO con los datos del producto a crear
+     * @return ResponseEntity con el producto creado
+     */
     @PostMapping
     @Operation(summary = "Create a new product")
     @ApiResponse(responseCode = "201", description = "Product created successfully")
@@ -69,6 +90,13 @@ public class ProductController {
         }
     }
 
+    /**
+     * Actualiza un producto existente.
+     *
+     * @param id ID del producto a actualizar
+     * @param productDTO DTO con los datos actualizados del producto
+     * @return ResponseEntity con el producto actualizado
+     */
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing product")
     @ApiResponse(responseCode = "200", description = "Product updated successfully")
@@ -91,6 +119,12 @@ public class ProductController {
         }
     }
 
+    /**
+     * Elimina un producto por su ID.
+     *
+     * @param id ID del producto a eliminar
+     * @return ResponseEntity sin contenido
+     */
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a product")
     @ApiResponse(responseCode = "204", description = "Product deleted successfully")
@@ -100,6 +134,12 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Obtiene productos por categoría.
+     *
+     * @param categoryId ID de la categoría
+     * @return ResponseEntity con la lista de productos
+     */
     @GetMapping("/category/{categoryId}")
     @Operation(summary = "Get products by category")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved products")
@@ -111,6 +151,12 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    /**
+     * Obtiene productos por usuario.
+     *
+     * @param userId ID del usuario
+     * @return ResponseEntity con la lista de productos
+     */
     @GetMapping("/user/{userId}")
     @Operation(summary = "Get products by user")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved products")
@@ -122,6 +168,12 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    /**
+     * Obtiene productos por estado.
+     *
+     * @param status Estado del producto
+     * @return ResponseEntity con la lista de productos
+     */
     @GetMapping("/status/{status}")
     @Operation(summary = "Get products by status")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved products")
@@ -132,6 +184,12 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    /**
+     * Busca productos por palabra clave.
+     *
+     * @param keyword Palabra clave para la búsqueda
+     * @return ResponseEntity con la lista de productos
+     */
     @GetMapping("/search")
     @Operation(summary = "Search products by keyword")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved products")
