@@ -27,5 +27,5 @@ public class UserCreateDTO {
         @NotNull(message = "Registration date is required")
         private Date registrationDate;
 
-        private String oauthToken;
+        private String password;
 }

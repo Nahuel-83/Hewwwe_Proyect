@@ -1,12 +1,14 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Box, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import Navigation from './components/Navigation';
 import ProductsPage from './pages/products/ProductsPage';
 import ProductDetailPage from './pages/products/ProductDetailPage';
 import ProductForm from './pages/products/ProductForm';
 import CategoriesPage from './pages/categories/CategoriesPage';
+import CategoryForm from './pages/categories/CategoryForm';
 import UsersPage from './pages/users/UsersPage';
+import UserForm from './pages/users/UserForm';
 import CartPage from './pages/cart/CartPage';
 import ExchangesPage from './pages/exchanges/ExchangesPage';
 import { ToastContainer } from 'react-toastify';
@@ -24,7 +26,7 @@ const AppContent = () => {
       primary: {
         main: '#003049',
         light: '#669bbc',
-        dark: '#780000',
+        dark: '#000000',
       },
       secondary: {
         main: '#c1121f',
@@ -32,7 +34,7 @@ const AppContent = () => {
       },
       background: {
         default: mode === 'light' ? '#fdf0d5' : '#003049',
-        paper: mode === 'light' ? '#fff' : '#780000',
+        paper: mode === 'light' ? '#fff' : '#000000',
       },
       text: {
         primary: mode === 'light' ? '#003049' : '#fdf0d5',
@@ -53,25 +55,39 @@ const AppContent = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <BrowserRouter>
+      <Router>
         <Box sx={{ display: 'flex' }}>
           <Navigation />
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
             <ThemeToggle />
             <Routes>
+              {/* Product routes */}
               <Route path="/" element={<ProductsPage />} />
               <Route path="/products" element={<ProductsPage />} />
               <Route path="/products/new" element={<ProductForm />} />
               <Route path="/products/:id" element={<ProductDetailPage />} />
               <Route path="/products/:id/edit" element={<ProductForm />} />
+              
+              {/* Category routes */}
               <Route path="/categories" element={<CategoriesPage />} />
+              <Route path="/categories/new" element={<CategoryForm />} />
+              <Route path="/categories/:id/edit" element={<CategoryForm />} />
+              
+              {/* User routes */}
               <Route path="/users" element={<UsersPage />} />
+              <Route path="/users/new" element={<UserForm />} />
+              <Route path="/users/:id/edit" element={<UserForm />} />
               <Route path="/users/:id/cart" element={<CartPage />} />
+              
+              {/* Cart route */}
+              <Route path="/cart" element={<CartPage />} />
+              
+              {/* Exchanges route */}
               <Route path="/exchanges" element={<ExchangesPage />} />
             </Routes>
           </Box>
         </Box>
-      </BrowserRouter>
+      </Router>
       <ToastContainer position="bottom-right" />
     </ThemeProvider>
   );

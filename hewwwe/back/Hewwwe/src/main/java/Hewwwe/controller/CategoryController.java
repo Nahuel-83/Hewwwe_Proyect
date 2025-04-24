@@ -2,7 +2,6 @@ package Hewwwe.controller;
 
 import Hewwwe.dto.CategoryCreateDTO;
 import Hewwwe.dto.CategoryResponseDTO;
-import Hewwwe.dto.ProductCreateDTO;
 import Hewwwe.dto.ProductResponseDTO;
 import Hewwwe.entity.Category;
 import Hewwwe.entity.Product;

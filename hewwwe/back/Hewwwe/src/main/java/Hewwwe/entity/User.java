@@ -1,7 +1,6 @@
 package Hewwwe.entity;
 
 import Hewwwe.entity.enums.Rol;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.EnumType;

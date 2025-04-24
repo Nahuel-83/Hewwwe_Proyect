@@ -3,7 +3,6 @@ package Hewwwe.services;
 import Hewwwe.entity.Category;
 import Hewwwe.entity.Product;
 import Hewwwe.repository.CategoryRepository;
-import Hewwwe.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +12,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService{
     private final CategoryRepository categoryRepository;
-    private final ProductRepository productRepository;
     @Override
     public Category createCategory(Category category) {
         return categoryRepository.save(category);

@@ -8,7 +8,14 @@ export interface Product {
   status: 'AVAILABLE' | 'SOLD' | 'RESERVED';
   publicationDate: string;
   userId: number;
+  user?: {
+    name: string;
+    email: string;
+  };
   categoryId: number;
+  category?: {
+    name: string;
+  };
   cartId?: number;
   exchangeId?: number;
 }
@@ -21,10 +28,33 @@ export interface Category {
 
 export interface User {
   userId: number;
-  username: string;
+  name: string;
   email: string;
-  password: string;
+  phone: string;
   role: 'USER' | 'ADMIN';
+  registrationDate: string;
+  password?: string;
+  cart?: Cart;
+  addresses?: Address[];
+  products?: Product[];
+}
+
+export interface Cart {
+  cartId: number;
+  cartDate: string;
+  status: 'ACTIVE' | 'PENDING' | 'COMPLETED';
+  userId: number;
+  products: Product[];
+}
+
+export interface Address {
+  addressId: number;
+  street: string;
+  number: string;
+  city: string;
+  country: string;
+  postalCode: string;
+  userId: number;
 }
 
 export interface Exchange {

@@ -8,6 +8,7 @@ import {
   Typography,
   IconButton,
   Chip,
+  CircularProgress,
 } from '@mui/material';
 import { Delete as DeleteIcon, Edit as EditIcon, ShoppingCart as CartIcon } from '@mui/icons-material';
 import { getAllUsers, deleteUser } from '../../api/users';
@@ -16,6 +17,7 @@ import { toast } from 'react-toastify';
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,10 +26,13 @@ export default function UsersPage() {
 
   const loadUsers = async () => {
     try {
+      setLoading(true);
       const response = await getAllUsers();
       setUsers(response.data);
     } catch (error) {
-      toast.error('Error al cargar usuarios');
+      // Error handling is now done in axios interceptor
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -41,8 +46,16 @@ export default function UsersPage() {
     }
   };
 
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
-    <Box>
+    <Box sx={{ p: 3 }}>
       <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="h4">Usuarios</Typography>
         <Button variant="contained" onClick={() => navigate('/users/new')}>
@@ -50,35 +63,26 @@ export default function UsersPage() {
         </Button>
       </Box>
 
-      <Box sx={{ 
-        display: 'flex', 
-        flexWrap: 'wrap', 
-        gap: 3,
-        '& > *': { 
-          flexBasis: '300px',
-          flexGrow: 1,
-          maxWidth: 'calc(33.333% - 16px)',
-        }
-      }}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
         {users.map((user) => (
-          <Card key={user.userId}>
+          <Card key={user.userId} sx={{ width: 300 }}>
             <CardContent>
-              <Typography variant="h6" gutterBottom>{user.username}</Typography>
+              <Typography variant="h6">{user.name}</Typography>
               <Typography color="textSecondary">{user.email}</Typography>
               <Chip 
-                label={user.role} 
+                label={user.role}
                 color={user.role === 'ADMIN' ? 'secondary' : 'primary'}
                 size="small"
                 sx={{ mt: 1 }}
               />
               <Box sx={{ mt: 2, display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
-                <IconButton size="small" onClick={() => navigate(`/users/${user.userId}/cart`)}>
+                <IconButton onClick={() => navigate(`/users/${user.userId}/cart`)}>
                   <CartIcon />
                 </IconButton>
-                <IconButton size="small" onClick={() => navigate(`/users/${user.userId}/edit`)}>
+                <IconButton onClick={() => navigate(`/users/${user.userId}/edit`)}>
                   <EditIcon />
                 </IconButton>
-                <IconButton size="small" color="error" onClick={() => handleDelete(user.userId)}>
+                <IconButton color="error" onClick={() => handleDelete(user.userId)}>
                   <DeleteIcon />
                 </IconButton>
               </Box>

@@ -41,7 +41,7 @@ export default function CategoriesPage() {
   };
 
   return (
-    <Box>
+    <Box sx={{ p: 3 }}>
       <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="h4">Categorías</Typography>
         <Button variant="contained" onClick={() => navigate('/categories/new')}>
@@ -49,28 +49,46 @@ export default function CategoriesPage() {
         </Button>
       </Box>
 
-      <Box sx={{ 
-        display: 'flex', 
-        flexWrap: 'wrap', 
-        gap: 3,
-        '& > *': { 
-          flexBasis: '300px',
-          flexGrow: 1,
-          maxWidth: 'calc(33.333% - 16px)',
-        }
-      }}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
         {categories.map((category) => (
-          <Card key={category.categoryId}>
+          <Card key={category.categoryId} sx={{ width: 300 }}>
             <CardContent>
-              <Typography variant="h6" gutterBottom>{category.name}</Typography>
-              <Typography color="textSecondary">{category.description}</Typography>
-              <Box sx={{ mt: 2, display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
-                <IconButton size="small" onClick={() => navigate(`/categories/${category.categoryId}/edit`)}>
-                  <EditIcon />
-                </IconButton>
-                <IconButton size="small" color="error" onClick={() => handleDelete(category.categoryId)}>
-                  <DeleteIcon />
-                </IconButton>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Box>
+                  <Typography variant="h6" sx={{ mb: 1 }}>{category.name}</Typography>
+                  <Box sx={{ 
+                    p: 1, 
+                    bgcolor: 'background.default', 
+                    borderRadius: 1,
+                    minHeight: '60px'
+                  }}>
+                    <Typography color="textSecondary">{category.description}</Typography>
+                  </Box>
+                </Box>
+                <Box sx={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  pt: 1,
+                  borderTop: 1,
+                  borderColor: 'divider'
+                }}>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <IconButton 
+                      size="small"
+                      onClick={() => navigate(`/categories/${category.categoryId}/edit`)}
+                    >
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton 
+                      size="small"
+                      color="error" 
+                      onClick={() => handleDelete(category.categoryId)}
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                </Box>
               </Box>
             </CardContent>
           </Card>

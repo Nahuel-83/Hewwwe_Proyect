@@ -4,10 +4,6 @@ import Hewwwe.dto.AddressResponseDTO;
 import Hewwwe.dto.CartResponseDTO;
 import Hewwwe.dto.ExchangeResponseDTO;
 import Hewwwe.dto.ProductResponseDTO;
-import Hewwwe.entity.Address;
-import Hewwwe.entity.Cart;
-import Hewwwe.entity.Exchange;
-import Hewwwe.entity.Product;
 import Hewwwe.entity.User;
 import org.springframework.stereotype.Service;
 
