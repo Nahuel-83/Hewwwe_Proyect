@@ -7,15 +7,18 @@ import {
   CardContent,
   Typography,
   Chip,
-  IconButton
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
 } from '@mui/material';
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { getAllExchanges, deleteExchange } from '../../api/exchanges';
-import type { Exchange } from '../../types';
+import type { ExchangeResponseDTO } from '../../types/dtos';
 import { toast } from 'react-toastify';
 
 export default function ExchangesPage() {
-  const [exchanges, setExchanges] = useState<Exchange[]>([]);
+  const [exchanges, setExchanges] = useState<ExchangeResponseDTO[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,80 +29,100 @@ export default function ExchangesPage() {
     try {
       const response = await getAllExchanges();
       setExchanges(response.data);
-    } catch (error) {
-      toast.error('Error al cargar intercambios');
+    } catch (error: any) {
+      console.error('Error loading exchanges:', error);
+      toast.error(error.response?.data?.message || 'Error al cargar intercambios');
     }
   };
 
   const handleDelete = async (id: number) => {
+    if (!window.confirm('¿Estás seguro de eliminar este intercambio?')) return;
+    
     try {
       await deleteExchange(id);
-      setExchanges(prev => prev.filter(e => e.exchangeId !== id));
-      toast.success('Intercambio eliminado');
-    } catch (error) {
-      toast.error('Error al eliminar el intercambio');
+      toast.success('Intercambio eliminado correctamente');
+      loadExchanges();
+    } catch (error: any) {
+      console.error('Error deleting exchange:', error);
+      toast.error(error.response?.data?.message || 'Error al eliminar el intercambio');
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status.toUpperCase()) {
+      case 'PENDING': return 'warning';
+      case 'ACCEPTED': return 'success';
+      case 'REJECTED': return 'error';
+      default: return 'default';
     }
   };
 
   return (
-    <Box>
-      <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Box sx={{ p: 3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
         <Typography variant="h4">Intercambios</Typography>
         <Button 
           variant="contained" 
-          color="primary"
           onClick={() => navigate('/exchanges/new')}
         >
           Nuevo Intercambio
         </Button>
       </Box>
 
-      <Box sx={{ 
-        display: 'flex', 
-        flexWrap: 'wrap', 
-        gap: 3,
-        '& > *': { 
-          flexBasis: '300px',
-          flexGrow: 1,
-          maxWidth: 'calc(33.333% - 16px)',
-          '@media (max-width: 900px)': {
-            maxWidth: 'calc(50% - 16px)',
-          },
-          '@media (max-width: 600px)': {
-            maxWidth: '100%',
-          },
-        }
-      }}>
-        {exchanges.map((exchange) => (
+      <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
+        {exchanges.map(exchange => (
           <Card key={exchange.exchangeId}>
             <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Intercambio #{exchange.exchangeId}
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Typography variant="h6">
+                  Intercambio #{exchange.exchangeId}
+                </Typography>
+                <Chip 
+                  label={exchange.status}
+                  color={getStatusColor(exchange.status) as any}
+                  size="small"
+                />
+              </Box>
+              
+              <Typography color="textSecondary">
+                Fecha: {new Date(exchange.requestDate).toLocaleDateString()}
               </Typography>
-              <Chip 
-                label={exchange.status} 
-                color={exchange.status === 'COMPLETED' ? 'success' : 'primary'} 
-                sx={{ mb: 2 }}
-              />
-              <Typography variant="body2" color="text.secondary">
-                Fecha: {new Date(exchange.exchangeDate).toLocaleDateString()}
+              <Typography>
+                Propietario: {exchange.owner?.name || 'No disponible'}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Productos: {exchange.products.length}
+              <Typography>
+                Solicitante: {exchange.requester?.name || 'No disponible'}
               </Typography>
+              
+              {exchange.products && exchange.products.length > 0 && (
+                <Box sx={{ mt: 2 }}>
+                  <Typography variant="subtitle2">Productos:</Typography>
+                  <List dense>
+                    {exchange.products.map(product => (
+                      <ListItem key={product.productId}>
+                        <ListItemText 
+                          primary={product.name}
+                          secondary={`${product.price}€`}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                </Box>
+              )}
+              
               <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
                 <IconButton 
-                  size="small" 
+                  size="small"
                   onClick={() => navigate(`/exchanges/${exchange.exchangeId}/edit`)}
                 >
-                  <EditIcon />
+                  <EditIcon fontSize="small" />
                 </IconButton>
                 <IconButton 
-                  size="small" 
+                  size="small"
                   color="error"
                   onClick={() => handleDelete(exchange.exchangeId)}
                 >
-                  <DeleteIcon />
+                  <DeleteIcon fontSize="small" />
                 </IconButton>
               </Box>
             </CardContent>

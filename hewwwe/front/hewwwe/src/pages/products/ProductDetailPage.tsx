@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link as RouterLink } from 'react-router-dom';
 import { 
   Box, 
   Typography, 
   Card, 
   CardMedia, 
-  CardContent,
+  Divider,
   Chip,
-  Divider 
+  Link
 } from '@mui/material';
 import { getProductById } from '../../api/products';
 import { Product } from '../../types';
@@ -26,121 +26,161 @@ const ProductDetailPage = () => {
 
   return (
     <Box sx={{ 
+      minHeight: 'calc(100vh - 64px)',
       display: 'flex',
-      minHeight: '100vh',
-      width: '100%',
-      alignItems: 'flex-start',
-      bgcolor: 'background.default',
-      py: { xs: 1, sm: 2 },
-      px: 0
+      flexDirection: 'column',
+      p: { xs: 2, sm: 4 },
+      maxWidth: 1200,
+      mx: 'auto',
+      width: '100%'
     }}>
-      <Box sx={{ 
-        width: '100%',
-        maxWidth: 'none'
+      <Card elevation={2} sx={{ 
+        p: 4,
+        borderRadius: 2,
       }}>
-        <Card sx={{ 
-          width: '100%', 
-          boxShadow: 'none',
-          bgcolor: 'background.paper',
-          borderRadius: 0,
-          overflow: 'hidden'
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: { xs: 'column', md: 'row' },
+          gap: 4,
         }}>
+          {/* Imagen */}
           <Box sx={{ 
-            display: 'flex', 
-            flexDirection: { xs: 'column', md: 'row' },
-            minHeight: { md: '700px' }
+            width: { xs: '100%', md: '50%' },
           }}>
-            {product.image && (
-              <Box sx={{ 
-                flex: '0 0 auto',
-                width: { xs: '100%', md: '55%' },
-                position: 'relative',
-                bgcolor: 'grey.50'
-              }}>
-                <CardMedia
-                  component="img"
-                  sx={{ 
-                    width: '100%',
-                    height: { xs: '400px', md: '100%' },
-                    objectFit: 'contain',
-                    p: 2
-                  }}
-                  image={product.image}
-                  alt={product.name}
+            <CardMedia
+              component="img"
+              sx={{ 
+                width: '100%',
+                height: '500px',
+                objectFit: 'contain',
+                borderRadius: 2,
+                transition: 'transform 0.3s ease-in-out',
+                '&:hover': {
+                  transform: 'scale(1.05)'
+                }
+              }}
+              image={product.image || 'placeholder.jpg'}
+              alt={product.name}
+            />
+          </Box>
+
+          {/* Detalles */}
+          <Box sx={{ 
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 3
+          }}>
+            <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+              {product.name}
+            </Typography>
+
+            <Typography variant="h5" color="secondary.main" sx={{ fontWeight: 'bold' }}>
+              {product.price.toLocaleString('es-ES', { 
+                style: 'currency', 
+                currency: 'EUR'
+              })}
+            </Typography>
+
+            <Divider />
+
+            <Typography variant="body1" color="text.secondary" sx={{ 
+              lineHeight: 1.8,
+              whiteSpace: 'pre-line'
+            }}>
+              {product.description}
+            </Typography>
+
+            <Box sx={{ 
+              display: 'grid', 
+              gap: 2,
+              gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }
+            }}>
+              {/* Detalles existentes (vendedor, estado, tamaño) */}
+              <Box className="detail-item">
+                <Typography variant="subtitle2" color="text.secondary" sx={{ minWidth: '80px' }}>
+                  Vendedor:
+                </Typography>
+                {product.user && (
+                  <Link 
+                    component={RouterLink} 
+                    to={`/users/${product.user.userId}`}
+                    sx={{ 
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis'
+                    }}
+                  >
+                    {product.user.name}
+                  </Link>
+                )}
+              </Box>
+
+              <Box className="detail-item">
+                <Typography variant="subtitle2" color="text.secondary" sx={{ minWidth: '80px' }}>
+                  Estado:
+                </Typography>
+                <Chip 
+                  label={product.status} 
+                  color={
+                    product.status === 'AVAILABLE' ? 'success' :
+                    product.status === 'SOLD' ? 'error' : 'warning'
+                  }
+                  size="small"
                 />
               </Box>
-            )}
-            <CardContent sx={{ 
-              flex: 1, 
-              p: 4,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 2
-            }}>
-              <Typography variant="h4" gutterBottom>{product.name}</Typography>
-              <Typography variant="h5" color="primary" gutterBottom>
-                {product.price}€
-              </Typography>
-              
-              <Divider sx={{ my: 2 }} />
-              
-              <Typography variant="body1" paragraph>
-                {product.description}
-              </Typography>
-              
-              <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    Vendedor:
-                  </Typography>
-                  <Typography>
-                    {product.user?.name || 'No disponible'}
-                  </Typography>
-                </Box>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    Categoría:
-                  </Typography>
-                  <Typography>
-                    {product.category?.name || 'No disponible'}
-                  </Typography>
-                </Box>
-
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    Estado:
-                  </Typography>
-                  <Chip 
-                    label={product.status} 
-                    color={
-                      product.status === 'AVAILABLE' ? 'success' :
-                      product.status === 'SOLD' ? 'error' : 'warning'
-                    }
-                    size="small"
-                  />
-                </Box>
-
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    Tamaño:
-                  </Typography>
-                  <Typography>{product.size}</Typography>
-                </Box>
-
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    Fecha de publicación:
-                  </Typography>
-                  <Typography>
-                    {new Date(product.publicationDate).toLocaleDateString()}
-                  </Typography>
-                </Box>
+              <Box className="detail-item">
+                <Typography variant="subtitle2" color="text.secondary" sx={{ minWidth: '80px' }}>
+                  Tamaño:
+                </Typography>
+                <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {product.size}
+                </Typography>
               </Box>
-            </CardContent>
+
+              <Box className="detail-item" sx={{ gridColumn: { xs: '1', sm: '1 / -1' } }}>
+                <Typography variant="subtitle2" color="text.secondary" sx={{ minWidth: '80px' }}>
+                  Publicado:
+                </Typography>
+                <Typography>
+                  {new Date(product.publicationDate).toLocaleDateString('es-ES', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </Typography>
+              </Box>
+
+              {/* Categoría */}
+              <Box className="detail-item">
+                <Typography variant="subtitle2" color="text.secondary" sx={{ minWidth: '80px' }}>
+                  Categoría:
+                </Typography>
+                {product.category && (
+                  <Chip 
+                    label={product.category.name}
+                    color="primary"
+                    variant="outlined"
+                    component={RouterLink}
+                    to={`/categories/${product.category.categoryId}`}
+                    clickable
+                    sx={{ 
+                      textTransform: 'capitalize',
+                      '&:hover': {
+                        bgcolor: 'primary.light',
+                        color: 'primary.contrastText'
+                      }
+                    }}
+                  />
+                )}
+              </Box>
+            </Box>
           </Box>
-        </Card>
-      </Box>
+        </Box>
+      </Card>
     </Box>
   );
 };

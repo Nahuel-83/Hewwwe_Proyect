@@ -9,10 +9,11 @@ import {
 } from '@mui/material';
 import { 
   Store as StoreIcon,
-  Category as CategoryIcon,
-  People as PeopleIcon,
-  ShoppingCart as CartIcon,
-  Sync as ExchangeIcon
+  Category as CategoryIcon, 
+  People as PeopleIcon, 
+  ShoppingCart as CartIcon, 
+  SwapHoriz as ExchangeIcon,
+  LocationOn 
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
@@ -27,6 +28,7 @@ export default function Navigation() {
     { text: 'Usuarios', icon: <PeopleIcon />, path: '/users' },
     { text: 'Carrito', icon: <CartIcon />, path: '/cart' },
     { text: 'Intercambios', icon: <ExchangeIcon />, path: '/exchanges' },
+    { text: 'Direcciones', icon: <LocationOn />, path: '/addresses' },
   ];
 
   return (

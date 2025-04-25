@@ -16,6 +16,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import './styles/global.css';
 import { ThemeProvider as CustomThemeProvider, useTheme } from './contexts/ThemeContext';
 import { ThemeToggle } from './components/ThemeToggle';
+import AddressesPage from './pages/addresses/AddressesPage';
+import AddressForm from './pages/addresses/AddressForm';
 
 const AppContent = () => {
   const { mode } = useTheme();
@@ -84,6 +86,11 @@ const AppContent = () => {
               
               {/* Exchanges route */}
               <Route path="/exchanges" element={<ExchangesPage />} />
+
+              {/* Address routes */}
+              <Route path="/addresses" element={<AddressesPage />} />
+              <Route path="/addresses/new" element={<AddressForm />} />
+              <Route path="/addresses/:id/edit" element={<AddressForm />} />
             </Routes>
           </Box>
         </Box>

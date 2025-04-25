@@ -10,19 +10,29 @@ import {
   ListItemText,
   Chip,
   CircularProgress,
-  IconButton
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Card
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { getUserById, getUserProducts, getUserAddresses } from '../../api/users';
+import AddIcon from '@mui/icons-material/Add';
+import LinkIcon from '@mui/icons-material/Link';
+import { getUserById, getUserProducts, getUserAddresses, createAddress, linkAddressToUser, unlinkAddressFromUser } from '../../api/users';
 import type { User, Product, Address } from '../../types';
 import { toast } from 'react-toastify';
+import AddressForm from '../../components/AddressForm';
+import AddressSelector from '../../components/AddressSelector';
 
 export default function UserDetail() {
   const [user, setUser] = useState<User | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showAddressDialog, setShowAddressDialog] = useState(false);
+  const [showLinkAddressDialog, setShowLinkAddressDialog] = useState(false);
   
   const { id } = useParams();
   const navigate = useNavigate();
@@ -54,10 +64,12 @@ export default function UserDetail() {
   };
 
   const handleDeleteAddress = async (addressId: number) => {
+    if (!window.confirm('¿Estás seguro de querer eliminar esta dirección?')) return;
+    
     try {
-      // Add logic to delete the address
+      await unlinkAddressFromUser(Number(id), addressId);
       toast.success('Dirección eliminada correctamente');
-      setAddresses(addresses.filter(address => address.addressId !== addressId));
+      loadUserData(Number(id));
     } catch (error) {
       toast.error('Error al eliminar la dirección');
     }
@@ -74,34 +86,67 @@ export default function UserDetail() {
   if (!user) return null;
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h4">Detalle del Usuario</Typography>
-        <Box>
+    <Box sx={{ 
+      minHeight: 'calc(100vh - 64px)', // Ajusta para el header
+      display: 'flex',
+      flexDirection: 'column',
+      p: { xs: 2, sm: 4 },
+      maxWidth: 1400,
+      mx: 'auto',
+      width: '100%'
+    }}>
+      <Box sx={{ 
+        mb: 4, 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        gap: 2,
+        flexWrap: 'wrap'
+      }}>
+        <Typography 
+          variant="h4" 
+          sx={{ 
+            fontWeight: 'bold',
+            color: 'primary.main'
+          }}
+        >
+          {user.name}
+        </Typography>
+        <Box sx={{ display: 'flex', gap: 2 }}>
           <Button 
             variant="contained" 
-            color="primary" 
+            color="primary"
+            startIcon={<EditIcon />}
             onClick={() => navigate(`/users/${id}/edit`)}
-            sx={{ mr: 2 }}
           >
             Editar
           </Button>
-          <Button variant="outlined" onClick={() => navigate('/users')}>
+          <Button 
+            variant="outlined"
+            onClick={() => navigate('/users')}
+          >
             Volver
           </Button>
         </Box>
       </Box>
 
       <Box sx={{ 
-        display: 'flex', 
-        flexWrap: 'wrap', 
-        gap: { xs: 2, md: 3 },
+        display: 'grid',
+        gap: 4,
+        gridTemplateColumns: {
+          xs: '1fr',
+          md: 'repeat(3, 1fr)'
+        },
+        flexGrow: 1,
+        alignContent: 'start'
       }}>
         {/* Información Personal */}
-        <Box sx={{ 
-          flexGrow: 1,
-          flexBasis: { xs: '100%', sm: '45%', md: '30%' },
-          minWidth: '280px'
+        <Card elevation={2} sx={{ 
+          borderRadius: 2,
+          transition: 'transform 0.2s',
+          '&:hover': {
+            transform: 'translateY(-4px)'
+          }
         }}>
           <Paper sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
             <Typography variant="h6" gutterBottom sx={{ pb: 2, borderBottom: 1, borderColor: 'divider' }}>
@@ -156,25 +201,79 @@ export default function UserDetail() {
               </ListItem>
             </List>
           </Paper>
-        </Box>
+        </Card>
 
         {/* Direcciones */}
-        <Box sx={{ 
-          flexGrow: 1,
-          flexBasis: { xs: '100%', sm: '45%', md: '30%' },
-          minWidth: '280px'
+        <Card elevation={2} sx={{ 
+          borderRadius: 2,
+          transition: 'transform 0.2s',
+          '&:hover': {
+            transform: 'translateY(-4px)'
+          }
         }}>
-          <Paper sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <Typography variant="h6" gutterBottom sx={{ pb: 2, borderBottom: 1, borderColor: 'divider' }}>
-              Direcciones
-              <Button 
-                size="small" 
-                sx={{ float: 'right' }}
-                onClick={() => navigate(`/users/${id}/addresses/new`)}
-              >
-                Añadir
-              </Button>
-            </Typography>
+          <Paper sx={{ p: 2, mb: 3 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="h6">Direcciones</Typography>
+              <Box>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => setShowAddressDialog(true)}
+                  startIcon={<AddIcon />}
+                >
+                  Nueva Dirección
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => setShowLinkAddressDialog(true)}
+                  startIcon={<LinkIcon />}
+                  sx={{ ml: 1 }}
+                >
+                  Vincular Dirección
+                </Button>
+              </Box>
+            </Box>
+
+            {/* Dialog para crear nueva dirección */}
+            <Dialog open={showAddressDialog} onClose={() => setShowAddressDialog(false)}>
+              <DialogTitle>Nueva Dirección</DialogTitle>
+              <DialogContent>
+                <AddressForm 
+                  onSubmit={async (address) => {
+                    try {
+                      await createAddress(Number(id), address);
+                      toast.success('Dirección creada con éxito');
+                      loadUserData(Number(id));
+                      setShowAddressDialog(false);
+                    } catch (error) {
+                      toast.error('Error al crear la dirección');
+                    }
+                  }}
+                />
+              </DialogContent>
+            </Dialog>
+
+            {/* Dialog para vincular dirección existente */}
+            <Dialog open={showLinkAddressDialog} onClose={() => setShowLinkAddressDialog(false)}>
+              <DialogTitle>Vincular Dirección Existente</DialogTitle>
+              <DialogContent>
+                <AddressSelector 
+                  onSelect={async (addressId) => {
+                    try {
+                      await linkAddressToUser(Number(id), addressId);
+                      toast.success('Dirección vinculada con éxito');
+                      loadUserData(Number(id));
+                      setShowLinkAddressDialog(false);
+                    } catch (error) {
+                      toast.error('Error al vincular la dirección');
+                    }
+                  }}
+                />
+              </DialogContent>
+            </Dialog>
+
+            {/* Lista de direcciones existentes */}
             <List>
               {addresses.map((address) => (
                 <ListItem 
@@ -225,13 +324,15 @@ export default function UserDetail() {
               ))}
             </List>
           </Paper>
-        </Box>
+        </Card>
 
         {/* Productos */}
-        <Box sx={{ 
-          flexGrow: 1,
-          flexBasis: { xs: '100%', sm: '100%', md: '30%' },
-          minWidth: '280px'
+        <Card elevation={2} sx={{ 
+          borderRadius: 2,
+          transition: 'transform 0.2s',
+          '&:hover': {
+            transform: 'translateY(-4px)'
+          }
         }}>
           <Paper sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
             <Typography variant="h6" gutterBottom sx={{ pb: 2, borderBottom: 1, borderColor: 'divider' }}>
@@ -243,16 +344,19 @@ export default function UserDetail() {
                   key={product.productId} 
                   sx={{ 
                     cursor: 'pointer',
-                    '&:hover': { bgcolor: 'action.hover' }
+                    '&:hover': { bgcolor: 'action.hover' },
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
                   }}
                   onClick={() => navigate(`/products/${product.productId}`)}
                 >
                   <ListItemText
                     primary={product.name}
                     secondary={
-                      <Box>
-                        <Typography variant="body2" color="text.secondary">
-                          Precio: {product.price}€
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Typography variant="body2" color="primary.main">
+                          {product.price}€
                         </Typography>
                         <Chip 
                           label={product.status} 
@@ -261,7 +365,6 @@ export default function UserDetail() {
                             product.status === 'AVAILABLE' ? 'success' :
                             product.status === 'SOLD' ? 'error' : 'warning'
                           }
-                          sx={{ mt: 1 }}
                         />
                       </Box>
                     }
@@ -270,7 +373,7 @@ export default function UserDetail() {
               ))}
             </List>
           </Paper>
-        </Box>
+        </Card>
       </Box>
     </Box>
   );

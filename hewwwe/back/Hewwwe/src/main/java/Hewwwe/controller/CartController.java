@@ -2,9 +2,9 @@ package Hewwwe.controller;
 
 import Hewwwe.dto.CartCreateDTO;
 import Hewwwe.dto.CartResponseDTO;
+import Hewwwe.dto.ProductResponseDTO;
 import Hewwwe.entity.Cart;
 import Hewwwe.entity.Product;
-import Hewwwe.exception.ResourceNotFoundException;
 import Hewwwe.services.CartService;
 import Hewwwe.services.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -91,8 +91,8 @@ public class CartController {
     @Operation(summary = "Add product to cart")
     @ApiResponse(responseCode = "200", description = "Product added to cart successfully")
     public ResponseEntity<CartResponseDTO> addProductToCart(@PathVariable Long cartId, @PathVariable Long productId) {
-        Product product = productService.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + productId));
+        ProductResponseDTO productDTO = productService.findById(productId);
+        Product product = modelMapper.map(productDTO, Product.class);
         Cart updatedCart = cartService.addProductToCart(cartId, product);
         return ResponseEntity.ok(modelMapper.map(updatedCart, CartResponseDTO.class));
     }

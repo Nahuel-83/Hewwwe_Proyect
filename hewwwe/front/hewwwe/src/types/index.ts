@@ -5,25 +5,21 @@ export interface Product {
   price: number;
   image: string;
   size: string;
-  status: 'AVAILABLE' | 'SOLD' | 'RESERVED';
+  status: string;
   publicationDate: string;
-  userId: number;
-  user?: {
+  user: {
+    userId: number;
     name: string;
-    email: string;
+    email?: string;
   };
-  categoryId: number;
-  category?: {
+  cart?: {
+    cartId: number;
+    status: string;
+  };
+  category: {
+    categoryId: number;
     name: string;
   };
-  cartId?: number;
-  exchangeId?: number;
-}
-
-export interface Category {
-  categoryId: number;
-  name: string;
-  description: string;
 }
 
 export interface User {
@@ -31,20 +27,22 @@ export interface User {
   name: string;
   email: string;
   phone: string;
-  role: 'USER' | 'ADMIN';
+  role: string;
   registrationDate: string;
-  password?: string;
-  cart?: Cart;
+  products: {
+    productId: number;
+    name: string;
+    price: number;
+    status: string;
+  }[];
   addresses?: Address[];
-  products?: Product[];
 }
 
-export interface Cart {
-  cartId: number;
-  cartDate: string;
-  status: 'ACTIVE' | 'PENDING' | 'COMPLETED';
-  userId: number;
-  products: Product[];
+export interface Category {
+  categoryId: number;
+  name: string;
+  description: string;
+  products?: Product[];
 }
 
 export interface Address {
@@ -54,14 +52,34 @@ export interface Address {
   city: string;
   country: string;
   postalCode: string;
-  userId: number;
+  user?: {
+    userId: number;
+    name: string;
+  };
+}
+
+export interface Cart {
+  cartId: number;
+  cartDate: string;
+  status: string;
+  user: {
+    userId: number;
+    name: string;
+  };
+  products: Product[];
 }
 
 export interface Exchange {
   exchangeId: number;
   status: string;
   requestDate: string;
-  ownerId: number;
-  requesterId: number;
+  owner: {
+    userId: number;
+    name: string;
+  };
+  requester: {
+    userId: number;
+    name: string;
+  };
   products: Product[];
 }

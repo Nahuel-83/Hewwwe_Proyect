@@ -2,19 +2,21 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
-  Button,
+  Typography,
   Card,
   CardContent,
-  Typography,
-  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  CircularProgress
 } from '@mui/material';
-import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
-import { getAllCategories, deleteCategory } from '../../api/categories';
-import type { Category } from '../../types';
+import { getAllCategories } from '../../api/categories';
+import { Category } from '../../types';
 import { toast } from 'react-toastify';
 
-export default function CategoriesPage() {
+const CategoriesPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,77 +25,49 @@ export default function CategoriesPage() {
 
   const loadCategories = async () => {
     try {
+      setLoading(true);
       const response = await getAllCategories();
       setCategories(response.data);
     } catch (error) {
-      toast.error('Error al cargar categorías');
+      toast.error('Error al cargar las categorías');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleDelete = async (id: number) => {
-    try {
-      await deleteCategory(id);
-      setCategories(prev => prev.filter(c => c.categoryId !== id));
-      toast.success('Categoría eliminada');
-    } catch (error) {
-      toast.error('Error al eliminar categoría');
-    }
-  };
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ p: 3 }}>
-      <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h4">Categorías</Typography>
-        <Button variant="contained" onClick={() => navigate('/categories/new')}>
-          Nueva Categoría
-        </Button>
-      </Box>
-
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
+      <Typography variant="h4" gutterBottom>Categorías</Typography>
+      <List>
         {categories.map((category) => (
-          <Card key={category.categoryId} sx={{ width: 300 }}>
+          <Card key={category.categoryId} sx={{ mb: 2 }}>
             <CardContent>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <Box>
-                  <Typography variant="h6" sx={{ mb: 1 }}>{category.name}</Typography>
-                  <Box sx={{ 
-                    p: 1, 
-                    bgcolor: 'background.default', 
-                    borderRadius: 1,
-                    minHeight: '60px'
-                  }}>
-                    <Typography color="textSecondary">{category.description}</Typography>
-                  </Box>
-                </Box>
-                <Box sx={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  pt: 1,
-                  borderTop: 1,
-                  borderColor: 'divider'
-                }}>
-                  <Box sx={{ display: 'flex', gap: 1 }}>
-                    <IconButton 
-                      size="small"
-                      onClick={() => navigate(`/categories/${category.categoryId}/edit`)}
-                    >
-                      <EditIcon fontSize="small" />
-                    </IconButton>
-                    <IconButton 
-                      size="small"
-                      color="error" 
-                      onClick={() => handleDelete(category.categoryId)}
-                    >
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
-                  </Box>
-                </Box>
-              </Box>
+              <ListItem
+                sx={{ 
+                  cursor: 'pointer',
+                  '&:hover': { bgcolor: 'action.hover' }
+                }}
+                onClick={() => navigate(`/categories/${category.categoryId}`)}
+              >
+                <ListItemText
+                  primary={category.name}
+                  secondary={category.description}
+                />
+              </ListItem>
             </CardContent>
           </Card>
         ))}
-      </Box>
+      </List>
     </Box>
   );
-}
+};
+
+export default CategoriesPage;

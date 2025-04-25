@@ -11,12 +11,14 @@ import Hewwwe.repository.CategoryRepository;
 import Hewwwe.repository.ExchangeRepository;
 import Hewwwe.repository.ProductRepository;
 import Hewwwe.repository.UserRepository;
+import Hewwwe.dto.ProductResponseDTO;
+import Hewwwe.dto.UserResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,17 +32,14 @@ public class ProductServiceImpl implements ProductService {
     private final ExchangeRepository exchangeRepository;
 
     @Override
-    public List<Product> findAll() {
-        return productRepository.findAll();
+    public List<ProductResponseDTO> findAll() {
+        return productRepository.findAll().stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<Product> findById(Long id) {
-        return productRepository.findById(id);
-    }
-
-    @Override
-    public Product save(Product product) {
+    public ProductResponseDTO save(Product product) {
         // Validate and set User
         User user = userRepository.findById(product.getUser().getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -65,11 +64,12 @@ public class ProductServiceImpl implements ProductService {
             product.setExchange(exchange);
         }
 
-        return productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
+        return mapToDTO(savedProduct);
     }
 
     @Override
-    public Product update(Long id, Product product) {
+    public ProductResponseDTO update(Long id, Product product) {
         return productRepository.findById(id)
                 .map(existingProduct -> {
                     // Update basic fields
@@ -100,7 +100,8 @@ public class ProductServiceImpl implements ProductService {
                         existingProduct.setExchange(exchange);
                     }
 
-                    return productRepository.save(existingProduct);
+                    Product updatedProduct = productRepository.save(existingProduct);
+                    return mapToDTO(updatedProduct);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
     }
@@ -114,31 +115,103 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> findByCategory(Long categoryId) {
+    public List<ProductResponseDTO> findByCategory(Long categoryId) {
         return categoryRepository.findById(categoryId)
-                .map(productRepository::findByCategory)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId));
+                .map(category -> productRepository.findByCategory(category).stream()
+                        .map(this::mapToDTO)
+                        .collect(Collectors.toList()))
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
     }
 
     @Override
-    public List<Product> findByUser(Long userId) {
+    public List<ProductResponseDTO> findByUser(Long userId) {
         return userRepository.findById(userId)
-                .map(productRepository::findByUser)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+                .map(user -> productRepository.findByUser(user).stream()
+                        .map(this::mapToDTO)
+                        .collect(Collectors.toList()))
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     @Override
-    public List<Product> findByStatus(String status) {
-        return productRepository.findByStatus(status);
+    public List<ProductResponseDTO> findByStatus(String status) {
+        return productRepository.findByStatus(status).stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Product> searchProducts(String keyword) {
-        return productRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(keyword, keyword);
+    public List<ProductResponseDTO> searchProducts(String keyword) {
+        return productRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(keyword, keyword)
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     public boolean existsById(Long id) {
         return productRepository.existsById(id);
+    }
+
+    private ProductResponseDTO mapToDTO(Product product) {
+        ProductResponseDTO dto = new ProductResponseDTO();
+        dto.setProductId(product.getProductId());
+        dto.setName(product.getName());
+        dto.setDescription(product.getDescription());
+        dto.setPrice(product.getPrice());
+        dto.setImage(product.getImage());
+        dto.setSize(product.getSize());
+        dto.setStatus(product.getStatus());
+        dto.setPublicationDate(product.getPublicationDate());
+
+        // Mapear información del usuario
+        if (product.getUser() != null) {
+            dto.setUserId(product.getUser().getUserId());
+            dto.setUserName(product.getUser().getName());
+            dto.setUserEmail(product.getUser().getEmail());
+        }
+
+        // Mapear información de la categoría
+        if (product.getCategory() != null) {
+            dto.setCategoryId(product.getCategory().getCategoryId());
+            dto.setCategoryName(product.getCategory().getName());
+        }
+
+        // Mapear IDs opcionales
+        if (product.getCart() != null) {
+            dto.setCartId(product.getCart().getCartId());
+        }
+        if (product.getExchange() != null) {
+            dto.setExchangeId(product.getExchange().getExchangeId());
+        }
+
+        return dto;
+    }
+
+    @Override
+    public ProductResponseDTO findById(Long id) {
+        return productRepository.findById(id)
+                .map(this::mapToDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+    }
+
+    @Override
+    public UserResponseDTO findUserByProductId(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+        
+        User user = product.getUser();
+        if (user == null) {
+            throw new ResourceNotFoundException("User not found for product: " + productId);
+        }
+
+        UserResponseDTO userDTO = new UserResponseDTO();
+        userDTO.setUserId(user.getUserId());
+        userDTO.setName(user.getName());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setPhone(user.getPhone());
+        userDTO.setRole(user.getRole().toString());
+        userDTO.setRegistrationDate(user.getRegistrationDate());
+        
+        return userDTO;
     }
 }

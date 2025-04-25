@@ -9,18 +9,26 @@ interface UserCreateRequest {
   password?: string;
 }
 
-export const getAllUsers = () => api.get<User[]>('/api/users');
-export const getUserById = (id: number) => api.get<User>(`/api/users/${id}`);
-export const createUser = (user: UserCreateRequest) => api.post<User>('/api/users', {
+export const getAllUsers = () => api.get<User[]>('/users');
+export const getUserById = (id: number) => api.get<User>(`/users/${id}`);
+export const createUser = (user: UserCreateRequest) => api.post<User>('/users', {
   ...user,
   registrationDate: new Date().toISOString()
 });
 export const updateUser = (id: number, user: Partial<UserCreateRequest>) => 
-  api.put<User>(`/api/users/${id}`, user);
-export const deleteUser = (id: number) => api.delete(`/api/users/${id}`);
+  api.put<User>(`/users/${id}`, user);
+export const deleteUser = (id: number) => api.delete(`/users/${id}`);
 
-// Endpoints relacionados
-export const getUserCart = (id: number) => api.get<Cart>(`/api/users/${id}/cart`);
-export const getUserAddresses = (id: number) => api.get<Address[]>(`/api/users/${id}/addresses`);
-export const getUserProducts = (id: number) => api.get<Product[]>(`/api/users/${id}/products`);
-export const getUserExchanges = (id: number) => api.get<Exchange[]>(`/api/users/${id}/exchanges`);
+export const getUserCart = (id: number) => api.get<Cart>(`/users/${id}/cart`);
+export const getUserAddresses = (id: number) => api.get<Address[]>(`/users/${id}/addresses`);
+export const getUserProducts = (id: number) => api.get<Product[]>(`/users/${id}/products`);
+export const getUserExchanges = (id: number) => api.get<Exchange[]>(`/users/${id}/exchanges`);
+
+export const createAddress = (userId: number, address: Partial<Address>) => 
+  api.post<Address>(`/users/${userId}/addresses`, address);
+
+export const linkAddressToUser = (userId: number, addressId: number) => 
+  api.post<void>(`/users/${userId}/addresses/${addressId}/link`);
+
+export const unlinkAddressFromUser = (userId: number, addressId: number) => 
+  api.delete(`/users/${userId}/addresses/${addressId}`);

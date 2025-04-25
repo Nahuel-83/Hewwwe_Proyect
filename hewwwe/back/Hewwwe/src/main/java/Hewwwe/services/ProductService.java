@@ -1,19 +1,21 @@
 package Hewwwe.services;
 
+import Hewwwe.dto.ProductResponseDTO;
+import Hewwwe.dto.UserResponseDTO;
 import Hewwwe.entity.Product;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ProductService {
-    List<Product> findAll();
-    Optional<Product> findById(Long id);
-    Product save(Product product);
-    Product update(Long id, Product product);
+    List<ProductResponseDTO> findAll();
+    ProductResponseDTO findById(Long id);
+    ProductResponseDTO save(Product product);
+    ProductResponseDTO update(Long id, Product product);
     void delete(Long id);
-    List<Product> findByCategory(Long categoryId);
-    List<Product> findByUser(Long userId);
-    List<Product> findByStatus(String status);
-    List<Product> searchProducts(String keyword);
+    List<ProductResponseDTO> findByCategory(Long categoryId);
+    List<ProductResponseDTO> findByUser(Long userId);
+    List<ProductResponseDTO> findByStatus(String status);
+    List<ProductResponseDTO> searchProducts(String keyword);
+    UserResponseDTO findUserByProductId(Long productId);
     boolean existsById(Long id);
 }
