@@ -43,10 +43,17 @@ export default function UserForm() {
     try {
       setLoading(true);
       const response = await getUserById(userId);
-      const { password, ...userData } = response.data;
-      setFormData(userData);
-    } catch (error) {
-      toast.error('Error al cargar el usuario');
+      const { registrationDate, role, addresses, products, userId: _, ...rest } = response.data;
+      
+      // Validate role before setting state
+      const validRole = role === 'ADMIN' ? 'ADMIN' : 'USER';
+      
+      setFormData({
+        ...rest,
+        role: validRole,
+      });
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Error al cargar el usuario');
       navigate('/users');
     } finally {
       setLoading(false);
@@ -55,18 +62,29 @@ export default function UserForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData.name || !formData.email || !formData.phone) {
+      toast.error('Por favor completa todos los campos requeridos');
+      return;
+    }
+
     try {
       setLoading(true);
       if (isEdit) {
-        await updateUser(Number(id), formData);
+        const { password, ...updateData } = formData; // Remove password from update data
+        await updateUser(Number(id), updateData);
         toast.success('Usuario actualizado correctamente');
       } else {
+        if (!formData.password) {
+          toast.error('La contraseña es requerida para nuevos usuarios');
+          return;
+        }
         await createUser(formData);
         toast.success('Usuario creado correctamente');
       }
       navigate('/users');
-    } catch (error) {
-      toast.error('Error al guardar el usuario');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Error al guardar el usuario');
     } finally {
       setLoading(false);
     }

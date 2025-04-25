@@ -8,7 +8,7 @@ import {
   Paper,
 } from '@mui/material';
 import { createAddress, getAddressById, updateAddress } from '../../api/addresses';
-import type { AddressCreateDTO, AddressResponseDTO } from '../../types/dtos';
+import type { AddressCreateDTO } from '../../types/dtos';
 import { toast } from 'react-toastify';
 
 export default function AddressForm() {

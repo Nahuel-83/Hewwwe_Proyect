@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
   Box,
   Typography,
-  Card,
   CircularProgress,
   Button
 } from '@mui/material';

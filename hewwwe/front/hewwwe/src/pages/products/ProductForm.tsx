@@ -19,7 +19,8 @@ export default function ProductForm() {
     price: 0,
     image: '',
     size: '',
-    status: 'AVAILABLE'
+    status: 'AVAILABLE',
+    category: undefined
   });
   const [categories, setCategories] = useState<Category[]>([]);
   const navigate = useNavigate();
@@ -69,10 +70,18 @@ export default function ProductForm() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setProduct(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    if (name === 'category') {
+      const selectedCategory = categories.find(cat => cat.categoryId === Number(value));
+      setProduct(prev => ({
+        ...prev,
+        category: selectedCategory
+      }));
+    } else {
+      setProduct(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   return (
@@ -115,9 +124,9 @@ export default function ProductForm() {
             <TextField
               sx={{ flex: 1 }}
               label="Categoría"
-              name="categoryId"
+              name="category"
               select
-              value={product.categoryId || ''}
+              value={product.category?.categoryId || ''}
               onChange={handleChange}
               required
             >
