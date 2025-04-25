@@ -25,6 +25,8 @@ import type { User, Product, Address } from '../../types';
 import { toast } from 'react-toastify';
 import AddressForm from '../../components/AddressForm';
 import AddressSelector from '../../components/AddressSelector';
+import '../../styles/common/loading.css';
+import '../../styles/pages/users/UserDetail.css';
 
 export default function UserDetail() {
   const [user, setUser] = useState<User | null>(null);
@@ -77,7 +79,7 @@ export default function UserDetail() {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
+      <Box className="loading-container">
         <CircularProgress />
       </Box>
     );
@@ -86,33 +88,12 @@ export default function UserDetail() {
   if (!user) return null;
 
   return (
-    <Box sx={{ 
-      minHeight: 'calc(100vh - 64px)', // Ajusta para el header
-      display: 'flex',
-      flexDirection: 'column',
-      p: { xs: 2, sm: 4 },
-      maxWidth: 1400,
-      mx: 'auto',
-      width: '100%'
-    }}>
-      <Box sx={{ 
-        mb: 4, 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        gap: 2,
-        flexWrap: 'wrap'
-      }}>
-        <Typography 
-          variant="h4" 
-          sx={{ 
-            fontWeight: 'bold',
-            color: 'primary.main'
-          }}
-        >
+    <Box className="user-container">
+      <Box className="user-header">
+        <Typography variant="h4" className="user-title">
           {user.name}
         </Typography>
-        <Box sx={{ display: 'flex', gap: 2 }}>
+        <Box className="user-actions">
           <Button 
             variant="contained" 
             color="primary"
@@ -130,16 +111,7 @@ export default function UserDetail() {
         </Box>
       </Box>
 
-      <Box sx={{ 
-        display: 'grid',
-        gap: 4,
-        gridTemplateColumns: {
-          xs: '1fr',
-          md: 'repeat(3, 1fr)'
-        },
-        flexGrow: 1,
-        alignContent: 'start'
-      }}>
+      <Box className="user-grid">
         {/* Información Personal */}
         <Card elevation={2} sx={{ 
           borderRadius: 2,

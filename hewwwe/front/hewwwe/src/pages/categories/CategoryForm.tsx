@@ -6,12 +6,14 @@ import {
   Button,
   Typography,
   Paper,
+  CircularProgress,
 } from '@mui/material';
 import { createCategory, getCategoryById, updateCategory } from '../../api/categories';
 import type { Category } from '../../types';
 import { toast } from 'react-toastify';
 
 export default function CategoryForm() {
+  const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState<Partial<Category>>({
     name: '',
     description: '',
@@ -19,36 +21,50 @@ export default function CategoryForm() {
   
   const navigate = useNavigate();
   const { id } = useParams();
+  const isEdit = Boolean(id);
 
   useEffect(() => {
-    if (id) {
-      loadCategory(parseInt(id));
+    if (isEdit) {
+      loadCategory(Number(id));
     }
   }, [id]);
 
   const loadCategory = async (categoryId: number) => {
     try {
+      setLoading(true);
       const response = await getCategoryById(categoryId);
-      setCategory(response.data);
-    } catch (error) {
-      toast.error('Error al cargar categoría');
+      const { products, categoryId: _, ...rest } = response.data;
+      setCategory(rest);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Error al cargar la categoría');
       navigate('/categories');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!category.name || !category.description) {
+      toast.error('Por favor completa todos los campos requeridos');
+      return;
+    }
+
     try {
-      if (id) {
-        await updateCategory(parseInt(id), category);
-        toast.success('Categoría actualizada');
+      setLoading(true);
+      if (isEdit) {
+        await updateCategory(Number(id), category);
+        toast.success('Categoría actualizada correctamente');
       } else {
         await createCategory(category);
-        toast.success('Categoría creada');
+        toast.success('Categoría creada correctamente');
       }
       navigate('/categories');
-    } catch (error) {
-      toast.error('Error al guardar categoría');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Error al guardar la categoría');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -59,20 +75,29 @@ export default function CategoryForm() {
     }));
   };
 
+  if (loading && isEdit) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" sx={{ mb: 4 }}>
-        {id ? 'Editar Categoría' : 'Nueva Categoría'}
+    <Box className="form-container">
+      <Typography className="form-title" variant="h4">
+        {isEdit ? 'Editar Categoría' : 'Nueva Categoría'}
       </Typography>
 
-      <Paper sx={{ p: 3, maxWidth: 600 }}>
-        <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <Paper className="form-paper">
+        <Box component="form" onSubmit={handleSubmit} className="form-content">
           <TextField
             label="Nombre"
             name="name"
             value={category.name}
             onChange={handleChange}
             required
+            fullWidth
           />
           <TextField
             label="Descripción"
@@ -82,14 +107,15 @@ export default function CategoryForm() {
             value={category.description}
             onChange={handleChange}
             required
+            fullWidth
           />
 
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+          <Box className="form-actions">
             <Button type="button" onClick={() => navigate('/categories')}>
               Cancelar
             </Button>
-            <Button type="submit" variant="contained">
-              {id ? 'Actualizar' : 'Crear'}
+            <Button type="submit" variant="contained" disabled={loading}>
+              {isEdit ? 'Actualizar' : 'Crear'}
             </Button>
           </Box>
         </Box>

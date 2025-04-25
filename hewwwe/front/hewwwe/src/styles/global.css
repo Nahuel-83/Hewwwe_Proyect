@@ -1,13 +1,62 @@
 @import url('https://fonts.googleapis.com/css2?family=Domine:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap');
 @import './variables.css';
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   margin: 0;
   font-family: var(--font-primary);
   background-color: var(--color-background);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-headers);
+  margin-bottom: var(--spacing-md);
+}
+
+.page-container {
+  min-height: calc(100vh - var(--header-height));
+  padding: var(--spacing-md);
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  width: 100%;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+}
+
+.card-hover {
+  transition: transform var(--transition-fast);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid-responsive {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+@media (min-width: 900px) {
+  .grid-responsive {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
 }

@@ -18,6 +18,7 @@ import { ThemeProvider as CustomThemeProvider, useTheme } from './contexts/Theme
 import { ThemeToggle } from './components/ThemeToggle';
 import AddressesPage from './pages/addresses/AddressesPage';
 import AddressForm from './pages/addresses/AddressForm';
+import CategoryDetail from './pages/categories/CategoryDetail';
 
 const AppContent = () => {
   const { mode } = useTheme();
@@ -26,7 +27,7 @@ const AppContent = () => {
     palette: {
       mode,
       primary: {
-        main: '#003049',
+        main: '#f8f9fa',
         light: '#669bbc',
         dark: '#000000',
       },
@@ -35,7 +36,7 @@ const AppContent = () => {
         light: '#fdf0d5',
       },
       background: {
-        default: mode === 'light' ? '#fdf0d5' : '#003049',
+        default: mode === 'light' ? '#f8f9fa' : '#212529',
         paper: mode === 'light' ? '#fff' : '#000000',
       },
       text: {
@@ -73,6 +74,7 @@ const AppContent = () => {
               {/* Category routes */}
               <Route path="/categories" element={<CategoriesPage />} />
               <Route path="/categories/new" element={<CategoryForm />} />
+              <Route path="/categories/:id" element={<CategoryDetail />} />
               <Route path="/categories/:id/edit" element={<CategoryForm />} />
               
               {/* User routes */}

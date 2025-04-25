@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import { getProductById } from '../../api/products';
 import { Product } from '../../types';
+import '../../styles/components/ProductDetail.css';
 
 const ProductDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -34,44 +35,19 @@ const ProductDetailPage = () => {
       mx: 'auto',
       width: '100%'
     }}>
-      <Card elevation={2} sx={{ 
-        p: 4,
-        borderRadius: 2,
-      }}>
-        <Box sx={{ 
-          display: 'flex', 
-          flexDirection: { xs: 'column', md: 'row' },
-          gap: 4,
-        }}>
-          {/* Imagen */}
-          <Box sx={{ 
-            width: { xs: '100%', md: '50%' },
-          }}>
+      <Card className="product-detail-card">
+        <Box className="product-detail-content">
+          <Box className="product-detail-image-container">
             <CardMedia
               component="img"
-              sx={{ 
-                width: '100%',
-                height: '500px',
-                objectFit: 'contain',
-                borderRadius: 2,
-                transition: 'transform 0.3s ease-in-out',
-                '&:hover': {
-                  transform: 'scale(1.05)'
-                }
-              }}
+              className="product-detail-image"
               image={product.image || 'placeholder.jpg'}
               alt={product.name}
             />
           </Box>
 
-          {/* Detalles */}
-          <Box sx={{ 
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 3
-          }}>
-            <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+          <Box className="product-detail-info">
+            <Typography variant="h4" color="primary.main" sx={{ fontWeight: 'bold' }}>
               {product.name}
             </Typography>
 

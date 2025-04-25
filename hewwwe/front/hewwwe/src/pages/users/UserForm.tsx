@@ -11,6 +11,8 @@ import {
 } from '@mui/material';
 import { createUser, getUserById, updateUser } from '../../api/users';
 import { toast } from 'react-toastify';
+import '../../styles/common/loading.css';
+import '../../styles/forms/form.css';
 
 interface UserFormData {
   name: string;
@@ -99,20 +101,20 @@ export default function UserForm() {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
+      <Box className="loading-container">
         <CircularProgress />
       </Box>
     );
   }
 
   return (
-    <Box sx={{ p: 3, maxWidth: 600, mx: 'auto' }}>
-      <Typography variant="h4" gutterBottom>
+    <Box className="form-container">
+      <Typography className="form-title" variant="h4">
         {isEdit ? 'Editar Usuario' : 'Nuevo Usuario'}
       </Typography>
 
-      <Paper sx={{ p: 3 }}>
-        <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Paper className="form-paper">
+        <Box component="form" onSubmit={handleSubmit} className="form-content">
           <TextField
             label="Nombre"
             name="name"
@@ -166,7 +168,7 @@ export default function UserForm() {
             />
           )}
 
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 2 }}>
+          <Box className="form-actions">
             <Button type="button" onClick={() => navigate('/users')}>
               Cancelar
             </Button>
