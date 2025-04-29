@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { User } from '../types';
 import { getUserById } from '../api/users';
 
@@ -13,30 +13,22 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+
   const isAuthenticated = Boolean(user);
   const isAdmin = user?.role === 'ADMIN';
 
-  useEffect(() => {
-    // Check local storage for existing session
-    const storedUserId = localStorage.getItem('userId');
-    if (storedUserId) {
-      getUserById(Number(storedUserId))
-        .then(response => setUser(response.data))
-        .catch(() => logout());
-    }
-  }, []);
-
   const login = (userData: User) => {
     setUser(userData);
-    localStorage.setItem('userId', String(userData.userId));
-    localStorage.setItem('userRole', userData.role);
+    localStorage.setItem('user', JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('userId');
-    localStorage.removeItem('userRole');
+    localStorage.removeItem('user');
   };
 
   return (

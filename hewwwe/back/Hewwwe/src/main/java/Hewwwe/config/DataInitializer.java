@@ -60,14 +60,25 @@ public class DataInitializer implements CommandLineRunner {
         Invoice invoice3 = createInvoice(carla, address3, 42.00);
 
         // Create exchanges
-        Exchange exchange1 = createExchange(alice, bob, "COMPLETED");
-        Exchange exchange2 = createExchange(bob, carla, "PENDING");
-        Exchange exchange3 = createExchange(daniel, eva, "PENDING");
+        Exchange exchange1 = createExchange(alice, carla, "COMPLETED");
+        Exchange exchange2 = createExchange(daniel, carla, "COMPLETED");
+        Exchange exchange3 = createExchange(daniel, eva, "COMPLETED");
 
         // Create products
-        createProduct("T-Shirt", "Camiseta negra", 19.99, "L", "img2.jpg", "SOLD", cart2, moda, exchange1, invoice1, bob);
-        createProduct("Nike Air", "Zapatillas deportivas", 75.00, "42", "img5.jpg", "AVAILABLE", cart2, moda, null, null, bob);
-        // ... add more products as needed
+        createProduct("T-Shirt", "Camiseta negra", 19.99, "L", "img2.jpg", "SOLD", cart1, moda, exchange1, invoice1, alice);
+        createProduct("Nike Air", "Zapatillas deportivas", 75.00, "42", "img5.jpg", "AVAILABLE", cart3, moda, null, null, carla);
+        createProduct("Jeans Slim", "Vaqueros azules ajustados", 45.99, "M", "jeans1.jpg", "AVAILABLE", null, moda, null, null, alice);
+        createProduct("Adidas Boost", "Zapatillas running", 89.99, "43", "boost.jpg", "AVAILABLE", null, moda, null, null, carla);
+        createProduct("Camisa Oxford", "Camisa blanca formal", 35.00, "L", "shirt1.jpg", "AVAILABLE", null, moda, null, null, daniel);
+        createProduct("Vestido Floral", "Vestido verano estampado", 55.50, "S", "dress1.jpg", "AVAILABLE", null, moda, null, null, eva);
+        createProduct("Chaqueta Cuero", "Chaqueta negra motero", 120.00, "M", "jacket1.jpg", "AVAILABLE", null, moda, null, null, alice);
+        createProduct("Vans Old School", "Zapatillas skate", 70.00, "44", "vans.jpg", "AVAILABLE", null, moda, null, null, daniel);
+        createProduct("Sudadera Hood", "Sudadera gris con capucha", 42.99, "XL", "hoodie1.jpg", "AVAILABLE", null, moda, null, null, carla);
+        createProduct("Falda Plisada", "Falda midi plisada", 38.50, "M", "skirt1.jpg", "AVAILABLE", null, moda, null, null, eva);
+        createProduct("Pantalón Cargo", "Pantalón militar verde", 49.99, "L", "pants1.jpg", "AVAILABLE", null, moda, null, null, daniel);
+        createProduct("Blazer Classic", "Blazer negro formal", 89.99, "M", "blazer1.jpg", "AVAILABLE", null, moda, null, null, alice);
+        createProduct("Jersey Lana", "Jersey cuello alto", 59.99, "L", "sweater1.jpg", "AVAILABLE", null, moda, null, null, eva);
+        createProduct("Pantalón Chino", "Pantalón beige casual", 45.00, "M", "chinos1.jpg", "AVAILABLE", null, moda, null, null, carla);
     }
 
     private User createUser(String name, String username, String password, String email, String phone, Rol role) {

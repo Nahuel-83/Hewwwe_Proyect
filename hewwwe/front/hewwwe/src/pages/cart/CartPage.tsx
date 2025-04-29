@@ -9,7 +9,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { getUserCart, removeProductFromCart } from '../../api/cart';
+import { getUserCart, removeFromCart } from '../../api/cart';
 import type { Cart } from '../../types';
 import { toast } from 'react-toastify';
 
@@ -37,7 +37,7 @@ export default function CartPage() {
   const handleRemoveProduct = async (productId: number) => {
     if (!cart) return;
     try {
-      await removeProductFromCart(cart.cartId, productId);
+      await removeFromCart(productId);
       toast.success('Producto eliminado del carrito');
       loadCart();
     } catch (error) {

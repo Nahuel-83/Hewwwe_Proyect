@@ -19,15 +19,16 @@ import CartPage from './pages/cart/CartPage';
 import ExchangesPage from './pages/exchanges/ExchangesPage';
 import AddressesPage from './pages/addresses/AddressesPage';
 import AddressForm from './pages/addresses/AddressForm';
-import CategoriesPage from './pages/admin/CategoriesPage';
-import UsersPage from './pages/admin/UsersPage';
+import AdminCategoriesPage from './pages/admin/AdminCategoriesPage';
 import AdminInvoicesPage from './pages/admin/AdminInvoicesPage';
 import InvoicesPage from './pages/invoices/InvoicesPage';
 import MyProductsPage from './pages/products/MyProductsPage';
+import AdminProductsPage from './pages/admin/AdminProductsPage';
 
 // Styles
 import 'react-toastify/dist/ReactToastify.css';
 import './styles/App.css';
+import AdminUsersPage from './pages/admin/AdminUsersPage';
 
 function App() {
   return (
@@ -59,8 +60,10 @@ function App() {
               
               {/* Admin Routes */}
               <Route element={<AdminRoute />}>
-                <Route path="admin/categories" element={<CategoriesPage />} />
-                <Route path="admin/users" element={<UsersPage />} />
+                <Route path="admin/categories" element={<AdminCategoriesPage />} />
+                <Route path="admin/users" element={<AdminUsersPage />} />
+                <Route path="admin/invoices" element={<AdminInvoicesPage />} />
+                <Route path="admin/products" element={<AdminProductsPage />} />
                 <Route path="admin/invoices" element={<AdminInvoicesPage />} />
               </Route>
             </Route>

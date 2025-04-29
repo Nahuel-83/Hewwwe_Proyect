@@ -1,23 +1,12 @@
 import api from './axios';
 import { Invoice } from '../types';
 
-export const getAllInvoices = () => api.get<Invoice[]>('/invoices');
-export const getInvoiceById = (id: number) => api.get<Invoice>(`/invoices/${id}`);
-export const getUserInvoices = (userId: number) => api.get<Invoice[]>(`/users/${userId}/invoices`);
-export const downloadInvoice = (invoiceId: number) => 
-  api.get(`/invoices/${invoiceId}/download`, { responseType: 'blob' })
-    .then(response => {
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `invoice-${invoiceId}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    });
-
-export const createInvoice = (invoice: Omit<Invoice, 'invoiceId'>) => 
-  api.post<Invoice>('/invoices', invoice);
-
-export const updateInvoiceStatus = (id: number, status: 'PENDING' | 'PAID' | 'CANCELLED') => 
-  api.patch<Invoice>(`/invoices/${id}/status`, { status });
+export const getAllInvoices = () => api.get<Invoice[]>('/api/invoices');
+export const getInvoiceById = (id: number) => api.get<Invoice>(`/api/invoices/${id}`);
+export const createInvoice = (invoice: Partial<Invoice>) => api.post<Invoice>('/api/invoices', invoice);
+export const updateInvoice = (id: number, invoice: Partial<Invoice>) => api.put<Invoice>(`/api/invoices/${id}`, invoice);
+export const deleteInvoice = (id: number) => api.delete(`/api/invoices/${id}`);
+export const downloadInvoice = (id: number) => api.get<Blob>(`/api/invoices/${id}/pdf`, {
+  responseType: 'blob'
+});
+export const getUserInvoices = (userId: number) => api.get<Invoice[]>(`/api/users/${userId}/invoices`);

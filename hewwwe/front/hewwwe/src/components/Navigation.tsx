@@ -12,55 +12,32 @@ export default function Navigation() {
 
   const isActive = (path: string) => location.pathname === path;
 
-  return (
-    <AppBar position="fixed" color="inherit" elevation={0}>
-      <Toolbar className="nav-container">
-        <div className="nav-menu">
-          <Button
-            className={`nav-link ${isActive('/') ? 'active' : ''}`}
-            component={RouterLink}
-            to="/"
-          >
-            Inicio
-          </Button>
-          <Button
-            className={`nav-link ${isActive('/products') ? 'active' : ''}`}
-            component={RouterLink}
-            to="/products"
-          >
-            Productos
-          </Button>
-          {isAdmin && (
-            <>
-              <Button className="nav-link" component={RouterLink} to="/admin/categories">
-                Categorías
-              </Button>
-              <Button className="nav-link" component={RouterLink} to="/admin/users">
-                Usuarios
-              </Button>
-            </>
-          )}
-        </div>
+  const renderAdminMenu = () => {
+    if (!isAdmin) return null;
+    
+    return (
+      <>
+        <Button className="nav-link" component={RouterLink} to="/admin/products">
+          Gestionar Productos
+        </Button>
+        <Button className="nav-link" component={RouterLink} to="/admin/categories">
+          Gestionar Categorías
+        </Button>
+        <Button className="nav-link" component={RouterLink} to="/admin/users">
+          Gestionar Usuarios
+        </Button>
+        <Button className="nav-link" component={RouterLink} to="/admin/invoices">
+          Gestionar Facturas
+        </Button>
+      </>
+    );
+  };
 
-        <div className="nav-user-section">
-          {isAuthenticated ? (
-            <>
-              <IconButton
-                className="nav-icon-button"
-                component={RouterLink}
-                to={`/users/${user?.userId}/cart`}
-                size="large"
-              >
-                <ShoppingCart />
-              </IconButton>
-              <IconButton
-                className="nav-icon-button"
-                onClick={(e) => setAnchorEl(e.currentTarget)}
-                size="large"
-              >
-                <AccountCircle />
-              </IconButton>
-              <Menu
+  const renderUserMenu = () => {
+    if (!user) return null;
+
+    return (
+      <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={() => setAnchorEl(null)}
@@ -86,18 +63,61 @@ export default function Navigation() {
                 }}
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem component={RouterLink} to={`/users/${user.userId}`}>
+          Mi Perfil
+        </MenuItem>
+        <MenuItem component={RouterLink} to="/my-products">
+          Mis Productos
+        </MenuItem>
+        <MenuItem component={RouterLink} to="/exchanges">
+          Intercambios
+        </MenuItem>
+        <MenuItem onClick={logout}>Cerrar Sesión</MenuItem>
+      </Menu>
+    );
+  };
+
+  return (
+    <AppBar position="fixed" color="inherit" elevation={0}>
+      <Toolbar className="nav-container">
+        <div className="nav-menu">
+          <Button
+            className={`nav-link ${isActive('/') ? 'active' : ''}`}
+            component={RouterLink}
+            to="/"
+          >
+            Inicio
+          </Button>
+          <Button
+            className={`nav-link ${isActive('/products') ? 'active' : ''}`}
+            component={RouterLink}
+            to="/products"
+          >
+            Productos
+          </Button>
+          {renderAdminMenu()}
+        </div>
+
+        <div className="nav-user-section">
+          {isAuthenticated ? (
+            <>
+              <IconButton
+                className="nav-icon-button"
+                component={RouterLink}
+                to={`/users/${user?.userId}/cart`}
+                size="large"
               >
-                <MenuItem component={RouterLink} to={`/users/${user?.userId}`}>
-                  Mi Perfil
-                </MenuItem>
-                <MenuItem component={RouterLink} to="/my-products">
-                  Mis Productos
-                </MenuItem>
-                <MenuItem component={RouterLink} to="/exchanges">
-                  Intercambios
-                </MenuItem>
-                <MenuItem onClick={logout}>Cerrar Sesión</MenuItem>
-              </Menu>
+                <ShoppingCart />
+              </IconButton>
+              <IconButton
+                className="nav-icon-button"
+                onClick={(e) => setAnchorEl(e.currentTarget)}
+                size="large"
+              >
+                <AccountCircle />
+              </IconButton>
+              {renderUserMenu()}
             </>
           ) : (
             <>
