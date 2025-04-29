@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,22 +22,23 @@ import java.util.List;
 @Table(name = "cart")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartId;
+    
     private Date cartDate;
-    private String status;
-
-    // Relaciones
+    
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    private List<Product> products = new ArrayList<>();
+    
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    private User user; // 1-1 con User
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Product> products; // 1-N con Product
-
-
+    public void clearCart() {
+        this.products.clear();
+    }
 }

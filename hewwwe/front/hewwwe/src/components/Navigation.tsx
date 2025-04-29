@@ -1,62 +1,116 @@
-import { 
-  Drawer, 
-  List, 
-  ListItemButton,
-  ListItemIcon, 
-  ListItemText,
-  Typography,
-  Box
-} from '@mui/material';
-import { 
-  Store as StoreIcon,
-  Category as CategoryIcon, 
-  People as PeopleIcon, 
-  ShoppingCart as CartIcon, 
-  SwapHoriz as ExchangeIcon,
-  LocationOn 
-} from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
-
-const drawerWidth = 240;
+import { AppBar, Toolbar, Button, IconButton, Menu, MenuItem, Box } from '@mui/material';
+import { AccountCircle, ShoppingCart } from '@mui/icons-material';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { useState } from 'react';
+import '../styles/Navigation.css';
 
 export default function Navigation() {
-  const navigate = useNavigate();
+  const { isAuthenticated, isAdmin, user, logout } = useAuth();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const location = useLocation();
 
-  const menuItems = [
-    { text: 'Productos', icon: <StoreIcon />, path: '/products' },
-    { text: 'Categorías', icon: <CategoryIcon />, path: '/categories' },
-    { text: 'Usuarios', icon: <PeopleIcon />, path: '/users' },
-    { text: 'Carrito', icon: <CartIcon />, path: '/cart' },
-    { text: 'Intercambios', icon: <ExchangeIcon />, path: '/exchanges' },
-    { text: 'Direcciones', icon: <LocationOn />, path: '/addresses' },
-  ];
+  const isActive = (path: string) => location.pathname === path;
 
   return (
-    <Drawer
-      variant="permanent"
-      sx={{
-        width: drawerWidth,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
-          width: drawerWidth,
-          boxSizing: 'border-box',
-        },
-      }}
-    >
-      <Box sx={{ p: 2 }}>
-        <Typography variant="h6">Hewwwe</Typography>
-      </Box>
-      <List>
-        {menuItems.map((item) => (
-          <ListItemButton 
-            key={item.text}
-            onClick={() => navigate(item.path)}
+    <AppBar position="fixed" color="inherit" elevation={0}>
+      <Toolbar className="nav-container">
+        <div className="nav-menu">
+          <Button
+            className={`nav-link ${isActive('/') ? 'active' : ''}`}
+            component={RouterLink}
+            to="/"
           >
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} />
-          </ListItemButton>
-        ))}
-      </List>
-    </Drawer>
+            Inicio
+          </Button>
+          <Button
+            className={`nav-link ${isActive('/products') ? 'active' : ''}`}
+            component={RouterLink}
+            to="/products"
+          >
+            Productos
+          </Button>
+          {isAdmin && (
+            <>
+              <Button className="nav-link" component={RouterLink} to="/admin/categories">
+                Categorías
+              </Button>
+              <Button className="nav-link" component={RouterLink} to="/admin/users">
+                Usuarios
+              </Button>
+            </>
+          )}
+        </div>
+
+        <div className="nav-user-section">
+          {isAuthenticated ? (
+            <>
+              <IconButton
+                className="nav-icon-button"
+                component={RouterLink}
+                to={`/users/${user?.userId}/cart`}
+                size="large"
+              >
+                <ShoppingCart />
+              </IconButton>
+              <IconButton
+                className="nav-icon-button"
+                onClick={(e) => setAnchorEl(e.currentTarget)}
+                size="large"
+              >
+                <AccountCircle />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={() => setAnchorEl(null)}
+                PaperProps={{
+                  elevation: 0,
+                  sx: {
+                    mt: 1.5,
+                    overflow: 'visible',
+                    filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                    '&:before': {
+                      content: '""',
+                      display: 'block',
+                      position: 'absolute',
+                      top: 0,
+                      right: 14,
+                      width: 10,
+                      height: 10,
+                      bgcolor: 'background.paper',
+                      transform: 'translateY(-50%) rotate(45deg)',
+                      zIndex: 0,
+                    },
+                  },
+                }}
+                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+              >
+                <MenuItem component={RouterLink} to={`/users/${user?.userId}`}>
+                  Mi Perfil
+                </MenuItem>
+                <MenuItem component={RouterLink} to="/my-products">
+                  Mis Productos
+                </MenuItem>
+                <MenuItem component={RouterLink} to="/exchanges">
+                  Intercambios
+                </MenuItem>
+                <MenuItem onClick={logout}>Cerrar Sesión</MenuItem>
+              </Menu>
+            </>
+          ) : (
+            <>
+              <Button color="inherit" component={RouterLink} to="/login">
+                Iniciar Sesión
+              </Button>
+              <Button color="inherit" component={RouterLink} to="/register">
+                Registrarse
+              </Button>
+            </>
+          )}
+        </div>
+      </Toolbar>
+    </AppBar>
   );
 }

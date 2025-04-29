@@ -6,6 +6,7 @@ import Hewwwe.dto.ExchangeResponseDTO;
 import Hewwwe.dto.ProductResponseDTO;
 import Hewwwe.dto.UserCreateDTO;
 import Hewwwe.dto.UserResponseDTO;
+import Hewwwe.dto.UserUpdateDTO;
 import Hewwwe.entity.*;
 import Hewwwe.exception.ResourceNotFoundException;
 import Hewwwe.services.UserService;
@@ -30,9 +31,26 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Tag(name = "User Controller", description = "User management endpoints")
 public class UserController {
-
     private final UserService userService;
     private final ModelMapper modelMapper;
+
+    @PostMapping("/register")
+    @Operation(summary = "Register a new user")
+    public ResponseEntity<UserResponseDTO> registerUser(@Valid @RequestBody UserCreateDTO userDTO) {
+        User user = modelMapper.map(userDTO, User.class);
+        User savedUser = userService.save(user);
+        return new ResponseEntity<>(modelMapper.map(savedUser, UserResponseDTO.class), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update user")
+    public ResponseEntity<UserResponseDTO> updateUser(
+            @PathVariable Long id,
+            @Valid @RequestBody UserUpdateDTO userDTO) {
+        User user = modelMapper.map(userDTO, User.class);
+        User updatedUser = userService.update(id, user);
+        return ResponseEntity.ok(modelMapper.map(updatedUser, UserResponseDTO.class));
+    }
 
     /**
      * Obtiene todos los usuarios registrados en el sistema.
@@ -61,35 +79,6 @@ public class UserController {
                 .map(user -> modelMapper.map(user, UserResponseDTO.class))
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
-    }
-
-    /**
-     * Crea un nuevo usuario.
-     *
-     * @param userDTO Datos del usuario a crear
-     * @return ResponseEntity con los detalles del usuario creado
-     */
-    @PostMapping
-    @Operation(summary = "Create a new user")
-    public ResponseEntity<UserCreateDTO> createUser(@Valid @RequestBody UserCreateDTO userDTO) {
-        User user = modelMapper.map(userDTO, User.class);
-        User savedUser = userService.save(user);
-        return new ResponseEntity<>(modelMapper.map(savedUser, UserCreateDTO.class), HttpStatus.CREATED);
-    }
-
-    /**
-     * Actualiza un usuario existente.
-     *
-     * @param id ID del usuario a actualizar
-     * @param userDTO Datos actualizados del usuario
-     * @return ResponseEntity con los detalles del usuario actualizado
-     */
-    @PutMapping("/{id}")
-    @Operation(summary = "Update an existing user")
-    public ResponseEntity<UserCreateDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserCreateDTO userDTO) {
-        User user = modelMapper.map(userDTO, User.class);
-        User updatedUser = userService.update(id, user);
-        return ResponseEntity.ok(modelMapper.map(updatedUser, UserCreateDTO.class));
     }
 
     /**

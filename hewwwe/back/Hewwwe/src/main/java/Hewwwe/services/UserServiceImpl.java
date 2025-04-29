@@ -8,11 +8,14 @@ import Hewwwe.entity.Cart;
 import Hewwwe.entity.Exchange;
 import Hewwwe.entity.Product;
 import Hewwwe.entity.User;
+import Hewwwe.exception.ResourceNotFoundException;
 import Hewwwe.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,8 +23,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<User> findAll() {
@@ -35,21 +38,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRegistrationDate(new Date());
         return userRepository.save(user);
     }
 
     @Override
     public User update(Long id, User user) {
-        return userRepository.findById(id).map(existingUser -> {
-            existingUser.setName(user.getName());
-            existingUser.setEmail(user.getEmail());
-            existingUser.setPhone(user.getPhone());
-            existingUser.setRole(user.getRole());
-            existingUser.setRegistrationDate(user.getRegistrationDate());
-            existingUser.setOauthToken(user.getOauthToken());
-
-            return userRepository.save(existingUser);
-        }).orElseThrow(() -> new RuntimeException("User not found"));
+        return userRepository.findById(id)
+            .map(existingUser -> {
+                existingUser.setName(user.getName());
+                existingUser.setEmail(user.getEmail());
+                existingUser.setPhone(user.getPhone());
+                existingUser.setUsername(user.getUsername());
+                existingUser.setRole(user.getRole());
+                
+                if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+                    existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+                }
+                
+                return userRepository.save(existingUser);
+            }).orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     public CartResponseDTO getCartByUserId(Long userId) {
@@ -64,7 +73,6 @@ public class UserServiceImpl implements UserService {
             return new CartResponseDTO(
                     cart.getCartId(),
                     cart.getCartDate(),
-                    cart.getStatus(),
                     user.getUserId(),
                     productIds
             );
@@ -123,7 +131,6 @@ public class UserServiceImpl implements UserService {
             return allExchanges.stream().map(exchange -> {
                 ExchangeResponseDTO dto = new ExchangeResponseDTO();
                 dto.setExchangeId(exchange.getExchangeId());
-                dto.setStatus(exchange.getStatus());
                 dto.setExchangeDate(exchange.getExchangeDate());
                 dto.setCompletionDate(exchange.getCompletionDate());
 

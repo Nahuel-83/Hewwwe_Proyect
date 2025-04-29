@@ -1,6 +1,7 @@
 package Hewwwe.entity;
 
 import Hewwwe.entity.enums.Rol;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.EnumType;
@@ -15,7 +16,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import jakarta.persistence.Column;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,24 +35,43 @@ public class User {
     private String name;
     private String email;
     private String phone;
+    
     @Enumerated(EnumType.STRING)
     private Rol role;
+    
     private Date registrationDate;
-    private String oauthToken;
+    
+    @JsonIgnore
+    private String password;
+    
+    @Column(unique = true)
+    private String username;
+    
+    private boolean isActive = true;
+    private Date lastLoginDate;
 
     // Relaciones
+    @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Cart cart; // 1-1 con Cart
+    private Cart cart;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Address> addresses; // 1-N con Address
+    private List<Address> addresses = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Product> products; // 1-N con Product
+    private List<Product> products = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Exchange> requestedExchanges; // 1-N con Exchange
+    private List<Exchange> requestedExchanges = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Exchange> ownedExchanges; // 1-N con Exchange
+    private List<Exchange> ownedExchanges = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Invoice> invoices = new ArrayList<>();
 }

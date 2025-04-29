@@ -2,75 +2,88 @@ package Hewwwe.services;
 
 import Hewwwe.entity.Cart;
 import Hewwwe.entity.Product;
+import Hewwwe.entity.Invoice;
+import Hewwwe.entity.Address;
+import Hewwwe.exception.ResourceNotFoundException;
 import Hewwwe.repository.CartRepository;
-import Hewwwe.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
-
     private final CartRepository cartRepository;
-    private final UserRepository userRepository;
-
+    private final InvoiceService invoiceService;
 
     @Override
-    public Cart saveCart(Cart cart) {
-        if (!userRepository.existsById(cart.getUser().getUserId())) {
-            throw new IllegalArgumentException("User with ID " + cart.getUser().getUserId() + " does not exist.");
-        }
+    public Cart findById(Long id) {
+        return cartRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
+    }
 
+    @Override
+    public Cart save(Cart cart) {
         return cartRepository.save(cart);
     }
 
     @Override
-    public Cart getCartById(Long id) {
-        return cartRepository.findById(id).orElse(null);
+    public Cart update(Long id, Cart cart) {
+        Cart existingCart = findById(id);
+        existingCart.setCartDate(cart.getCartDate());
+        existingCart.setProducts(cart.getProducts());
+        return cartRepository.save(existingCart);
     }
 
     @Override
-    public List<Cart> getAllCarts() {
-        return cartRepository.findAll();
-    }
-
-    @Override
-    public void deleteCartById(Long id) {
+    public void delete(Long id) {
         cartRepository.deleteById(id);
     }
 
     @Override
-    public Cart updateCart(Cart cart) {
-        if (!userRepository.existsById(cart.getUser().getUserId())) {
-            throw new IllegalArgumentException("User with ID " + cart.getUser().getUserId() + " does not exist.");
-        }
-        return cartRepository.save(cart);
+    public void checkoutCart(Long cartId, Address shippingAddress) {
+        Cart cart = findById(cartId);
+        
+        Invoice invoice = new Invoice();
+        invoice.setInvoiceDate(new Date());
+        invoice.setUser(cart.getUser());
+        invoice.setAddress(shippingAddress);
+        invoice.setProducts(new ArrayList<>(cart.getProducts()));
+        invoice.setTotalAmount(calculateTotal(cartId));
+        
+        invoiceService.save(invoice);
+        clearCart(cartId);
     }
 
-    public Cart addProductToCart(Long cartId, Product product) {
-        Cart cart = getCartById(cartId); // Validamos que el carrito exista
-
-        // Establecemos la relación bidireccional
-        product.setCart(cart);
+    @Override
+    public void addProduct(Long cartId, Product product) {
+        Cart cart = findById(cartId);
         cart.getProducts().add(product);
-
-        return cartRepository.save(cart);
-    }
-    public Cart removeProductFromCart(Long cartId, Long productId) {
-        Cart cart = getCartById(cartId); // Validamos que el carrito exista
-        Product productToRemove = cart.getProducts()
-                .stream()
-                .filter(product -> product.getProductId().equals(productId))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Product not found in the cart"));
-
-        // Eliminamos el producto de la lista
-        cart.getProducts().remove(productToRemove);
-
-        return cartRepository.save(cart); // Persistimos los cambios
+        cartRepository.save(cart);
     }
 
+    @Override
+    public void removeProduct(Long cartId, Long productId) {
+        Cart cart = findById(cartId);
+        cart.getProducts().removeIf(product -> product.getProductId().equals(productId));
+        cartRepository.save(cart);
+    }
 
+    @Override
+    public void clearCart(Long cartId) {
+        Cart cart = findById(cartId);
+        cart.clearCart();
+        cartRepository.save(cart);
+    }
+
+    @Override
+    public Double calculateTotal(Long cartId) {
+        Cart cart = findById(cartId);
+        return cart.getProducts().stream()
+                .mapToDouble(Product::getPrice)
+                .sum();
+    }
 }

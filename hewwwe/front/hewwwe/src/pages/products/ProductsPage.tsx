@@ -1,20 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Typography, Button, Card, CardMedia, CardContent, CardActions, Chip } from '@mui/material';
+import { Add as AddIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import {
-  Box,
-  Card,
-  CardContent,
-  CardMedia,
-  Typography,
-  Chip,
-} from '@mui/material';
 import { getAllProducts } from '../../api/products';
+import { useAuth } from '../../contexts/AuthContext';
 import type { Product } from '../../types';
 import { toast } from 'react-toastify';
+import '../../styles/pages/ProductsPage.css';
 
-const ProductsPage = () => {
+export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     loadProducts();
@@ -22,86 +20,73 @@ const ProductsPage = () => {
 
   const loadProducts = async () => {
     try {
+      setLoading(true);
       const response = await getAllProducts();
       setProducts(response.data);
     } catch (error) {
-      toast.error('Error al cargar productos');
+      toast.error('Error al cargar los productos');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" sx={{ mb: 4 }}>Productos</Typography>
-      
-      <Box sx={{ 
-        display: 'flex', 
-        flexWrap: 'wrap', 
-        gap: 3,
-        '& > *': { 
-          flexBasis: '300px',
-          flexGrow: 1,
-          maxWidth: 'calc(33.333% - 16px)',
-          '@media (max-width: 900px)': {
-            maxWidth: 'calc(50% - 16px)',
-          },
-          '@media (max-width: 600px)': {
-            maxWidth: '100%',
-          },
-        }
-      }}>
-        {products.map((product) => (
-          <Card 
-            key={product.productId}
-            sx={{ 
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              cursor: 'pointer'
-            }}
-            onClick={() => navigate(`/products/${product.productId}`)}
-          >
-            <CardMedia
-              component="img"
-              sx={{
-                height: 200,
-                objectFit: 'cover'
-              }}
-              image={product.image || 'https://via.placeholder.com/200'}
-              alt={product.name}
-            />
-            <CardContent sx={{ flexGrow: 1 }}>
-              <Typography gutterBottom variant="h6" component="h2">
-                {product.name}
-              </Typography>
-              <Typography 
-                color="text.secondary" 
-                sx={{ 
-                  mb: 2,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  display: '-webkit-box',
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: 'vertical',
-                }}
-              >
-                {product.description}
-              </Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div className="products-container">
+      <div className="products-content">
+        <div className="products-header">
+          <Typography variant="h4" className="products-title">
+            Productos
+          </Typography>
+          {isAuthenticated && (
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={() => navigate('/products/new')}
+              className="add-product-button"
+            >
+              Nuevo Producto
+            </Button>
+          )}
+        </div>
+
+        <div className="products-grid">
+          {products.map((product) => (
+            <Card
+              key={product.productId}
+              className="product-card"
+              onClick={() => navigate(`/products/${product.productId}`)}
+            >
+              <CardMedia
+                component="img"
+                className="product-image"
+                image={product.image}
+                alt={product.name}
+              />
+              <CardContent>
+                <Typography gutterBottom variant="h6" component="div">
+                  {product.name}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  {product.description}
+                </Typography>
                 <Typography variant="h6" color="primary">
                   {product.price}€
                 </Typography>
+              </CardContent>
+              <CardActions sx={{ p: 2, pt: 0 }}>
                 <Chip
                   label={product.status}
-                  color={product.status === 'AVAILABLE' ? 'success' : 'default'}
+                  color={
+                    product.status === 'AVAILABLE' ? 'success' :
+                    product.status === 'RESERVED' ? 'warning' : 'error'
+                  }
                   size="small"
                 />
-              </Box>
-            </CardContent>
-          </Card>
-        ))}
-      </Box>
-    </Box>
+              </CardActions>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </div>
   );
-};
-
-export default ProductsPage;
+}

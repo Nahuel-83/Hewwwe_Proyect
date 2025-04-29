@@ -11,11 +11,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExchangeResponseDTO {
-    Long exchangeId;
-    String status;
-    Date exchangeDate;
-    Date completionDate;
-    Long requesterId;
-    Long ownerId;
-    List<Long> productIds;
+    private Long exchangeId;
+    private Date exchangeDate;
+    private Date completionDate;
+    private Long requesterId;
+    private Long ownerId;
+    private List<Long> productIds;
 }

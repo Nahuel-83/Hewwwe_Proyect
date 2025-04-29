@@ -214,4 +214,10 @@ public class ProductServiceImpl implements ProductService {
         
         return userDTO;
     }
+
+    @Override
+    public Product getEntityById(Long id) {
+        return productRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+    }
 }

@@ -14,30 +14,24 @@ import java.util.List;
 @Table(name = "invoice")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class Invoice {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long invoiceId;
-
+    
     private Date invoiceDate;
     private Double totalAmount;
-
-
-    @Enumerated(EnumType.STRING)
-    private InvoiceStatus status;
-
+    
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user; // N-1 con User
-
-    @ManyToOne(optional = true)
-    @JoinColumn(name = "address_id", nullable = true)
-    private Address address; // N-1 con Address
-
-    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Product> products; // 1-N con Product
-
+    @JoinColumn(name = "address_id")
+    private Address address;
+    
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+    
+    @OneToMany(mappedBy = "invoice")
+    private List<Product> products;
 }

@@ -9,6 +9,7 @@ import java.util.List;
 public interface ProductService {
     List<ProductResponseDTO> findAll();
     ProductResponseDTO findById(Long id);
+    Product getEntityById(Long id);
     ProductResponseDTO save(Product product);
     ProductResponseDTO update(Long id, Product product);
     void delete(Long id);
