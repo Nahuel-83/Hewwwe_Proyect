@@ -24,11 +24,13 @@ import AdminInvoicesPage from './pages/admin/AdminInvoicesPage';
 import InvoicesPage from './pages/invoices/InvoicesPage';
 import MyProductsPage from './pages/products/MyProductsPage';
 import AdminProductsPage from './pages/admin/AdminProductsPage';
+import AdminUsersPage from './pages/admin/AdminUsersPage';
+import AdminExchangesPage from './pages/admin/AdminExchangesPage';
+import AdminAddressPage from './pages/admin/AdminAddressesPage';
 
 // Styles
 import 'react-toastify/dist/ReactToastify.css';
 import './styles/App.css';
-import AdminUsersPage from './pages/admin/AdminUsersPage';
 
 function App() {
   return (
@@ -39,10 +41,10 @@ function App() {
             <Route path="/" element={<MainLayout />}>
               {/* Public Routes */}
               <Route index element={<HomePage />} />
-              <Route path="products" element={<ProductsPage />} />
-              <Route path="products/:id" element={<ProductDetailPage />} />
               <Route path="login" element={<LoginPage />} />
               <Route path="register" element={<RegisterPage />} />
+              <Route path="products" element={<ProductsPage />} />
+              <Route path="products/:id" element={<ProductDetailPage />} />
               
               {/* Protected Routes */}
               <Route element={<ProtectedRoute />}>
@@ -64,7 +66,8 @@ function App() {
                 <Route path="admin/users" element={<AdminUsersPage />} />
                 <Route path="admin/invoices" element={<AdminInvoicesPage />} />
                 <Route path="admin/products" element={<AdminProductsPage />} />
-                <Route path="admin/invoices" element={<AdminInvoicesPage />} />
+                <Route path="admin/exchanges" element={<AdminExchangesPage />} />
+                <Route path='admin/addresses' element={<AdminAddressPage />} />
               </Route>
             </Route>
           </Routes>

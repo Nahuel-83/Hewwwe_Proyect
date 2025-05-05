@@ -1,13 +1,12 @@
 import api from './axios';
 import { Exchange } from '../types';
-import { ExchangeResponseDTO } from '../types/dtos';
 
-export const getAllExchanges = () => api.get<ExchangeResponseDTO[]>('/exchanges');
-export const getExchangeById = (id: number) => api.get<Exchange>(`/exchanges/${id}`);
+export const getAllExchanges = () => api.get<Exchange[]>('/api/exchanges');
+export const getExchangeById = (id: number) => api.get<Exchange>(`/api/exchanges/${id}`);
 export const createExchange = (exchange: Partial<Exchange>) => 
-  api.post<Exchange>('/exchanges', exchange);
+  api.post<Exchange>('/api/exchanges', exchange);
 export const updateExchangeStatus = (id: number, status: string) => 
-  api.put<Exchange>(`/exchanges/${id}/status`, { status });
+  api.put<Exchange>(`/api/exchanges/${id}/status`, { status });
+export const deleteExchange = (id: number) => api.delete(`/api/exchanges/${id}`);
 export const getUserExchanges = (userId: number) => 
-  api.get<Exchange[]>(`/users/${userId}/exchanges`);
-export const deleteExchange = (id: number) => api.delete(`/exchanges/${id}`);
+  api.get<Exchange[]>(`/api/users/${userId}/exchanges`);

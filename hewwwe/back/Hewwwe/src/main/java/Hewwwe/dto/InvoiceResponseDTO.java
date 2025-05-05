@@ -17,6 +17,7 @@ public class InvoiceResponseDTO{
         Double totalAmount;
         InvoiceStatus status;
         Long userId;
+        String userName;
         Long addressId;
         List<Long> productIds;
         String pdfUrl;

@@ -2,7 +2,6 @@ package Hewwwe.controller;
 
 import Hewwwe.dto.CartCreateDTO;
 import Hewwwe.dto.CartResponseDTO;
-import Hewwwe.dto.ProductResponseDTO;
 import Hewwwe.entity.Address;
 import Hewwwe.entity.Cart;
 import Hewwwe.entity.Product;
@@ -17,8 +16,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 @RestController
 @RequestMapping("/api/carts")
 @RequiredArgsConstructor

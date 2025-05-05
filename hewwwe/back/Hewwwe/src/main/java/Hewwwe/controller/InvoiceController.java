@@ -5,6 +5,7 @@ import Hewwwe.dto.InvoiceResponseDTO;
 import Hewwwe.entity.Invoice;
 import Hewwwe.services.InvoiceService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,16 @@ import java.util.stream.Collectors;
 public class InvoiceController {
     private final InvoiceService invoiceService;
     private final ModelMapper modelMapper;
+
+    @GetMapping
+    @Operation(summary = "Get all invoices")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved invoices")
+    public ResponseEntity<List<InvoiceResponseDTO>> getAllInvoices() {
+        List<InvoiceResponseDTO> invoices = invoiceService.findAll().stream()
+                .map(invoice -> modelMapper.map(invoice, InvoiceResponseDTO.class))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(invoices);
+    }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get an invoice by ID")

@@ -11,7 +11,7 @@
 
 .admin-categories-content {
   padding: 24px;
-  max-width: 1200px;
+  width: 95%; /* Cambiado de max-width fijo a ancho porcentual */
   margin: 0 auto;
 }
 

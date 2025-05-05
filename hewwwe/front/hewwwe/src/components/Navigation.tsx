@@ -16,20 +16,26 @@ export default function Navigation() {
     if (!isAdmin) return null;
     
     return (
-      <>
+      <Box sx={{ display: 'flex', gap: 1 }}>
         <Button className="nav-link" component={RouterLink} to="/admin/products">
-          Gestionar Productos
+          Productos
         </Button>
         <Button className="nav-link" component={RouterLink} to="/admin/categories">
-          Gestionar Categorías
+          Categorías
         </Button>
         <Button className="nav-link" component={RouterLink} to="/admin/users">
-          Gestionar Usuarios
+          Usuarios
+        </Button>
+        <Button className="nav-link" component={RouterLink} to="/admin/exchanges">
+          Intercambios
         </Button>
         <Button className="nav-link" component={RouterLink} to="/admin/invoices">
-          Gestionar Facturas
+          Facturas
         </Button>
-      </>
+        <Button className='nav-link' component={RouterLink} to="/admin/addresses">
+          Direcciones
+        </Button>
+      </Box>
     );
   };
 
@@ -89,13 +95,15 @@ export default function Navigation() {
           >
             Inicio
           </Button>
-          <Button
-            className={`nav-link ${isActive('/products') ? 'active' : ''}`}
-            component={RouterLink}
-            to="/products"
-          >
-            Productos
-          </Button>
+          {!isAuthenticated && (
+            <Button
+              className={`nav-link ${isActive('/products') ? 'active' : ''}`}
+              component={RouterLink}
+              to="/products"
+            >
+              Productos
+            </Button>
+          )}
           {renderAdminMenu()}
         </div>
 

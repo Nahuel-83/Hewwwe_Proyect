@@ -15,4 +15,5 @@ public class AddressResponseDTO {
     String country;
     String postalCode;
     Long userId;
+    String userName;
 }

@@ -2,11 +2,6 @@ package Hewwwe.controller;
 
 import Hewwwe.dto.LoginRequest;
 import Hewwwe.dto.LoginResponse;
-import Hewwwe.dto.UserCreateDTO;
-import Hewwwe.entity.User;
-import Hewwwe.entity.Address;
-import Hewwwe.entity.enums.Rol;
-import Hewwwe.services.UserService;
 import jakarta.validation.Valid;
 import Hewwwe.services.AuthService;
 import lombok.RequiredArgsConstructor;

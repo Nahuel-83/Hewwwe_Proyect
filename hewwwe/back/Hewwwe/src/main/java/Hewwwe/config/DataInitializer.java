@@ -95,7 +95,8 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private Address createAddress(User user, String city, String country, String number, String postalCode, String street) {
-        Address address = new Address();        address.setCity(city);
+        Address address = new Address();        
+        address.setCity(city);
         address.setCountry(country);
         address.setNumber(number);
         address.setPostalCode(postalCode);

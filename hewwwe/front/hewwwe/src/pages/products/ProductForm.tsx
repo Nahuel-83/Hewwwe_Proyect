@@ -8,7 +8,8 @@ import {
   MenuItem,
   Paper
 } from '@mui/material';
-import { createProduct, getProductById, updateProduct, getAllCategories } from '../../api/services';
+import { createProduct, getProductById, updateProduct } from '../../api/products';
+import { getAllCategories } from '../../api/categories';
 import type { Product, Category } from '../../types';
 import { toast } from 'react-toastify';
 

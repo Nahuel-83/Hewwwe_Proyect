@@ -90,7 +90,8 @@ public class UserServiceImpl implements UserService {
                                 address.getCity(),
                                 address.getCountry(),
                                 address.getPostalCode(),
-                                user.getUserId()
+                                user.getUserId(),
+                                user.getName()
                         )
                 ).collect(Collectors.toList())
         ).orElse(List.of());
@@ -127,23 +128,32 @@ public class UserServiceImpl implements UserService {
             List<Exchange> allExchanges = new ArrayList<>();
             allExchanges.addAll(user.getRequestedExchanges());
             allExchanges.addAll(user.getOwnedExchanges());
-
+    
             return allExchanges.stream().map(exchange -> {
                 ExchangeResponseDTO dto = new ExchangeResponseDTO();
                 dto.setExchangeId(exchange.getExchangeId());
                 dto.setExchangeDate(exchange.getExchangeDate());
                 dto.setCompletionDate(exchange.getCompletionDate());
-
-                // IDs de usuarios
-                dto.setRequesterId(exchange.getRequester() != null ? exchange.getRequester().getUserId() : null);
-                dto.setOwnerId(exchange.getOwner() != null ? exchange.getOwner().getUserId() : null);
-
-                // IDs de productos (suponiendo que tienes una lista de productos)
-                List<Long> productIds = exchange.getProducts().stream()
-                        .map(Product::getProductId)
-                        .collect(Collectors.toList());
+    
+                // Usuarios
+                if (exchange.getRequester() != null) {
+                    dto.setRequesterId(exchange.getRequester().getUserId());
+                    dto.setRequesterName(exchange.getRequester().getName()); 
+                }
+                if (exchange.getOwner() != null) {
+                    dto.setOwnerId(exchange.getOwner().getUserId());
+                    dto.setOwnerName(exchange.getOwner().getName()); 
+                }
+    
+                // Productos
+                List<Long> productIds = new ArrayList<>();
+                List<String> productNames = new ArrayList<>();
+                for (Product p : exchange.getProducts()) {
+                    productIds.add(p.getProductId());
+                    productNames.add(p.getName()); 
+                }
                 dto.setProductIds(productIds);
-
+    
                 return dto;
             }).collect(Collectors.toList());
         }).orElse(List.of());

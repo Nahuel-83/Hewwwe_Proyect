@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import {
-  Box,
   Typography,
   Table,
   TableBody,
@@ -10,36 +9,23 @@ import {
   TableRow,
   Paper,
   IconButton,
-  Chip,
   TextField,
-  InputAdornment,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  List,
-  ListItem,
-  ListItemText,
-  Button, 
-  DialogActions
+  InputAdornment
 } from '@mui/material';
 import {
   Delete as DeleteIcon,
   Edit as EditIcon,
-  GetApp as DownloadIcon,
   Search as SearchIcon
 } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import { getAllInvoices, deleteInvoice } from '../../api/invoices';
 import { Invoice } from '../../types';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
 import '../../styles/pages/admin/AdminInvoicesPage.css';
 
 export default function AdminInvoicesPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
-  const [detailsOpen, setDetailsOpen] = useState(false);
-  const [invoiceToDelete, setInvoiceToDelete] = useState<number | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,34 +41,27 @@ export default function AdminInvoicesPage() {
     }
   };
 
-  const handleDelete = async () => {
-    if (!invoiceToDelete) return;
+  const handleDelete = async (id: number) => {
+    if (!window.confirm('¿Estás seguro de eliminar esta factura?')) return;
     try {
-      await deleteInvoice(invoiceToDelete);
+      await deleteInvoice(id);
       toast.success('Factura eliminada correctamente');
       loadInvoices();
     } catch (error) {
       toast.error('Error al eliminar la factura');
-    } finally {
-      setInvoiceToDelete(null);
     }
   };
 
-  const handleViewDetails = (invoice: Invoice) => {
-    setSelectedInvoice(invoice);
-    setDetailsOpen(true);
-  };
-
   const filteredInvoices = invoices.filter(invoice =>
-    invoice.user?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (invoice.userName.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
     invoice.invoiceId.toString().includes(searchTerm)
   );
 
   return (
-    <div className="admin-invoices-container">
-      <div className="admin-invoices-content">
-        <div className="admin-invoices-header">
-          <Typography variant="h4" className="admin-invoices-title">
+    <div className="admin-products-container">
+      <div className="admin-products-content">
+        <div className="admin-products-header">
+          <Typography variant="h4" className="admin-products-title">
             Gestión de Facturas
           </Typography>
           <TextField
@@ -109,8 +88,6 @@ export default function AdminInvoicesPage() {
                 <TableCell>Usuario</TableCell>
                 <TableCell>Fecha</TableCell>
                 <TableCell>Total</TableCell>
-                <TableCell>Tipo</TableCell>
-                <TableCell>Estado</TableCell>
                 <TableCell>Acciones</TableCell>
               </TableRow>
             </TableHead>
@@ -118,25 +95,11 @@ export default function AdminInvoicesPage() {
               {filteredInvoices.map((invoice) => (
                 <TableRow key={invoice.invoiceId}>
                   <TableCell>{invoice.invoiceId}</TableCell>
-                  <TableCell>{invoice.user.name}</TableCell>
+                  <TableCell>{invoice.userName || 'Sin usuario'}</TableCell>
                   <TableCell>
-                    {new Date(invoice.invoiceDate).toLocaleDateString()}
+                    {invoice.invoiceDate ? new Date(invoice.invoiceDate).toLocaleDateString() : 'Fecha inválida'}
                   </TableCell>
                   <TableCell>{invoice.totalAmount}€</TableCell>
-                  <TableCell>
-                    <Chip
-                      label={invoice.type}
-                      color={invoice.type === 'PURCHASE' ? 'primary' : 'secondary'}
-                      size="small"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Chip
-                      label={invoice.status}
-                      color={invoice.status === 'PAID' ? 'success' : 'warning'}
-                      size="small"
-                    />
-                  </TableCell>
                   <TableCell>
                     <IconButton 
                       size="small" 
@@ -147,15 +110,9 @@ export default function AdminInvoicesPage() {
                     <IconButton 
                       size="small" 
                       color="error"
-                      onClick={() => setInvoiceToDelete(invoice.invoiceId)}
+                      onClick={() => handleDelete(invoice.invoiceId)}
                     >
                       <DeleteIcon />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      onClick={() => handleViewDetails(invoice)}
-                    >
-                      <DownloadIcon />
                     </IconButton>
                   </TableCell>
                 </TableRow>
@@ -163,76 +120,6 @@ export default function AdminInvoicesPage() {
             </TableBody>
           </Table>
         </TableContainer>
-
-        {/* Confirmation Dialog */}
-        <Dialog open={Boolean(invoiceToDelete)} onClose={() => setInvoiceToDelete(null)}>
-          <DialogTitle>Confirmar eliminación</DialogTitle>
-          <DialogContent>
-            ¿Estás seguro de que deseas eliminar esta factura? Esta acción no se puede deshacer.
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setInvoiceToDelete(null)}>Cancelar</Button>
-            <Button onClick={handleDelete} color="error" variant="contained">
-              Eliminar
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        {/* Details Dialog */}
-        <Dialog open={detailsOpen} onClose={() => setDetailsOpen(false)} maxWidth="md" fullWidth>
-          <DialogTitle>
-            Detalle de Factura #{selectedInvoice?.invoiceId}
-          </DialogTitle>
-          <DialogContent>
-            {selectedInvoice && (
-              <Box>
-                <Typography variant="subtitle1" gutterBottom>
-                  Información General
-                </Typography>
-                <List>
-                  <ListItem>
-                    <ListItemText 
-                      primary="Cliente"
-                      secondary={selectedInvoice.user.name}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText 
-                      primary="Fecha"
-                      secondary={new Date(selectedInvoice.invoiceDate).toLocaleDateString()}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText 
-                      primary="Dirección de Envío"
-                      secondary={`${selectedInvoice.address.street}, ${selectedInvoice.address.city}`}
-                    />
-                  </ListItem>
-                </List>
-
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
-                  Productos
-                </Typography>
-                <List>
-                  {selectedInvoice.products.map(product => (
-                    <ListItem key={product.productId}>
-                      <ListItemText
-                        primary={product.name}
-                        secondary={`${product.price}€`}
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-
-                <Box display="flex" justifyContent="space-between" mt={3}>
-                  <Typography variant="h6">
-                    Total: {selectedInvoice.totalAmount}€
-                  </Typography>
-                </Box>
-              </Box>
-            )}
-          </DialogContent>
-        </Dialog>
       </div>
     </div>
   );

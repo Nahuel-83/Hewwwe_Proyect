@@ -42,7 +42,8 @@ export interface Address {
   city: string;
   country: string;
   postalCode: string;
-  user?: User;
+  userId: number;
+  userName: string;
 }
 
 export interface Cart {
@@ -58,8 +59,10 @@ export interface Exchange {
   exchangeDate: string;
   completionDate?: string;
   status: ExchangeStatus;
-  owner: User;
-  requester: User;
+  owner: number;
+  ownerName: string;
+  requester: number;
+  requesterName: string;
   products: Product[];
 }
 
@@ -68,10 +71,10 @@ export interface Invoice {
   invoiceDate: string;
   totalAmount: number;
   status: InvoiceStatus;
-  type: InvoiceType;
-  user: User;
-  address: Address;
-  products: Product[];
+  userId: number;
+  userName: string;
+  addressId: number;
+  productIds: Product[];
 }
 
 // DTOs
