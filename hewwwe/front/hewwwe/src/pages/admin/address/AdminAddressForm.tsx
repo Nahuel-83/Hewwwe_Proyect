@@ -7,8 +7,8 @@ import {
   Typography,
   Paper,
 } from '@mui/material';
-import { createAddress, getAddressById, updateAddress } from '../../api/addresses';
-import type { AddressCreateDTO } from '../../types/dtos';
+import { createAddress, getAddressById, updateAddress } from '../../../api/addresses';
+import type { AddressCreateDTO } from '../../../types/dtos';
 import { toast } from 'react-toastify';
 
 export default function AddressForm() {
@@ -36,7 +36,7 @@ export default function AddressForm() {
       setAddress(response.data);
     } catch (error) {
       toast.error('Error al cargar dirección');
-      navigate('/addresses');
+      navigate('/admin/addresses');
     }
   };
 
@@ -49,10 +49,13 @@ export default function AddressForm() {
       } else {
         // Aquí deberías obtener el userId de algún contexto de autenticación
         const userId = 1; // Ejemplo
-        await createAddress(userId, address as AddressCreateDTO);
+        await createAddress({
+          ...address,
+          userId,
+        } as AddressCreateDTO);        
         toast.success('Dirección creada');
       }
-      navigate('/addresses');
+      navigate('/admin/addresses');
     } catch (error) {
       toast.error('Error al guardar dirección');
     }
@@ -113,7 +116,7 @@ export default function AddressForm() {
             <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
               <Button 
                 type="button" 
-                onClick={() => navigate('/addresses')}
+                onClick={() => navigate('/admin/addresses')}
               >
                 Cancelar
               </Button>

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { TextField, Button, Paper, Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { register, RegisterRequest } from '../../api/register';
+import { register, RegisterRequest } from '../../api/auth';
 import { toast } from 'react-toastify';
-import '../../styles/pages/auth/Register.css';
+import '../../styles/pages/auth/Register.css';  
 
 export default function RegisterPage() {
   const [userData, setUserData] = useState<RegisterRequest>({

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { use, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -7,21 +7,24 @@ import {
   Button,
   Typography,
 } from '@mui/material';
-import { register } from '../../api/auth';
+import { register } from '../../api/auth'; 
 import { toast } from 'react-toastify';
 
 export default function Register() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
+    username: '',
     email: '',
-    phone: '',
     password: '',
-    street: '',
-    number: '',
-    city: '',
-    country: '',
-    postalCode: '',
+    name: '',
+    phone: '',
+    address: {
+      street: '',
+      number: '',
+      city: '',
+      country: '',
+      postalCode: '',
+    },
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -100,7 +103,7 @@ export default function Register() {
                 fullWidth
                 label="Street"
                 name="street"
-                value={formData.street}
+                value={formData.address.street}
                 onChange={handleChange}
                 required
               />
@@ -110,7 +113,7 @@ export default function Register() {
                 fullWidth
                 label="Number"
                 name="number"
-                value={formData.number}
+                value={formData.address.number}
                 onChange={handleChange}
                 required
               />
@@ -120,7 +123,7 @@ export default function Register() {
                 fullWidth
                 label="City"
                 name="city"
-                value={formData.city}
+                value={formData.address.city}
                 onChange={handleChange}
                 required
               />
@@ -130,7 +133,7 @@ export default function Register() {
                 fullWidth
                 label="Country"
                 name="country"
-                value={formData.country}
+                value={formData.address.country}
                 onChange={handleChange}
                 required
               />
@@ -140,7 +143,7 @@ export default function Register() {
                 fullWidth
                 label="Postal Code"
                 name="postalCode"
-                value={formData.postalCode}
+                value={formData.address.postalCode}
                 onChange={handleChange}
                 required
               />

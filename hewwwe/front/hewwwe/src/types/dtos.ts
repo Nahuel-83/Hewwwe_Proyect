@@ -79,6 +79,7 @@ export interface AddressCreateDTO {
   city: string;
   country: string;
   postalCode: string;
+  userId: number;
 }
 
 export interface CartCreateDTO {

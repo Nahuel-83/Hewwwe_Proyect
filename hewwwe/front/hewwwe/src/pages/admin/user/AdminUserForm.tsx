@@ -6,13 +6,12 @@ import {
   TextField,
   Button,
   Typography,
-  MenuItem,
   CircularProgress
 } from '@mui/material';
-import { createUser, getUserById, updateUser } from '../../api/users';
+import { createUser, getUserById, updateUser } from '../../../api/users';
 import { toast } from 'react-toastify';
-import '../../styles/common/loading.css';
-import '../../styles/forms/form.css';
+import '../../../styles/common/loading.css';
+import '../../../styles/forms/form.css';
 
 interface UserFormData {
   name: string;
@@ -56,7 +55,7 @@ export default function UserForm() {
       });
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Error al cargar el usuario');
-      navigate('/users');
+      navigate('/admin/users');
     } finally {
       setLoading(false);
     }
@@ -84,7 +83,7 @@ export default function UserForm() {
         await createUser(formData);
         toast.success('Usuario creado correctamente');
       }
-      navigate('/users');
+      navigate('/admin/users');
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Error al guardar el usuario');
     } finally {
@@ -143,19 +142,6 @@ export default function UserForm() {
             fullWidth
           />
           
-          <TextField
-            select
-            label="Rol"
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            required
-            fullWidth
-          >
-            <MenuItem value="USER">Usuario</MenuItem>
-            <MenuItem value="ADMIN">Administrador</MenuItem>
-          </TextField>
-          
           {!isEdit && (
             <TextField
               label="Contraseña"
@@ -169,7 +155,7 @@ export default function UserForm() {
           )}
 
           <Box className="form-actions">
-            <Button type="button" onClick={() => navigate('/users')}>
+            <Button type="button" onClick={() => navigate('/admin/users')}>
               Cancelar
             </Button>
             <Button type="submit" variant="contained" disabled={loading}>

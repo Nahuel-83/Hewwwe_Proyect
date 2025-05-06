@@ -79,7 +79,6 @@ public class ProductServiceImpl implements ProductService {
                     existingProduct.setImage(product.getImage());
                     existingProduct.setSize(product.getSize());
                     existingProduct.setStatus(product.getStatus());
-                    existingProduct.setPublicationDate(product.getPublicationDate());
 
                     // Update relationships if provided
                     if (product.getCategory() != null && product.getCategory().getCategoryId() != null) {

@@ -8,6 +8,7 @@ import Hewwwe.entity.Cart;
 import Hewwwe.entity.Exchange;
 import Hewwwe.entity.Product;
 import Hewwwe.entity.User;
+import Hewwwe.entity.enums.Rol;
 import Hewwwe.exception.ResourceNotFoundException;
 import Hewwwe.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +52,7 @@ public class UserServiceImpl implements UserService {
                 existingUser.setEmail(user.getEmail());
                 existingUser.setPhone(user.getPhone());
                 existingUser.setUsername(user.getUsername());
-                existingUser.setRole(user.getRole());
+                existingUser.setRole(Rol.USER);
                 
                 if (user.getPassword() != null && !user.getPassword().isEmpty()) {
                     existingUser.setPassword(passwordEncoder.encode(user.getPassword()));

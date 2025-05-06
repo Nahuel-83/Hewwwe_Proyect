@@ -14,19 +14,24 @@ export interface User {
 }
 
 export interface Product {
-  productId: number;
+  productId?: number;
   name: string;
   description: string;
   price: number;
-  image: string;
-  status: ProductStatus;
+  image?: string;
   size: string;
-  publicationDate: string;
-  user: User;
-  category: Category;
+  status: 'AVAILABLE' | 'SOLD' | 'RESERVED';
+  categoryId: number;
+  publicationDate?: string;
+
+  userId?: number;
+  userName?: string;
+  userEmail?: string;
+  categoryName?: string;
   exchanges?: Exchange[];
   cart?: Cart;
 }
+
 
 export interface Category {
   categoryId: number;

@@ -7,30 +7,37 @@ import ProtectedRoute from './components/routes/ProtectedRoute';
 import AdminRoute from './components/routes/AdminRoute';
 import { theme } from './theme';
 
-// Pages
+// Pages Public
 import HomePage from './pages/HomePage';
 import ProductsPage from './pages/products/ProductsPage';
 import ProductDetailPage from './pages/products/ProductDetailPage';
-import ProductForm from './pages/products/ProductForm';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
+
+// Pages Protected
 import UserDetailPage from './pages/users/UserDetailPage';
 import CartPage from './pages/cart/CartPage';
 import ExchangesPage from './pages/exchanges/ExchangesPage';
 import AddressesPage from './pages/addresses/AddressesPage';
-import AddressForm from './pages/addresses/AddressForm';
-import AdminCategoriesPage from './pages/admin/AdminCategoriesPage';
-import AdminInvoicesPage from './pages/admin/AdminInvoicesPage';
+
+// Pages Admin
+import AdminCategoriesPage from './pages/admin/category/AdminCategoriesPage';
+import AdminInvoicesPage from './pages/admin/invoice/AdminInvoicesPage';
 import InvoicesPage from './pages/invoices/InvoicesPage';
 import MyProductsPage from './pages/products/MyProductsPage';
-import AdminProductsPage from './pages/admin/AdminProductsPage';
-import AdminUsersPage from './pages/admin/AdminUsersPage';
-import AdminExchangesPage from './pages/admin/AdminExchangesPage';
-import AdminAddressPage from './pages/admin/AdminAddressesPage';
+import AdminProductsPage from './pages/admin/product/AdminProductsPage';
+import AdminUsersPage from './pages/admin/user/AdminUsersPage';
+import AdminExchangesPage from './pages/admin/exchange/AdminExchangesPage';
+import AdminAddressPage from './pages/admin/address/AdminAddressesPage';
+import AdminCategoryForm from './pages/admin/category/AdminCategoryForm';
+import AdminProductForm from './pages/admin/product/AdminProductForm';
+import AdminUserForm from './pages/admin/user/AdminUserForm';
+import AdminAddressForm from './pages/admin/address/AdminAddressForm';
 
 // Styles
 import 'react-toastify/dist/ReactToastify.css';
 import './styles/App.css';
+
 
 function App() {
   return (
@@ -49,13 +56,9 @@ function App() {
               {/* Protected Routes */}
               <Route element={<ProtectedRoute />}>
                 <Route path="my-products" element={<MyProductsPage />} />
-                <Route path="products/new" element={<ProductForm />} />
-                <Route path="products/:id/edit" element={<ProductForm />} />
                 <Route path="users/:id" element={<UserDetailPage />} />
                 <Route path="users/:id/cart" element={<CartPage />} />
                 <Route path="addresses" element={<AddressesPage />} />
-                <Route path="addresses/new" element={<AddressForm />} />
-                <Route path="addresses/:id/edit" element={<AddressForm />} />
                 <Route path="exchanges" element={<ExchangesPage />} />
                 <Route path="invoices" element={<InvoicesPage />} />
               </Route>
@@ -63,11 +66,21 @@ function App() {
               {/* Admin Routes */}
               <Route element={<AdminRoute />}>
                 <Route path="admin/categories" element={<AdminCategoriesPage />} />
+                <Route path="admin/categories/new" element={<AdminCategoryForm />} />
+                <Route path="admin/categories/:id/edit" element={<AdminCategoryForm />} />
+
                 <Route path="admin/users" element={<AdminUsersPage />} />
+                <Route path="admin/users/:id/edit" element={<AdminUserForm />} />
+
                 <Route path="admin/invoices" element={<AdminInvoicesPage />} />
+
                 <Route path="admin/products" element={<AdminProductsPage />} />
+                <Route path="admin/products/:id/edit" element={<AdminProductForm />} />
+
                 <Route path="admin/exchanges" element={<AdminExchangesPage />} />
+
                 <Route path='admin/addresses' element={<AdminAddressPage />} />
+                <Route path='admin/addresses/:id/edit' element={<AdminAddressForm />} />
               </Route>
             </Route>
           </Routes>

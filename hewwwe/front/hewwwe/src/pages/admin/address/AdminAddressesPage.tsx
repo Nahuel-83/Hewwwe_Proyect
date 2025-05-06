@@ -10,8 +10,7 @@ import {
   Paper,
   IconButton,
   TextField,
-  InputAdornment,
-  Button
+  InputAdornment
 } from '@mui/material';
 import {
   Delete as DeleteIcon,
@@ -19,13 +18,13 @@ import {
   Search as SearchIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { getAllAddresses, deleteAddress } from '../../api/addresses';
-import { Address } from '../../types';
+import { getAllAddresses, deleteAddress } from '../../../api/addresses';
+import { Address } from '../../../types';
 import { toast } from 'react-toastify';
-import '../../styles/pages/admin/AdminExchangesPage.css';
+import '../../../styles/pages/admin/AdminExchangesPage.css';
 
 export default function AdminAddressPage() {
-  const [addresses, setExchanges] = useState<Address[]>([]);
+  const [addresses, setAddresses] = useState<Address[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
@@ -36,7 +35,7 @@ export default function AdminAddressPage() {
   const loadAddresses = async () => {
     try {
       const response = await getAllAddresses();
-      setExchanges(response.data);
+      setAddresses(response.data);
     } catch (error) {
       toast.error('Error al cargar direcciones');
     }
@@ -119,7 +118,7 @@ export default function AdminAddressPage() {
                     <IconButton
                       size="small"
                       color="primary"
-                      onClick={() => navigate(`/addresses/${address.addressId}`)}
+                      onClick={() => navigate(`/admin/addresses/${address.addressId}/edit`)}
                     >
                       <EditIcon />
                     </IconButton>

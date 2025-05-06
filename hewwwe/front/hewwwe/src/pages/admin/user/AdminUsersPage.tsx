@@ -24,10 +24,10 @@ import {
   Search as SearchIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { getAllUsers, deleteUser } from '../../api/users';
-import { User } from '../../types';
+import { getAllUsers, deleteUser } from '../../../api/users';
+import { User } from '../../../types';
 import { toast } from 'react-toastify';
-import '../../styles/pages/admin/AdminUsersPage.css';
+import '../../../styles/pages/admin/AdminUsersPage.css';
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -97,7 +97,6 @@ export default function AdminUsersPage() {
                 <TableCell>Nombre</TableCell>
                 <TableCell>Email</TableCell>
                 <TableCell>Rol</TableCell>
-                <TableCell>Estado</TableCell>
                 <TableCell>Acciones</TableCell>
               </TableRow>
             </TableHead>
@@ -111,13 +110,6 @@ export default function AdminUsersPage() {
                     <Chip
                       label={user.role}
                       color={user.role === 'ADMIN' ? 'secondary' : 'primary'}
-                      size="small"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Chip
-                      label={user.isActive ? 'Activo' : 'Inactivo'}
-                      color={user.isActive ? 'success' : 'error'}
                       size="small"
                     />
                   </TableCell>

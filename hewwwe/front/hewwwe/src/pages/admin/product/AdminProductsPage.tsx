@@ -19,10 +19,10 @@ import {
   Search as SearchIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { getAllProducts, deleteProduct } from '../../api/products';
-import { Product } from '../../types';
+import { getAllProducts, deleteProduct } from '../../../api/products';
+import { Product } from '../../../types';
 import { toast } from 'react-toastify';
-import '../../styles/pages/admin/AdminProductsPage.css';
+import '../../../styles/pages/admin/AdminProductsPage.css';
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -90,6 +90,7 @@ export default function AdminProductsPage() {
                 <TableCell>Precio</TableCell>
                 <TableCell>Estado</TableCell>
                 <TableCell>Usuario</TableCell>
+                <TableCell>Categoria</TableCell>
                 <TableCell>Acciones</TableCell>
               </TableRow>
             </TableHead>
@@ -105,21 +106,27 @@ export default function AdminProductsPage() {
                       color={product.status === 'AVAILABLE' ? 'success' : 'default'}
                     />
                   </TableCell>
-                  <TableCell>{product.name}</TableCell>
+                  <TableCell>{product.userName}</TableCell>
+                  <TableCell>{product.categoryName}</TableCell>
                   <TableCell>
-                    <IconButton 
-                      size="small" 
-                      onClick={() => navigate(`/products/${product.productId}/edit`)}
+                    <IconButton
+                      size="small"
+                      onClick={() => navigate(`/admin/products/${product.productId}/edit`)}
                     >
                       <EditIcon />
                     </IconButton>
-                    <IconButton 
-                      size="small" 
+                    <IconButton
+                      size="small"
                       color="error"
-                      onClick={() => handleDelete(product.productId)}
+                      onClick={() => {
+                        if (product.productId !== undefined) {
+                          handleDelete(product.productId);
+                        }
+                      }}
                     >
                       <DeleteIcon />
                     </IconButton>
+
                   </TableCell>
                 </TableRow>
               ))}

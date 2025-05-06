@@ -15,19 +15,16 @@ import {
 } from '@mui/material';
 import {
   Delete as DeleteIcon,
-  Edit as EditIcon,
   Search as SearchIcon
 } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
-import { getAllExchanges, deleteExchange, updateExchangeStatus } from '../../api/exchanges';
-import { Exchange } from '../../types';
+import { getAllExchanges, deleteExchange, updateExchangeStatus } from '../../../api/exchanges';
+import { Exchange } from '../../../types';
 import { toast } from 'react-toastify';
-import '../../styles/pages/admin/AdminExchangesPage.css';
+import '../../../styles/pages/admin/AdminExchangesPage.css';
 
 export default function AdminExchangesPage() {
   const [exchanges, setExchanges] = useState<Exchange[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const navigate = useNavigate();
 
   useEffect(() => {
     loadExchanges();
@@ -121,12 +118,6 @@ export default function AdminExchangesPage() {
                     {new Date(exchange.exchangeDate).toLocaleDateString()}
                   </TableCell>
                   <TableCell>
-                    <IconButton
-                      size="small"
-                      onClick={() => navigate(`/exchanges/${exchange.exchangeId}`)}
-                    >
-                      <EditIcon />
-                    </IconButton>
                     <IconButton
                       size="small"
                       color="error"

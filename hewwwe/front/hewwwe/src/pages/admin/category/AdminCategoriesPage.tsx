@@ -25,10 +25,10 @@ import {
   Search as SearchIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { getAllCategories, deleteCategory } from '../../api/categories';
-import { Category } from '../../types';
+import { getAllCategories, deleteCategory } from '../../../api/categories';
+import { Category } from '../../../types';
 import { toast } from 'react-toastify';
-import '../../styles/pages/admin/AdminCategoriesPage.css';
+import '../../../styles/pages/admin/AdminCategoriesPage.css';
 
 const AdminCategoriesPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -96,7 +96,7 @@ const AdminCategoriesPage = () => {
             <Button
               variant="contained"
               startIcon={<AddIcon />}
-              onClick={() => navigate('/categories/new')}
+              onClick={() => navigate('/admin/categories/new')}
             >
               Nueva Categoría
             </Button>
@@ -122,7 +122,7 @@ const AdminCategoriesPage = () => {
                   <TableCell>
                     <IconButton 
                       size="small" 
-                      onClick={() => navigate(`/categories/${category.categoryId}/edit`)}
+                      onClick={() => navigate(`/admin/categories/${category.categoryId}/edit`)}
                     >
                       <EditIcon />
                     </IconButton>

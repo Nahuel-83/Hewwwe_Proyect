@@ -22,9 +22,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      console.log('Enviando credenciales:', credentials);
       const response = await login(credentials);
-      console.log('Respuesta del servidor:', response.data);
       
       if (response.data.success) {
         authLogin(response.data.data);

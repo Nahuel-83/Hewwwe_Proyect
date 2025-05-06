@@ -8,9 +8,9 @@ import {
   MenuItem,
   Paper
 } from '@mui/material';
-import { createProduct, getProductById, updateProduct } from '../../api/products';
-import { getAllCategories } from '../../api/categories';
-import type { Product, Category } from '../../types';
+import { createProduct, getProductById, updateProduct } from '../../../api/products';
+import { getAllCategories } from '../../../api/categories';
+import type { Product, Category } from '../../../types';
 import { toast } from 'react-toastify';
 
 export default function ProductForm() {
@@ -21,7 +21,7 @@ export default function ProductForm() {
     image: '',
     size: '',
     status: 'AVAILABLE',
-    category: undefined
+    categoryId: 0,
   });
   const [categories, setCategories] = useState<Category[]>([]);
   const navigate = useNavigate();
@@ -49,7 +49,7 @@ export default function ProductForm() {
       setProduct(response.data);
     } catch (error) {
       toast.error('Error al cargar el producto');
-      navigate('/products');
+      navigate('/admin/products');
     }
   };
 
@@ -63,7 +63,7 @@ export default function ProductForm() {
         await createProduct(product);
         toast.success('Producto creado');
       }
-      navigate('/products');
+      navigate('/admin/products');
     } catch (error) {
       toast.error('Error al guardar el producto');
     }
@@ -71,18 +71,11 @@ export default function ProductForm() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name === 'category') {
-      const selectedCategory = categories.find(cat => cat.categoryId === Number(value));
-      setProduct(prev => ({
-        ...prev,
-        category: selectedCategory
-      }));
-    } else {
-      setProduct(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    }
+
+    setProduct(prev => ({
+      ...prev,
+      [name]: name === 'categoryId' ? Number(value) : value
+    }));
   };
 
   return (
@@ -100,7 +93,7 @@ export default function ProductForm() {
             onChange={handleChange}
             required
           />
-          
+
           <TextField
             label="Descripción"
             name="description"
@@ -110,7 +103,7 @@ export default function ProductForm() {
             onChange={handleChange}
             required
           />
-          
+
           <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
             <TextField
               sx={{ flex: 1 }}
@@ -121,13 +114,13 @@ export default function ProductForm() {
               onChange={handleChange}
               required
             />
-            
+
             <TextField
               sx={{ flex: 1 }}
               label="Categoría"
-              name="category"
+              name="categoryId"
               select
-              value={product.category?.categoryId || ''}
+              value={product.categoryId || ''}
               onChange={handleChange}
               required
             >
@@ -155,7 +148,7 @@ export default function ProductForm() {
               onChange={handleChange}
               required
             />
-            
+
             <TextField
               sx={{ flex: 1 }}
               label="Estado"

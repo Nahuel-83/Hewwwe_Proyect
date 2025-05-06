@@ -2,6 +2,7 @@ package Hewwwe.controller;
 
 import Hewwwe.dto.ProductCreateDTO;
 import Hewwwe.dto.ProductResponseDTO;
+import Hewwwe.dto.ProductUpdateDTO;
 import Hewwwe.dto.UserResponseDTO;
 import Hewwwe.entity.Product;
 import Hewwwe.services.ProductService;
@@ -66,8 +67,9 @@ public class ProductController {
     @ApiResponse(responseCode = "200", description = "Product updated successfully")
     public ResponseEntity<ProductResponseDTO> updateProduct(
             @PathVariable Long id,
-            @Valid @RequestBody ProductCreateDTO productDTO) {
-        Product product = modelMapper.map(productDTO, Product.class);
+            @Valid @RequestBody ProductUpdateDTO updateDTO) {
+
+        Product product = modelMapper.map(updateDTO, Product.class);
         return ResponseEntity.ok(productService.update(id, product));
     }
 

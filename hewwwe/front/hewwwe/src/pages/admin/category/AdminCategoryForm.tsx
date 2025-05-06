@@ -8,11 +8,11 @@ import {
   Paper,
   CircularProgress,
 } from '@mui/material';
-import { createCategory, getCategoryById, updateCategory } from '../../api/categories';
-import type { Category } from '../../types';
+import { createCategory, getCategoryById, updateCategory } from '../../../api/categories';
+import type { Category } from '../../../types';
 import { toast } from 'react-toastify';
 
-export default function CategoryForm() {
+export default function AdminCategoryForm() {
   const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState<Partial<Category>>({
     name: '',
@@ -37,7 +37,7 @@ export default function CategoryForm() {
       setCategory(rest);
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Error al cargar la categoría');
-      navigate('/categories');
+      navigate('/admin/categories');
     } finally {
       setLoading(false);
     }
@@ -60,7 +60,7 @@ export default function CategoryForm() {
         await createCategory(category);
         toast.success('Categoría creada correctamente');
       }
-      navigate('/categories');
+      navigate('/admin/categories');
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Error al guardar la categoría');
     } finally {

@@ -14,19 +14,16 @@ import {
 } from '@mui/material';
 import {
   Delete as DeleteIcon,
-  Edit as EditIcon,
   Search as SearchIcon
 } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
-import { getAllInvoices, deleteInvoice } from '../../api/invoices';
-import { Invoice } from '../../types';
+import { getAllInvoices, deleteInvoice } from '../../../api/invoices';
+import { Invoice } from '../../../types';
 import { toast } from 'react-toastify';
-import '../../styles/pages/admin/AdminInvoicesPage.css';
+import '../../../styles/pages/admin/AdminInvoicesPage.css';
 
 export default function AdminInvoicesPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const navigate = useNavigate();
 
   useEffect(() => {
     loadInvoices();
@@ -101,12 +98,6 @@ export default function AdminInvoicesPage() {
                   </TableCell>
                   <TableCell>{invoice.totalAmount}€</TableCell>
                   <TableCell>
-                    <IconButton 
-                      size="small" 
-                      onClick={() => navigate(`/invoices/${invoice.invoiceId}/edit`)}
-                    >
-                      <EditIcon />
-                    </IconButton>
                     <IconButton 
                       size="small" 
                       color="error"
