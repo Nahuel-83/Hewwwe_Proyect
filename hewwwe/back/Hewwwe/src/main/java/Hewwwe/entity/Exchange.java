@@ -17,6 +17,8 @@ import lombok.Setter;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "exchange")
 @Getter
@@ -32,14 +34,17 @@ public class Exchange {
     private Date completionDate;
 
     // Relaciones
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "requester_id", nullable = false)
     private User requester; // N-1 con User
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner; // N-1 con User
 
+    @JsonIgnore
     @OneToMany(mappedBy = "exchange", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products; // 1-N con Product
 

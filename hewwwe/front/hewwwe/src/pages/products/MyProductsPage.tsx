@@ -105,7 +105,11 @@ export default function MyProductsPage() {
                 </IconButton>
                 <IconButton 
                   color="error"
-                  onClick={() => handleDelete(product.productId)}
+                  onClick={() => {
+                    if (product.productId !== undefined) {
+                      handleDelete(product.productId);
+                    }
+                  }}
                 >
                   <DeleteIcon />
                 </IconButton>

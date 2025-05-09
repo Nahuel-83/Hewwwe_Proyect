@@ -3,12 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
   Box,
   Typography,
-  Paper,
   Button,
   CircularProgress,
   List,
   ListItem,
-  IconButton,
   Card,
   CardContent,
 } from '@mui/material';
@@ -16,7 +14,7 @@ import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { useAuth } from '../../contexts/AuthContext';
 import { getUserById, deleteUser } from '../../api/users';
 import { toast } from 'react-toastify';
-import type { User, Address, Product } from '../../types';
+import type { User } from '../../types';
 
 export default function UserDetailPage() {
   const [loading, setLoading] = useState(true);
@@ -110,69 +108,7 @@ export default function UserDetailPage() {
           </CardContent>
         </Card>
 
-        {/* Addresses */}
-        <Card sx={{ flex: 1 }}>
-          <CardContent>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="h6">Direcciones</Typography>
-              {authUser?.userId === user.userId && (
-                <Button 
-                  size="small" 
-                  onClick={() => navigate('/addresses/new')}
-                >
-                  Añadir Dirección
-                </Button>
-              )}
-            </Box>
-            <List>
-              {user.addresses?.map((address: Address) => (
-                <ListItem key={address.addressId}>
-                  <Box flex={1}>
-                    <Typography>{address.street} {address.number}</Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      {address.city}, {address.country} - CP: {address.postalCode}
-                    </Typography>
-                  </Box>
-                  {authUser?.userId === user.userId && (
-                    <Box>
-                      <IconButton size="small" onClick={() => navigate(`/addresses/${address.addressId}/edit`)}>
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton size="small" color="error">
-                        <DeleteIcon />
-                      </IconButton>
-                    </Box>
-                  )}
-                </ListItem>
-              ))}
-            </List>
-          </CardContent>
-        </Card>
       </Box>
-
-      {/* Products */}
-      <Paper sx={{ mt: 3, p: 3 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <Typography variant="h6">Productos Publicados</Typography>
-          {authUser?.userId === user.userId && (
-            <Button onClick={() => navigate('/products/new')}>
-              Publicar Nuevo Producto
-            </Button>
-          )}
-        </Box>
-        <Box display="grid" gridTemplateColumns="repeat(auto-fill, minmax(250px, 1fr))" gap={2}>
-          {user.products?.map((product: Product) => (
-            <Card key={product.productId} onClick={() => navigate(`/products/${product.productId}`)}>
-              <CardContent>
-                <Typography variant="subtitle1">{product.name}</Typography>
-                <Typography variant="body2" color="textSecondary">
-                  {product.price}€
-                </Typography>
-              </CardContent>
-            </Card>
-          ))}
-        </Box>
-      </Paper>
     </Box>
   );
 }

@@ -15,16 +15,13 @@ import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 
 // Pages Protected
+import MyProductsPage from './pages/products/MyProductsPage';
 import UserDetailPage from './pages/users/UserDetailPage';
 import CartPage from './pages/cart/CartPage';
-import ExchangesPage from './pages/exchanges/ExchangesPage';
-import AddressesPage from './pages/addresses/AddressesPage';
 
 // Pages Admin
 import AdminCategoriesPage from './pages/admin/category/AdminCategoriesPage';
 import AdminInvoicesPage from './pages/admin/invoice/AdminInvoicesPage';
-import InvoicesPage from './pages/invoices/InvoicesPage';
-import MyProductsPage from './pages/products/MyProductsPage';
 import AdminProductsPage from './pages/admin/product/AdminProductsPage';
 import AdminUsersPage from './pages/admin/user/AdminUsersPage';
 import AdminExchangesPage from './pages/admin/exchange/AdminExchangesPage';
@@ -52,17 +49,16 @@ function App() {
               <Route path="register" element={<RegisterPage />} />
               <Route path="products" element={<ProductsPage />} />
               <Route path="products/:id" element={<ProductDetailPage />} />
-              
+
               {/* Protected Routes */}
               <Route element={<ProtectedRoute />}>
-                <Route path="my-products" element={<MyProductsPage />} />
+                <Route path="products" element={<ProductsPage />} />
+                <Route path="products/:id" element={<ProductDetailPage />} />
+
                 <Route path="users/:id" element={<UserDetailPage />} />
+                <Route path="my-products" element={<MyProductsPage />} />
                 <Route path="users/:id/cart" element={<CartPage />} />
-                <Route path="addresses" element={<AddressesPage />} />
-                <Route path="exchanges" element={<ExchangesPage />} />
-                <Route path="invoices" element={<InvoicesPage />} />
               </Route>
-              
               {/* Admin Routes */}
               <Route element={<AdminRoute />}>
                 <Route path="admin/categories" element={<AdminCategoriesPage />} />

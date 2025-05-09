@@ -1,13 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Paper,
-  CircularProgress,
-} from '@mui/material';
+import '../../../styles/forms.css';
 import { createCategory, getCategoryById, updateCategory } from '../../../api/categories';
 import type { Category } from '../../../types';
 import { toast } from 'react-toastify';
@@ -68,7 +61,7 @@ export default function AdminCategoryForm() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setCategory(prev => ({
       ...prev,
       [e.target.name]: e.target.value
@@ -77,49 +70,47 @@ export default function AdminCategoryForm() {
 
   if (loading && isEdit) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
-        <CircularProgress />
-      </Box>
+      <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <span>Cargando...</span>
+      </div>
     );
   }
 
   return (
-    <Box className="form-container">
-      <Typography className="form-title" variant="h4">
-        {isEdit ? 'Editar Categoría' : 'Nueva Categoría'}
-      </Typography>
-
-      <Paper className="form-paper">
-        <Box component="form" onSubmit={handleSubmit} className="form-content">
-          <TextField
-            label="Nombre"
-            name="name"
-            value={category.name}
-            onChange={handleChange}
-            required
-            fullWidth
-          />
-          <TextField
-            label="Descripción"
-            name="description"
-            multiline
-            rows={4}
-            value={category.description}
-            onChange={handleChange}
-            required
-            fullWidth
-          />
-
-          <Box className="form-actions">
-            <Button type="button" onClick={() => navigate('/categories')}>
-              Cancelar
-            </Button>
-            <Button type="submit" variant="contained" disabled={loading}>
-              {isEdit ? 'Actualizar' : 'Crear'}
-            </Button>
-          </Box>
-        </Box>
-      </Paper>
-    </Box>
+    <div className="form-bg">
+      <div className="form-panel">
+        <h2 className="form-title">{isEdit ? 'Editar Categoría' : 'Nueva Categoría'}</h2>
+        <form onSubmit={handleSubmit} className="form-content">
+          <div className="form-group">
+            <label htmlFor="name" className="form-label">Nombre</label>
+            <input
+              id="name"
+              type="text"
+              name="name"
+              className="form-input"
+              value={category.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="description" className="form-label">Descripción</label>
+            <textarea
+              id="description"
+              name="description"
+              className="form-input"
+              rows={4}
+              value={category.description}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-actions">
+            <button type="button" className="form-button form-button-secondary" onClick={() => navigate('/admin/categories')}>Cancelar</button>
+            <button type="submit" className="form-button form-button-primary" disabled={loading}>{isEdit ? 'Actualizar' : 'Crear'}</button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, TextField, Button } from '@mui/material';
+import '../pages/forms.css';
 import type { Address } from '../types';
 
 interface AddressFormProps {
@@ -22,60 +22,75 @@ export default function AddressForm({ onSubmit, initialData }: AddressFormProps)
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ p: 2 }}>
-      <TextField
-        fullWidth
-        label="Calle"
-        name="street"
-        value={address.street}
-        onChange={(e) => setAddress({ ...address, street: e.target.value })}
-        margin="normal"
-        required
-      />
-      <TextField
-        fullWidth
-        label="Número"
-        name="number"
-        value={address.number}
-        onChange={(e) => setAddress({ ...address, number: e.target.value })}
-        margin="normal"
-        required
-      />
-      <TextField
-        fullWidth
-        label="Ciudad"
-        name="city"
-        value={address.city}
-        onChange={(e) => setAddress({ ...address, city: e.target.value })}
-        margin="normal"
-        required
-      />
-      <TextField
-        fullWidth
-        label="País"
-        name="country"
-        value={address.country}
-        onChange={(e) => setAddress({ ...address, country: e.target.value })}
-        margin="normal"
-        required
-      />
-      <TextField
-        fullWidth
-        label="Código Postal"
-        name="postalCode"
-        value={address.postalCode}
-        onChange={(e) => setAddress({ ...address, postalCode: e.target.value })}
-        margin="normal"
-        required
-      />
-      <Button
-        type="submit"
-        variant="contained"
-        fullWidth
-        sx={{ mt: 2 }}
-      >
-        Guardar
-      </Button>
-    </Box>
+    <div className="form-bg">
+      <div className="form-panel">
+        <h2 className="form-title">Dirección</h2>
+        <form onSubmit={handleSubmit} className="form-content">
+          <div className="form-group">
+            <label htmlFor="street" className="form-label">Calle</label>
+            <input
+              id="street"
+              type="text"
+              name="street"
+              className="form-input"
+              value={address.street}
+              onChange={e => setAddress({ ...address, street: e.target.value })}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="number" className="form-label">Número</label>
+            <input
+              id="number"
+              type="text"
+              name="number"
+              className="form-input"
+              value={address.number}
+              onChange={e => setAddress({ ...address, number: e.target.value })}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="city" className="form-label">Ciudad</label>
+            <input
+              id="city"
+              type="text"
+              name="city"
+              className="form-input"
+              value={address.city}
+              onChange={e => setAddress({ ...address, city: e.target.value })}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="country" className="form-label">País</label>
+            <input
+              id="country"
+              type="text"
+              name="country"
+              className="form-input"
+              value={address.country}
+              onChange={e => setAddress({ ...address, country: e.target.value })}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="postalCode" className="form-label">Código Postal</label>
+            <input
+              id="postalCode"
+              type="text"
+              name="postalCode"
+              className="form-input"
+              value={address.postalCode}
+              onChange={e => setAddress({ ...address, postalCode: e.target.value })}
+              required
+            />
+          </div>
+          <div className="form-actions">
+            <button type="submit" className="form-button form-button-primary" style={{width: '100%'}}>Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }

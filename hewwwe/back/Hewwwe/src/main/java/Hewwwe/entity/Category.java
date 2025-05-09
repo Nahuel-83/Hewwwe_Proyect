@@ -14,6 +14,8 @@ import lombok.Setter;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "category")
 @Getter
@@ -29,6 +31,7 @@ public class Category {
 
 
     // Relación
+    @JsonIgnore
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products; // 1-N con Product
 

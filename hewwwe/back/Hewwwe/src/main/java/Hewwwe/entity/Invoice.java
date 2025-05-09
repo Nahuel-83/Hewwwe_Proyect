@@ -9,6 +9,8 @@ import lombok.Setter;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "invoice")
 @Getter
@@ -23,14 +25,17 @@ public class Invoice {
     private Date invoiceDate;
     private Double totalAmount;
     
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "address_id")
     private Address address;
     
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
     
+    @JsonIgnore
     @OneToMany(mappedBy = "invoice")
     private List<Product> products;
 }

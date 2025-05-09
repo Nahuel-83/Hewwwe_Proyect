@@ -1,8 +1,13 @@
 import api from './axios';
-import { Cart } from '../types';
+import { Cart, CartResponseDTO } from '../types';
 
-export const getUserCart = (userId: number) => api.get<Cart>(`/api/users/${userId}/cart`);
-export const addToCart = (productId: number) => api.post<Cart>('/api/cart', { productId });
-export const updateCartItem = (id: number, quantity: number) => api.put<Cart>(`/api/cart/${id}`, { quantity });
-export const removeFromCart = (id: number) => api.delete(`/api/cart/${id}`);
-export const clearCart = () => api.delete('/api/cart');
+// Cart API endpoints
+export const getUserCart = (userId: number) => api.get<CartResponseDTO>(`/api/carts/user/${userId}`);
+export const addToCart = (userId: number, productId: number) => api.post<CartResponseDTO>(`/api/carts/user/${userId}/products/${productId}`);
+export const removeFromCart = (userId: number, productId: number) => api.delete<CartResponseDTO>(`/api/carts/user/${userId}/products/${productId}`);
+export const clearCart = (userId: number) => api.delete(`/api/carts/user/${userId}/clear`);
+export const checkout = (userId: number, shippingAddress: any) => api.post(`/api/carts/user/${userId}/checkout`, shippingAddress);
+
+// Admin endpoints
+export const getAllCarts = () => api.get<Cart[]>('/api/carts/all');
+export const deleteCart = (cartId: number) => api.delete(`/api/carts/${cartId}`);

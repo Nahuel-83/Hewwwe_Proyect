@@ -1,12 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Paper,
-} from '@mui/material';
+import '../../../styles/pages/forms.css';
 import { createAddress, getAddressById, updateAddress } from '../../../api/addresses';
 import type { AddressCreateDTO } from '../../../types/dtos';
 import { toast } from 'react-toastify';
@@ -69,67 +63,89 @@ export default function AddressForm() {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Paper sx={{ p: 3, maxWidth: 600, mx: 'auto' }}>
-        <Typography variant="h5" sx={{ mb: 3 }}>
+    <div className="form-bg">
+      <div className="form-panel">
+        <h2 className="form-title">
           {isEditing ? 'Editar Dirección' : 'Nueva Dirección'}
-        </Typography>
-
-        <form onSubmit={handleSubmit}>
-          <Box sx={{ display: 'grid', gap: 2 }}>
-            <TextField
+        </h2>
+        <form onSubmit={handleSubmit} className="form-content">
+          <div className="form-group">
+            <label htmlFor="street" className="form-label">Calle</label>
+            <input
+              id="street"
+              type="text"
               name="street"
-              label="Calle"
+              className="form-input"
               value={address.street}
               onChange={handleChange}
               required
             />
-            <TextField
+          </div>
+          <div className="form-group">
+            <label htmlFor="number" className="form-label">Número</label>
+            <input
+              id="number"
+              type="text"
               name="number"
-              label="Número"
+              className="form-input"
               value={address.number}
               onChange={handleChange}
               required
             />
-            <TextField
+          </div>
+          <div className="form-group">
+            <label htmlFor="city" className="form-label">Ciudad</label>
+            <input
+              id="city"
+              type="text"
               name="city"
-              label="Ciudad"
+              className="form-input"
               value={address.city}
               onChange={handleChange}
               required
             />
-            <TextField
+          </div>
+          <div className="form-group">
+            <label htmlFor="country" className="form-label">País</label>
+            <input
+              id="country"
+              type="text"
               name="country"
-              label="País"
+              className="form-input"
               value={address.country}
               onChange={handleChange}
               required
             />
-            <TextField
+          </div>
+          <div className="form-group">
+            <label htmlFor="postalCode" className="form-label">Código Postal</label>
+            <input
+              id="postalCode"
+              type="text"
               name="postalCode"
-              label="Código Postal"
+              className="form-input"
               value={address.postalCode}
               onChange={handleChange}
               required
             />
-
-            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-              <Button 
-                type="button" 
-                onClick={() => navigate('/admin/addresses')}
-              >
-                Cancelar
-              </Button>
-              <Button 
-                type="submit" 
-                variant="contained"
-              >
-                {isEditing ? 'Actualizar' : 'Crear'}
-              </Button>
-            </Box>
-          </Box>
+          </div>
+          <div className="form-actions">
+            <button 
+              type="button" 
+              className="form-button form-button-secondary"
+              onClick={() => navigate('/admin/addresses')}
+            >
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              className="form-button form-button-primary"
+            >
+              {isEditing ? 'Actualizar' : 'Crear'}
+            </button>
+          </div>
         </form>
-      </Paper>
-    </Box>
+      </div>
+    </div>
   );
 }

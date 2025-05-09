@@ -131,3 +131,10 @@ export interface ApiResponse<T> {
   message?: string;
   errors?: string[];
 }
+
+export interface CartResponseDTO {
+  cartId: number;
+  cartDate: string;
+  productIds: number[];
+  userId: number;
+}

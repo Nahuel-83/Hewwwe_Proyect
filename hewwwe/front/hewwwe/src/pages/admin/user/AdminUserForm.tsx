@@ -1,13 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  Box,
-  Paper,
-  TextField,
-  Button,
-  Typography,
-  CircularProgress
-} from '@mui/material';
+import '../../../styles/forms.css';
 import { createUser, getUserById, updateUser } from '../../../api/users';
 import { toast } from 'react-toastify';
 import '../../../styles/common/loading.css';
@@ -91,7 +84,7 @@ export default function UserForm() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData(prev => ({
       ...prev,
       [e.target.name]: e.target.value
@@ -100,70 +93,73 @@ export default function UserForm() {
 
   if (loading) {
     return (
-      <Box className="loading-container">
-        <CircularProgress />
-      </Box>
+      <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <span>Cargando...</span>
+      </div>
     );
   }
 
   return (
-    <Box className="form-container">
-      <Typography className="form-title" variant="h4">
-        {isEdit ? 'Editar Usuario' : 'Nuevo Usuario'}
-      </Typography>
-
-      <Paper className="form-paper">
-        <Box component="form" onSubmit={handleSubmit} className="form-content">
-          <TextField
-            label="Nombre"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            fullWidth
-          />
-          
-          <TextField
-            label="Email"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            fullWidth
-          />
-          
-          <TextField
-            label="Teléfono"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            required
-            fullWidth
-          />
-          
-          {!isEdit && (
-            <TextField
-              label="Contraseña"
-              name="password"
-              type="password"
-              value={formData.password || ''}
+    <div className="form-bg">
+      <div className="form-panel">
+        <h2 className="form-title">{isEdit ? 'Editar Usuario' : 'Nuevo Usuario'}</h2>
+        <form onSubmit={handleSubmit} className="form-content">
+          <div className="form-group">
+            <label htmlFor="name" className="form-label">Nombre</label>
+            <input
+              id="name"
+              type="text"
+              name="name"
+              className="form-input"
+              value={formData.name}
               onChange={handleChange}
-              required={!isEdit}
-              fullWidth
+              required
             />
+          </div>
+          <div className="form-group">
+            <label htmlFor="email" className="form-label">Email</label>
+            <input
+              id="email"
+              type="email"
+              name="email"
+              className="form-input"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="phone" className="form-label">Teléfono</label>
+            <input
+              id="phone"
+              type="text"
+              name="phone"
+              className="form-input"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          {!isEdit && (
+            <div className="form-group">
+              <label htmlFor="password" className="form-label">Contraseña</label>
+              <input
+                id="password"
+                type="password"
+                name="password"
+                className="form-input"
+                value={formData.password || ''}
+                onChange={handleChange}
+                required
+              />
+            </div>
           )}
-
-          <Box className="form-actions">
-            <Button type="button" onClick={() => navigate('/admin/users')}>
-              Cancelar
-            </Button>
-            <Button type="submit" variant="contained" disabled={loading}>
-              {isEdit ? 'Actualizar' : 'Crear'}
-            </Button>
-          </Box>
-        </Box>
-      </Paper>
-    </Box>
+          <div className="form-actions">
+            <button type="button" className="form-button form-button-secondary" onClick={() => navigate('/admin/users')}>Cancelar</button>
+            <button type="submit" className="form-button form-button-primary" disabled={loading}>{isEdit ? 'Actualizar' : 'Crear'}</button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }

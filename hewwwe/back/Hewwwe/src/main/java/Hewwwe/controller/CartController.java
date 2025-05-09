@@ -1,90 +1,91 @@
 package Hewwwe.controller;
 
-import Hewwwe.dto.CartCreateDTO;
 import Hewwwe.dto.CartResponseDTO;
 import Hewwwe.entity.Address;
 import Hewwwe.entity.Cart;
 import Hewwwe.entity.Product;
 import Hewwwe.services.CartService;
 import Hewwwe.services.ProductService;
+import Hewwwe.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/carts")
 @RequiredArgsConstructor
 @Tag(name = "Cart Controller", description = "Cart management endpoints")
 public class CartController {
+
     private final CartService cartService;
     private final ProductService productService;
-    private final ModelMapper modelMapper;
+    private final UserService userService;
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Get a cart by ID")
-    @ApiResponse(responseCode = "200", description = "Successfully retrieved cart")
-    @ApiResponse(responseCode = "404", description = "Cart not found")
-    public ResponseEntity<CartResponseDTO> getCartById(@PathVariable Long id) {
-        Cart cart = cartService.findById(id);
-        return ResponseEntity.ok(modelMapper.map(cart, CartResponseDTO.class));
+    @GetMapping("/user/{userId}")
+    @Operation(summary = "Get a user's cart")
+    public ResponseEntity<CartResponseDTO> getUserCart(@PathVariable Long userId) {
+        CartResponseDTO cart = userService.getCartByUserId(userId);
+        return ResponseEntity.ok(cart);
     }
 
-    @PostMapping
-    @Operation(summary = "Create a new cart")
-    @ApiResponse(responseCode = "201", description = "Cart created successfully")
-    @ApiResponse(responseCode = "400", description = "Invalid input")
-    public ResponseEntity<CartResponseDTO> createCart(@Valid @RequestBody CartCreateDTO cartDTO) {
-        Cart cart = modelMapper.map(cartDTO, Cart.class);
-        Cart savedCart = cartService.save(cart);
-        return new ResponseEntity<>(modelMapper.map(savedCart, CartResponseDTO.class), HttpStatus.CREATED);
+    @PostMapping("/user/{userId}/products/{productId}")
+    @Operation(summary = "Add a product to the user's cart")
+    public ResponseEntity<CartResponseDTO> addToCart(@PathVariable Long userId, @PathVariable Long productId) {
+        Product product = productService.getEntityById(productId);
+        if (product == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        CartResponseDTO cartDTO = userService.getCartByUserId(userId);
+        cartService.addProduct(cartDTO.getCartId(), productId);
+        return ResponseEntity.ok(userService.getCartByUserId(userId));
     }
 
-    @PutMapping("/{id}")
-    @Operation(summary = "Update an existing cart")
-    @ApiResponse(responseCode = "200", description = "Cart updated successfully")
-    @ApiResponse(responseCode = "404", description = "Cart not found")
-    public ResponseEntity<CartResponseDTO> updateCart(@PathVariable Long id, @Valid @RequestBody CartCreateDTO cartDTO) {
-        Cart cart = modelMapper.map(cartDTO, Cart.class);
-        Cart updatedCart = cartService.update(id, cart);
-        return ResponseEntity.ok(modelMapper.map(updatedCart, CartResponseDTO.class));
+    @DeleteMapping("/user/{userId}/products/{productId}")
+    @Operation(summary = "Remove a product from the user's cart")
+    public ResponseEntity<CartResponseDTO> removeFromCart(@PathVariable Long userId, @PathVariable Long productId) {
+        Product product = productService.getEntityById(productId);
+        if (product == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        CartResponseDTO cartDTO = userService.getCartByUserId(userId);
+        cartService.removeProduct(cartDTO.getCartId(), productId);
+        return ResponseEntity.ok(userService.getCartByUserId(userId));
     }
 
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Delete a cart")
-    @ApiResponse(responseCode = "204", description = "Cart deleted successfully")
-    @ApiResponse(responseCode = "404", description = "Cart not found")
-    public ResponseEntity<Void> deleteCart(@PathVariable Long id) {
-        cartService.delete(id);
+    @DeleteMapping("/user/{userId}/clear")
+    @Operation(summary = "Clear the user's cart")
+    public ResponseEntity<Void> clearCart(@PathVariable Long userId) {
+        CartResponseDTO cartDTO = userService.getCartByUserId(userId);
+        cartService.clearCart(cartDTO.getCartId());
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{cartId}/products/{productId}")
-    @Operation(summary = "Add product to cart")
-    public ResponseEntity<CartResponseDTO> addProductToCart(@PathVariable Long cartId, @PathVariable Long productId) {
-        Product product = productService.getEntityById(productId); // Assuming you add this method to ProductService
-        cartService.addProduct(cartId, product);
-        Cart updatedCart = cartService.findById(cartId);
-        return ResponseEntity.ok(modelMapper.map(updatedCart, CartResponseDTO.class));
+    @PostMapping("/user/{userId}/checkout")
+    @Operation(summary = "Checkout the user's cart")
+    public ResponseEntity<String> checkout(@PathVariable Long userId, @RequestBody Address shippingAddress) {
+        CartResponseDTO cartDTO = userService.getCartByUserId(userId);
+        cartService.checkoutCart(cartDTO.getCartId(), shippingAddress);
+        return ResponseEntity.ok("Checkout successful");
     }
 
-    @DeleteMapping("/{cartId}/products/{productId}")
-    @Operation(summary = "Remove product from cart")
-    @ApiResponse(responseCode = "200", description = "Product removed from cart successfully")
-    public ResponseEntity<CartResponseDTO> removeProductFromCart(@PathVariable Long cartId, @PathVariable Long productId) {
-        cartService.removeProduct(cartId, productId);
-        Cart updatedCart = cartService.findById(cartId);
-        return ResponseEntity.ok(modelMapper.map(updatedCart, CartResponseDTO.class));
+    @GetMapping("/all")
+    @Operation(summary = "Get all carts")
+    public ResponseEntity<List<Cart>> getAllCarts() {
+        return ResponseEntity.ok(cartService.findAll());
     }
 
-    @PostMapping("/{cartId}/checkout")
-    @Operation(summary = "Checkout cart")
-    public ResponseEntity<Void> checkoutCart(@PathVariable Long cartId, @RequestBody Address shippingAddress) {
-        cartService.checkoutCart(cartId, shippingAddress);
-        return ResponseEntity.ok().build();
+    @DeleteMapping("/{cartId}")
+    @Operation(summary = "Delete a cart")
+    public ResponseEntity<Void> deleteCart(@PathVariable Long cartId) {
+        cartService.deleteCart(cartId);
+        return ResponseEntity.noContent().build();
     }
 }

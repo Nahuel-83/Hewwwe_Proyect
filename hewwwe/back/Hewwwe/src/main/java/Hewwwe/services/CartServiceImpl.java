@@ -11,17 +11,24 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final InvoiceService invoiceService;
+    private final ProductService productService;
 
     @Override
     public Cart findById(Long id) {
         return cartRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
+    }
+    
+    @Override
+    public List<Cart> findAll() {
+        return cartRepository.findAll();
     }
 
     @Override
@@ -43,6 +50,11 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    public void deleteCart(Long cartId) {
+        cartRepository.deleteById(cartId);
+    }
+
+    @Override
     public void checkoutCart(Long cartId, Address shippingAddress) {
         Cart cart = findById(cartId);
         
@@ -58,10 +70,13 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void addProduct(Long cartId, Product product) {
+    public void addProduct(Long cartId, Long productId) {
         Cart cart = findById(cartId);
-        cart.getProducts().add(product);
-        cartRepository.save(cart);
+        Product product = productService.getEntityById(productId);
+        if (product != null) {
+            cart.getProducts().add(product);
+            cartRepository.save(cart);
+        }
     }
 
     @Override

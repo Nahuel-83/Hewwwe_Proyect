@@ -26,7 +26,7 @@ import '../../../styles/pages/admin/AdminExchangesPage.css';
 export default function AdminAddressPage() {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     loadAddresses();

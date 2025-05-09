@@ -23,10 +23,9 @@ public class Address {
     private String country;
     private String postalCode;
 
-    // Relación
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user; // N-1 con User
+    @JoinColumn(name = "user_id")
+    private User user;
 
 
 }
