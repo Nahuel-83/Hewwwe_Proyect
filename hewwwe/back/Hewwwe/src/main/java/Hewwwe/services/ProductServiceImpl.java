@@ -34,6 +34,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductResponseDTO> findAll() {
         return productRepository.findAll().stream()
+                .filter(product -> "AVAILABLE".equals(product.getStatus()))
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }

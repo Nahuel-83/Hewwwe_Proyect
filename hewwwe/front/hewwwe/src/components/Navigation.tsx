@@ -56,6 +56,9 @@ export default function Navigation() {
         <MenuItem component={RouterLink} to="/my-products">
           Mis Productos
         </MenuItem>
+        <MenuItem component={RouterLink} to="/my-addresses">
+          Mis Direcciones
+        </MenuItem>
         <MenuItem component={RouterLink} to="/exchanges">
           Intercambios
         </MenuItem>

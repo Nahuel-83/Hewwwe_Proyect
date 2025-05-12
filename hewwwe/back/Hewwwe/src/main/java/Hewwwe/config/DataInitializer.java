@@ -65,7 +65,7 @@ public class DataInitializer implements CommandLineRunner {
         Exchange exchange3 = createExchange(daniel, eva, "COMPLETED");
 
         // Create products
-        createProduct("T-Shirt", "Camiseta negra", 19.99, "L", "img2.jpg", "SOLD", cart3, moda, exchange1, invoice1, alice);
+        createProduct("T-Shirt", "Camiseta negra", 19.99, "L", "img2.jpg", "AVAILABLE", cart3, moda, exchange1, invoice1, alice);
         createProduct("Nike Air", "Zapatillas deportivas", 75.00, "42", "img5.jpg", "AVAILABLE", cart3, moda, null, null, carla);
         createProduct("Jeans Slim", "Vaqueros azules ajustados", 45.99, "M", "jeans1.jpg", "AVAILABLE", null, moda, null, null, alice);
         createProduct("Adidas Boost", "Zapatillas running", 89.99, "43", "boost.jpg", "AVAILABLE", null, moda, null, null, carla);

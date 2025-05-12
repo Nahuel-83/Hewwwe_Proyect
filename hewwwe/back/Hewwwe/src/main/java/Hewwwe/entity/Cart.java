@@ -43,6 +43,8 @@ public class Cart {
     private User user;
 
     public void clearCart() {
+        // Remove the cart reference from each product before clearing
+        this.products.forEach(product -> product.setCart(null));
         this.products.clear();
     }
 }

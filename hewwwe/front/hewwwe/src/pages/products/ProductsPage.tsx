@@ -5,14 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import { getAllProducts } from '../../api/products';
 import { addToCart, removeFromCart, getUserCart } from '../../api/cart';
 import { useAuth } from '../../contexts/AuthContext';
-import type { Product, Cart } from '../../types';
+import type { Product, CartResponseDTO } from '../../types';
 import { toast } from 'react-toastify';
 import '../../styles/pages/ProductsPage.css';
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [userCart, setUserCart] = useState<Cart | null>(null);
+  const [isProductsLoading, setIsProductsLoading] = useState(true);
+  const [userCart, setUserCart] = useState<CartResponseDTO | null>(null);
   const [cartLoading, setCartLoading] = useState(false);
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
@@ -28,13 +28,13 @@ export default function ProductsPage() {
 
   const loadProducts = async () => {
     try {
-      setLoading(true);
+      setIsProductsLoading(true);
       const response = await getAllProducts();
       setProducts(response.data);
     } catch (error) {
       toast.error('Error al cargar los productos');
     } finally {
-      setLoading(false);
+      setIsProductsLoading(false);
     }
   };
   
@@ -55,16 +55,22 @@ export default function ProductsPage() {
   
   const isProductInCart = (productId: number | undefined): boolean => {
     if (!userCart || !productId) return false;
-    return userCart.products && Array.isArray(userCart.products) 
-      ? userCart.products.some(p => p.productId === productId)
+    return userCart.productIds && Array.isArray(userCart.productIds) 
+      ? userCart.productIds.includes(productId)
       : false;
   };
   
   const handleToggleCart = async (event: React.MouseEvent, product: Product) => {
     event.stopPropagation(); // Prevent card click navigation
     
-    if (!isAuthenticated || !user || !product.productId) {
+    if (!isAuthenticated || !user) {
       toast.error('Debes iniciar sesión para añadir productos al carrito');
+      return;
+    }
+    
+    if (!product.productId) {
+      console.error('Error: productId is undefined', product);
+      toast.error('Error al identificar el producto');
       return;
     }
     
@@ -73,11 +79,11 @@ export default function ProductsPage() {
       
       if (isProductInCart(product.productId)) {
         // Remove from cart
-        await removeFromCart(product.productId);
+        await removeFromCart(user.userId, product.productId);
         toast.success('Producto eliminado del carrito');
       } else {
         // Add to cart
-        await addToCart(product.productId);
+        await addToCart(user.userId, product.productId);
         toast.success('Producto añadido al carrito');
       }
       
@@ -110,17 +116,20 @@ export default function ProductsPage() {
           )}
         </div>
 
-        <div className="products-grid">
-          {products
-            .filter(product => {
-              // If authenticated, filter out user's own products
-              if (isAuthenticated && user) {
-                return product.userId !== user.userId;
-              }
-              // If not authenticated, show all
-              return true;
-            })
-            .map((product) => (
+        {isProductsLoading ? (
+          <Typography>Loading products...</Typography>
+        ) : (
+          <div className="products-grid">
+            {products
+              .filter(product => {
+                // If authenticated, filter out user's own products
+                if (isAuthenticated && user) {
+                  return product.userId !== user.userId;
+                }
+                // If not authenticated, show all
+                return true;
+              })
+              .map((product) => (
               <Card
                 key={product.productId}
                 className="product-card"
@@ -168,7 +177,8 @@ export default function ProductsPage() {
                 </CardActions>
               </Card>
             ))}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

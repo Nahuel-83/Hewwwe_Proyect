@@ -63,21 +63,40 @@ public class UserServiceImpl implements UserService {
     }
 
     public CartResponseDTO getCartByUserId(Long userId) {
+        System.out.println("UserService: Getting cart for user ID: " + userId);
         return userRepository.findById(userId).map(user -> {
+            System.out.println("UserService: User found: " + user.getName());
             Cart cart = user.getCart();
-            if (cart == null) return null;
+            if (cart == null) {
+                System.out.println("UserService: No cart found for user");
+                return null;
+            }
 
-            List<Long> productIds = cart.getProducts().stream()
-                    .map(Product::getProductId)
-                    .collect(Collectors.toList());
+            System.out.println("UserService: Cart found with ID: " + cart.getCartId());
+            System.out.println("UserService: Products in cart: " + (cart.getProducts() != null ? cart.getProducts().size() : "null"));
+            
+            List<Long> productIds = new ArrayList<>();
+            if (cart.getProducts() != null && !cart.getProducts().isEmpty()) {
+                productIds = cart.getProducts().stream()
+                        .map(Product::getProductId)
+                        .collect(Collectors.toList());
+                System.out.println("UserService: Product IDs collected: " + productIds);
+            } else {
+                System.out.println("UserService: No products in cart");
+            }
 
-            return new CartResponseDTO(
+            CartResponseDTO response = new CartResponseDTO(
                     cart.getCartId(),
                     cart.getCartDate(),
                     user.getUserId(),
                     productIds
             );
-        }).orElse(null);
+            System.out.println("UserService: Returning cart response with " + productIds.size() + " products");
+            return response;
+        }).orElseGet(() -> {
+            System.out.println("UserService: User not found with ID: " + userId);
+            return null;
+        });
     }
 
 

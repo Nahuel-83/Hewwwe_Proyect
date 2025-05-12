@@ -1,12 +1,11 @@
 package Hewwwe.services;
 
-import Hewwwe.entity.Address;
 import Hewwwe.entity.Cart;
 
 import java.util.List;
 
 public interface CartService {
-    void checkoutCart(Long cartId, Address shippingAddress);
+    void checkoutCart(Long cartId, Object addressData);
     Cart findById(Long id);
     List<Cart> findAll();
     Cart save(Cart cart);
