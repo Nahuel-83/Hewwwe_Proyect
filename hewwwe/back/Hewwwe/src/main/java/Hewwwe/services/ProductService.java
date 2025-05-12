@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface ProductService {
     List<ProductResponseDTO> findAll();
+    List<ProductResponseDTO> findAllForAdmin();
     ProductResponseDTO findById(Long id);
     Product getEntityById(Long id);
     ProductResponseDTO save(Product product);

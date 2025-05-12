@@ -19,7 +19,7 @@ import {
   Search as SearchIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { getAllProducts, deleteProduct } from '../../../api/products';
+import { getAllProductsForAdmin, deleteProduct } from '../../../api/products';
 import { Product } from '../../../types';
 import { toast } from 'react-toastify';
 import '../../../styles/pages/admin/AdminProductsPage.css';
@@ -35,7 +35,7 @@ export default function AdminProductsPage() {
 
   const loadProducts = async () => {
     try {
-      const response = await getAllProducts();
+      const response = await getAllProductsForAdmin();
       setProducts(response.data);
     } catch (error) {
       toast.error('Error al cargar productos');

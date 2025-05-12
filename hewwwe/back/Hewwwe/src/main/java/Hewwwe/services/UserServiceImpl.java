@@ -68,8 +68,14 @@ public class UserServiceImpl implements UserService {
             System.out.println("UserService: User found: " + user.getName());
             Cart cart = user.getCart();
             if (cart == null) {
-                System.out.println("UserService: No cart found for user");
-                return null;
+                System.out.println("UserService: No cart found for user, creating a new one");
+                cart = new Cart();
+                cart.setCartDate(new Date());
+                cart.setUser(user);
+                cart.setProducts(new ArrayList<>());
+                user.setCart(cart);
+                userRepository.save(user);
+                System.out.println("UserService: Created new cart with ID: " + cart.getCartId());
             }
 
             System.out.println("UserService: Cart found with ID: " + cart.getCartId());

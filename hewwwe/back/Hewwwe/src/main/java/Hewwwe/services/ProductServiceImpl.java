@@ -38,6 +38,13 @@ public class ProductServiceImpl implements ProductService {
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
+    
+    @Override
+    public List<ProductResponseDTO> findAllForAdmin() {
+        return productRepository.findAll().stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
 
     @Override
     public ProductResponseDTO save(Product product) {

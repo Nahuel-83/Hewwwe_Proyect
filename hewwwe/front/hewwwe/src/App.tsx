@@ -61,6 +61,7 @@ function App() {
                 <Route path="my-addresses" element={<MyAddressesPage />} />
                 <Route path="users/:id/cart" element={<CartPage />} />
               </Route>
+              
               {/* Admin Routes */}
               <Route element={<AdminRoute />}>
                 <Route path="admin/categories" element={<AdminCategoriesPage />} />

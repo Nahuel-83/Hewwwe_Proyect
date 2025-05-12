@@ -31,10 +31,17 @@ public class ProductController {
     private final ModelMapper modelMapper;
 
     @GetMapping
-    @Operation(summary = "Get all products")
-    @ApiResponse(responseCode = "200", description = "Successfully retrieved products")
+    @Operation(summary = "Get all available products")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved available products")
     public ResponseEntity<List<ProductResponseDTO>> getAllProducts() {
         return ResponseEntity.ok(productService.findAll());
+    }
+    
+    @GetMapping("/admin/all")
+    @Operation(summary = "Get all products including sold ones (Admin only)")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved all products")
+    public ResponseEntity<List<ProductResponseDTO>> getAllProductsForAdmin() {
+        return ResponseEntity.ok(productService.findAllForAdmin());
     }
 
     @GetMapping("/{id}")

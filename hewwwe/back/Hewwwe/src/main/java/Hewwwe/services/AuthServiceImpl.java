@@ -3,9 +3,11 @@ package Hewwwe.services;
 import Hewwwe.dto.LoginResponse;
 import Hewwwe.dto.RegisterRequest;
 import Hewwwe.entity.User;
+import Hewwwe.entity.Cart;
 import Hewwwe.entity.enums.Rol;
 import Hewwwe.entity.Address;
 import Hewwwe.repository.UserRepository;
+import Hewwwe.repository.CartRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,11 +15,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.util.ArrayList;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
+    private final CartRepository cartRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -68,8 +74,16 @@ public class AuthServiceImpl implements AuthService {
         user.getAddresses().add(address);
         address.setUser(user); 
         user.setRole(Rol.USER);
+        
+        // Create a cart for the new user
+        Cart cart = new Cart();
+        cart.setCartDate(new Date());
+        cart.setUser(user);
+        cart.setProducts(new ArrayList<>());
+        user.setCart(cart);
+        
         User savedUser = userRepository.save(user);
-        log.info("Usuario registrado: {}", savedUser.getUsername());
+        log.info("Usuario registrado: {} con carrito creado", savedUser.getUsername());
         return savedUser;
     }
 }
