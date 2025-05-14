@@ -1,4 +1,6 @@
-.products-container {
+/* Estilos para MyProductsPage */
+
+.my-products-container {
   min-height: 100vh;
   height: 100vh;
   width: 100vw;
@@ -7,32 +9,32 @@
   overflow-y: auto;
 }
 
-.products-content {
+.my-products-content {
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
   padding: 32px;
 }
 
-.products-header {
+.my-products-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 32px;
 }
 
-.products-title {
+.my-products-title {
   font-weight: 800;
   color: #2f2f2f;
 }
 
-.products-grid {
+.my-products-grid {
   display: grid;
   gap: 24px;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
 
-.product-card {
+.my-product-card {
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -43,28 +45,50 @@
   overflow: hidden;
 }
 
-.product-card:hover {
+.my-product-card:hover {
   transform: translateY(-4px);
   cursor: pointer;
 }
 
-.product-image {
+.my-product-image {
   height: 200px;
   object-fit: cover;
   width: 100%;
 }
 
-.product-content {
-  flex-grow: 1;
+.my-product-content {
   padding: 16px;
+  flex-grow: 1;
 }
 
-.product-actions {
-  padding: 8px 16px 16px;
+.my-product-price {
+  color: #2f2f2f;
+  font-weight: 600;
+  margin-top: 8px;
+  font-size: 1.1rem;
+}
+
+.my-product-description {
+  margin-top: 4px;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.my-product-actions {
   display: flex;
   justify-content: space-between;
+  padding: 8px 16px 16px;
 }
 
+.my-product-status {
+  margin-top: 8px;
+}
+
+/* Botón de agregar */
 .add-product-button {
   padding: 12px 24px;
   font-size: 1.1rem;
@@ -72,15 +96,15 @@
 
 /* Estados responsive */
 @media (max-width: 600px) {
-  .products-grid {
+  .my-products-grid {
     grid-template-columns: 1fr;
   }
   
-  .products-content {
+  .my-products-content {
     padding: 16px;
   }
   
-  .products-header {
+  .my-products-header {
     flex-direction: column;
     gap: 16px;
     align-items: flex-start;
@@ -88,7 +112,7 @@
 }
 
 @media (min-width: 601px) and (max-width: 960px) {
-  .products-grid {
+  .my-products-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-}
+} 

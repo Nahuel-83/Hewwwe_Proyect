@@ -89,25 +89,37 @@ public class CartServiceImpl implements CartService {
             throw new IllegalArgumentException("Invalid address data type");
         }
         
-        // Create a list of products to be marked as sold
-        List<Product> purchasedProducts = new ArrayList<>(cart.getProducts());
+        // Validar y filtrar productos
+        List<Product> validProducts = new ArrayList<>();
+        for (Product product : cart.getProducts()) {
+            if (product != null && product.getProductId() != null) {
+                validProducts.add(product);
+            }
+        }
+        
+        if (validProducts.isEmpty()) {
+            throw new IllegalStateException("No valid products found in cart for checkout");
+        }
         
         // Create and save the invoice
         Invoice invoice = new Invoice();
         invoice.setInvoiceDate(new Date());
         invoice.setUser(cart.getUser());
         invoice.setAddress(shippingAddress);
-        invoice.setProducts(purchasedProducts);
+        invoice.setProducts(validProducts);
         invoice.setTotalAmount(calculateTotal(cartId));
         
         invoiceService.save(invoice);
         
         // Mark all products as SOLD
-        System.out.println("CartService: Marking " + purchasedProducts.size() + " products as SOLD");
-        for (Product product : purchasedProducts) {
-            product.setStatus("SOLD");
-            productService.save(product);
-            System.out.println("CartService: Product " + product.getProductId() + " marked as SOLD");
+        for (Product product : validProducts) {
+            try {
+                product.setStatus("SOLD");
+                productService.save(product);
+            } catch (Exception e) {
+                System.err.println("CartService: Error marking product " + product.getProductId() + " as SOLD: " + e.getMessage());
+                // Continue with other products even if one fails
+            }
         }
         
         // Clear the cart after checkout
@@ -116,20 +128,15 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void addProduct(Long cartId, Long productId) {
-        System.out.println("CartService: Adding product ID " + productId + " to cart ID " + cartId);
         Cart cart = findById(cartId);
-        System.out.println("CartService: Found cart with " + (cart.getProducts() != null ? cart.getProducts().size() : "null") + " products");
         
         Product product = productService.getEntityById(productId);
         if (product != null) {
-            System.out.println("CartService: Found product: " + product.getName());
-            
             // Check if product is already in cart
             boolean alreadyInCart = cart.getProducts().stream()
                 .anyMatch(p -> p.getProductId().equals(productId));
                 
             if (alreadyInCart) {
-                System.out.println("CartService: Product already in cart, skipping addition");
                 return;
             }
             
@@ -137,10 +144,7 @@ public class CartServiceImpl implements CartService {
             product.setCart(cart);
             cart.getProducts().add(product);
             
-            Cart savedCart = cartRepository.save(cart);
-            System.out.println("CartService: Saved cart now has " + savedCart.getProducts().size() + " products");
-        } else {
-            System.out.println("CartService: Product not found with ID: " + productId);
+            cartRepository.save(cart);
         }
     }
 
@@ -161,8 +165,25 @@ public class CartServiceImpl implements CartService {
     @Override
     public void clearCart(Long cartId) {
         Cart cart = findById(cartId);
-        cart.clearCart();
-        cartRepository.save(cart);
+        
+        try {
+            cart.clearCart();
+            
+            // Additional verification
+            if (cart.getProducts().size() > 0) {
+                // Force clear if necessary
+                for (Product product : new ArrayList<>(cart.getProducts())) {
+                    product.setCart(null);
+                }
+                cart.getProducts().clear();
+            }
+            
+            cartRepository.save(cart);
+        } catch (Exception e) {
+            System.err.println("CartService: Error clearing cart: " + e.getMessage());
+            e.printStackTrace();
+            throw e; // Re-throw to ensure callers know there was a problem
+        }
     }
 
     @Override

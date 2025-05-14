@@ -64,8 +64,7 @@ public class ProductController {
     @Operation(summary = "Create a new product")
     @ApiResponse(responseCode = "201", description = "Product created successfully")
     public ResponseEntity<ProductResponseDTO> createProduct(@Valid @RequestBody ProductCreateDTO productDTO) {
-        Product product = modelMapper.map(productDTO, Product.class);
-        ProductResponseDTO savedProduct = productService.save(product);
+        ProductResponseDTO savedProduct = productService.save(productDTO);
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
 

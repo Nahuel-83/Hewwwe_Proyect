@@ -1,25 +1,17 @@
 import { useState, useEffect } from 'react';
-import {
-  Box,
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  CardMedia,
-  CardActions,
-  IconButton,
-  Chip
-} from '@mui/material';
-import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { Typography, Button, Chip } from '@mui/material';
+import { Edit as EditIcon, Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { getUserProducts } from '../../api/users';
 import { deleteProduct } from '../../api/products';
 import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'react-toastify';
 import type { Product } from '../../types';
+import '../../styles/pages/MyProductsPage.css';
 
 export default function MyProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -31,10 +23,13 @@ export default function MyProductsPage() {
 
   const loadProducts = async () => {
     try {
+      setIsLoading(true);
       const response = await getUserProducts(user!.userId);
       setProducts(response.data);
     } catch (error) {
       toast.error('Error al cargar productos');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -51,73 +46,92 @@ export default function MyProductsPage() {
   };
 
   return (
-    <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h4">Mis Productos</Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => navigate('/products/new')}
-        >
-          Nuevo Producto
-        </Button>
-      </Box>
-
-      <Box 
-        display="flex" 
-        flexWrap="wrap" 
-        gap={3}
-      >
-        {products.map((product) => (
-          <Box 
-            key={product.productId}
-            width={{ xs: '100%', sm: 'calc(50% - 24px)', md: 'calc(33.333% - 24px)' }}
+    <div className="my-products-container">
+      <div className="my-products-content">
+        <div className="my-products-header">
+          <Typography variant="h4" className="my-products-title">
+            Mis Productos
+          </Typography>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => navigate('/products/new')}
+            className="add-product-button"
           >
-            <Card className="card-hover">
-              <CardMedia
-                component="img"
-                height="200"
-                image={product.image}
-                alt={product.name}
-              />
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  {product.name}
-                </Typography>
-                <Typography color="primary" variant="subtitle1">
-                  {product.price}€
-                </Typography>
-                <Chip
-                  label={product.status}
-                  color={
-                    product.status === 'AVAILABLE' ? 'success' :
-                    product.status === 'RESERVED' ? 'warning' : 'error'
-                  }
-                  size="small"
-                  sx={{ mt: 1 }}
-                />
-              </CardContent>
-              <CardActions>
-                <IconButton 
-                  onClick={() => navigate(`/products/${product.productId}/edit`)}
+            Nuevo Producto
+          </Button>
+        </div>
+
+        {isLoading ? (
+          <Typography>Cargando productos...</Typography>
+        ) : (
+          <div className="my-products-grid">
+            {products.length === 0 ? (
+              <Typography variant="h6" sx={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem' }}>
+                No tienes productos aún. ¡Crea uno nuevo!
+              </Typography>
+            ) : (
+              products.map((product) => (
+                <div 
+                  key={product.productId}
+                  className="my-product-card"
                 >
-                  <EditIcon />
-                </IconButton>
-                <IconButton 
-                  color="error"
-                  onClick={() => {
-                    if (product.productId !== undefined) {
-                      handleDelete(product.productId);
-                    }
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </CardActions>
-            </Card>
-          </Box>
-        ))}
-      </Box>
-    </Box>
+                  <img
+                    className="my-product-image"
+                    src={product.image}
+                    alt={product.name}
+                    onClick={() => navigate(`/products/${product.productId}`)}
+                  />
+                  <div className="my-product-content">
+                    <Typography variant="h6" component="h2">
+                      {product.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" className="my-product-description">
+                      {product.description}
+                    </Typography>
+                    <Typography className="my-product-price">
+                      {product.price}€
+                    </Typography>
+                    <div className="my-product-status">
+                      <Chip
+                        label={product.status}
+                        color={
+                          product.status === 'AVAILABLE' ? 'success' :
+                          product.status === 'RESERVED' ? 'warning' : 'error'
+                        }
+                        size="small"
+                      />
+                    </div>
+                  </div>
+                  <div className="my-product-actions">
+                    <Button
+                      variant="outlined"
+                      size="small" 
+                      startIcon={<EditIcon />}
+                      onClick={() => navigate(`/products/${product.productId}/edit`)}
+                    >
+                      Editar
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      size="small"
+                      startIcon={<DeleteIcon />}
+                      onClick={() => {
+                        if (product.productId !== undefined) {
+                          handleDelete(product.productId);
+                        }
+                      }}
+                    >
+                      Eliminar
+                    </Button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

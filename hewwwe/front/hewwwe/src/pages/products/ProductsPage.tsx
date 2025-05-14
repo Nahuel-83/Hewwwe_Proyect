@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Typography, Button, Card, CardMedia, CardContent, CardActions, Chip } from '@mui/material';
-import { Add as AddIcon, ShoppingCart as CartIcon, RemoveShoppingCart as RemoveCartIcon } from '@mui/icons-material';
+import { ShoppingCart as CartIcon, RemoveShoppingCart as RemoveCartIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { getAllProducts } from '../../api/products';
 import { addToCart, removeFromCart, getUserCart } from '../../api/cart';
@@ -100,21 +100,6 @@ export default function ProductsPage() {
   return (
     <div className="products-container">
       <div className="products-content">
-        <div className="products-header">
-          <Typography variant="h4" className="products-title">
-            Productos
-          </Typography>
-          {isAuthenticated && (
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
-              onClick={() => navigate('/products/new')}
-              className="add-product-button"
-            >
-              Nuevo Producto
-            </Button>
-          )}
-        </div>
 
         {isProductsLoading ? (
           <Typography>Loading products...</Typography>

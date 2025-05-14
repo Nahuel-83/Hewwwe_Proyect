@@ -12,7 +12,6 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  IconButton,
   Alert
 } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material';
@@ -20,6 +19,7 @@ import { getAllAddresses, updateAddress, deleteAddress, createAddress } from '..
 import { useAuth } from '../../contexts/AuthContext';
 import { Address } from '../../types';
 import { toast } from 'react-toastify';
+import '../../styles/pages/MyAddressesPage.css';
 
 export default function MyAddressesPage() {
   const [addresses, setAddresses] = useState<Address[]>([]);
@@ -115,16 +115,22 @@ export default function MyAddressesPage() {
       if (editMode && currentAddress.addressId) {
         // Update existing address
         await updateAddress(currentAddress.addressId, {
-          ...currentAddress,
-          userId: user.userId
+          street: currentAddress.street,
+          number: currentAddress.number,
+          city: currentAddress.city,
+          country: currentAddress.country,
+          postalCode: currentAddress.postalCode
         });
         toast.success('Dirección actualizada correctamente');
       } else {
         // Create new address
         await createAddress({
-          ...currentAddress,
-          userId: user.userId,
-          userName: user.name || ''
+          street: currentAddress.street,
+          number: currentAddress.number,
+          city: currentAddress.city,
+          country: currentAddress.country,
+          postalCode: currentAddress.postalCode,
+          userId: user.userId
         });
         toast.success('Dirección creada correctamente');
       }
@@ -169,144 +175,156 @@ export default function MyAddressesPage() {
 
   if (loading && addresses.length === 0) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
-        <CircularProgress />
-      </Box>
+      <div className="my-addresses-container">
+        <div className="my-addresses-content">
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
+            <CircularProgress />
+          </div>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4">Mis Direcciones</Typography>
-        <Button 
-          variant="contained" 
-          color="primary" 
-          startIcon={<AddIcon />}
-          onClick={() => handleOpenDialog()}
-        >
-          Añadir Dirección
-        </Button>
-      </Box>
+    <div className="my-addresses-container">
+      <div className="my-addresses-content">
+        <div className="my-addresses-header">
+          <Typography variant="h4" className="my-addresses-title">
+            Mis Direcciones
+          </Typography>
+          <Button 
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => handleOpenDialog()}
+            className="add-address-button"
+          >
+            Añadir Dirección
+          </Button>
+        </div>
 
-      {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
-          {error}
-        </Alert>
-      )}
+        {error && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {error}
+          </Alert>
+        )}
 
-      {filteredAddresses.length === 0 ? (
-        <Typography>No tienes direcciones registradas.</Typography>
-      ) : (
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3 }}>
-          {filteredAddresses.map((address) => (
-            <Box key={address.addressId}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
+        {filteredAddresses.length === 0 ? (
+          <Typography>No tienes direcciones registradas.</Typography>
+        ) : (
+          <div className="my-addresses-grid">
+            {filteredAddresses.map((address) => (
+              <div key={address.addressId} className="address-card">
+                <div className="address-content">
+                  <Typography variant="h6" className="address-title">
                     {address.street}, {address.number}
                   </Typography>
-                  <Typography variant="body1" color="text.secondary">
-                    {address.city}, {address.country}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    CP: {address.postalCode}
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <IconButton 
-                    color="primary" 
+                  <div className="address-detail">
+                    <span className="address-detail-label">Ciudad:</span> {address.city}
+                  </div>
+                  <div className="address-detail">
+                    <span className="address-detail-label">País:</span> {address.country}
+                  </div>
+                  <div className="address-detail">
+                    <span className="address-detail-label">Código Postal:</span> {address.postalCode}
+                  </div>
+                </div>
+                <div className="address-actions">
+                  <Button
+                    variant="outlined"
+                    startIcon={<EditIcon />}
                     onClick={() => handleOpenDialog(address)}
-                    aria-label="edit"
+                    size="small"
                   >
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton 
-                    color="error" 
+                    Editar
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    startIcon={<DeleteIcon />}
                     onClick={() => handleDeleteAddress(address.addressId)}
                     disabled={filteredAddresses.length <= 1}
-                    aria-label="delete"
+                    size="small"
                   >
-                    <DeleteIcon />
-                  </IconButton>
-                </CardActions>
-              </Card>
-            </Box>
-          ))}
-        </Box>
-      )}
+                    Eliminar
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
-      {/* Dialog for adding/editing address */}
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-        <DialogTitle>
-          {editMode ? 'Editar Dirección' : 'Añadir Dirección'}
-        </DialogTitle>
-        <DialogContent>
-          <Box sx={{ mt: 2, display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 2 }}>
-            <Box sx={{ gridColumn: 'span 8' }}>
-              <TextField
-                fullWidth
-                label="Calle"
-                name="street"
-                value={currentAddress.street || ''}
-                onChange={handleInputChange}
-                required
-              />
+        {/* Dialog for adding/editing address */}
+        <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+          <DialogTitle>
+            {editMode ? 'Editar Dirección' : 'Añadir Dirección'}
+          </DialogTitle>
+          <DialogContent>
+            <Box sx={{ mt: 2, display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 2 }}>
+              <Box sx={{ gridColumn: 'span 8' }}>
+                <TextField
+                  fullWidth
+                  label="Calle"
+                  name="street"
+                  value={currentAddress.street || ''}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Box>
+              <Box sx={{ gridColumn: 'span 4' }}>
+                <TextField
+                  fullWidth
+                  label="Número"
+                  name="number"
+                  value={currentAddress.number || ''}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Box>
+              <Box sx={{ gridColumn: 'span 6' }}>
+                <TextField
+                  fullWidth
+                  label="Ciudad"
+                  name="city"
+                  value={currentAddress.city || ''}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Box>
+              <Box sx={{ gridColumn: 'span 6' }}>
+                <TextField
+                  fullWidth
+                  label="País"
+                  name="country"
+                  value={currentAddress.country || ''}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Box>
+              <Box sx={{ gridColumn: 'span 12' }}>
+                <TextField
+                  fullWidth
+                  label="Código Postal"
+                  name="postalCode"
+                  value={currentAddress.postalCode || ''}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Box>
             </Box>
-            <Box sx={{ gridColumn: 'span 4' }}>
-              <TextField
-                fullWidth
-                label="Número"
-                name="number"
-                value={currentAddress.number || ''}
-                onChange={handleInputChange}
-                required
-              />
-            </Box>
-            <Box sx={{ gridColumn: 'span 6' }}>
-              <TextField
-                fullWidth
-                label="Ciudad"
-                name="city"
-                value={currentAddress.city || ''}
-                onChange={handleInputChange}
-                required
-              />
-            </Box>
-            <Box sx={{ gridColumn: 'span 6' }}>
-              <TextField
-                fullWidth
-                label="País"
-                name="country"
-                value={currentAddress.country || ''}
-                onChange={handleInputChange}
-                required
-              />
-            </Box>
-            <Box sx={{ gridColumn: 'span 12' }}>
-              <TextField
-                fullWidth
-                label="Código Postal"
-                name="postalCode"
-                value={currentAddress.postalCode || ''}
-                onChange={handleInputChange}
-                required
-              />
-            </Box>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancelar</Button>
-          <Button 
-            onClick={handleSaveAddress} 
-            variant="contained" 
-            color="primary"
-            disabled={loading}
-          >
-            {loading ? <CircularProgress size={24} /> : 'Guardar'}
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Cancelar</Button>
+            <Button 
+              onClick={handleSaveAddress} 
+              variant="contained" 
+              color="primary"
+              disabled={loading}
+            >
+              {loading ? <CircularProgress size={24} /> : 'Guardar'}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    </div>
   );
 }
