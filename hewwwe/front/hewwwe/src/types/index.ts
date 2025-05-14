@@ -64,9 +64,11 @@ export interface Exchange {
   exchangeDate: string;
   completionDate?: string;
   status: ExchangeStatus;
-  owner: number;
+  owner?: number;  // For backwards compatibility
+  ownerId?: number;
   ownerName: string;
-  requester: number;
+  requester?: number;  // For backwards compatibility
+  requesterId?: number;
   requesterName: string;
   products: Product[];
 }

@@ -265,13 +265,37 @@ public class ExchangeController {
         List<Exchange> requestedExchanges = exchangeService.getExchangesByRequesterId(userId);
         List<Exchange> ownedExchanges = exchangeService.getExchangesByOwnerId(userId);
         
-        // Combinar las listas
-        requestedExchanges.addAll(ownedExchanges);
+        // Combinar las listas y eliminar duplicados
+        List<Exchange> allExchanges = new java.util.ArrayList<>(requestedExchanges);
+        for (Exchange exchange : ownedExchanges) {
+            if (!allExchanges.contains(exchange)) {
+                allExchanges.add(exchange);
+            }
+        }
         
-        List<ExchangeResponseDTO> exchanges = requestedExchanges.stream()
-                .map(exchange -> modelMapper.map(exchange, ExchangeResponseDTO.class))
+        List<ExchangeResponseDTO> exchangeDTOs = new java.util.ArrayList<>();
+        
+        for (Exchange exchange : allExchanges) {
+            ExchangeResponseDTO dto = modelMapper.map(exchange, ExchangeResponseDTO.class);
+            
+            // Mapear manualmente productos para incluir información completa
+            List<ProductResponseDTO> productDTOs = exchange.getProducts().stream()
+                .map(product -> {
+                    ProductResponseDTO productDTO = modelMapper.map(product, ProductResponseDTO.class);
+                    productDTO.setUserId(product.getUser().getUserId());
+                    return productDTO;
+                })
                 .toList();
+            
+            dto.setProducts(productDTOs);
+            dto.setOwnerName(exchange.getOwner().getUsername());
+            dto.setRequesterName(exchange.getRequester().getUsername());
+            dto.setOwnerId(exchange.getOwner().getUserId());
+            dto.setRequesterId(exchange.getRequester().getUserId());
+            
+            exchangeDTOs.add(dto);
+        }
         
-        return ResponseEntity.ok(exchanges);
+        return ResponseEntity.ok(exchangeDTOs);
     }
 }

@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -59,26 +61,22 @@ public class DataInitializer implements CommandLineRunner {
         Invoice invoice2 = createInvoice(bob, address2, 89.99);
         Invoice invoice3 = createInvoice(carla, address3, 42.00);
 
-        // Create exchanges
-        Exchange exchange1 = createExchange(alice, carla, "COMPLETED");
-        Exchange exchange2 = createExchange(daniel, carla, "COMPLETED");
-        Exchange exchange3 = createExchange(daniel, eva, "COMPLETED");
+        // Create products first
+        Product tshirt = createProduct("T-Shirt", "Camiseta negra", 19.99, "L", "img2.jpg", "AVAILABLE", null, moda, null, null, alice);
+        Product nikeAir = createProduct("Nike Air", "Zapatillas deportivas", 75.00, "42", "img5.jpg", "AVAILABLE", null, moda, null, null, carla);
+        Product jeans = createProduct("Jeans Slim", "Vaqueros azules ajustados", 45.99, "M", "jeans1.jpg", "AVAILABLE", null, moda, null, null, alice);
+        Product adidas = createProduct("Adidas Boost", "Zapatillas running", 89.99, "43", "boost.jpg", "AVAILABLE", null, moda, null, null, carla);
+        Product camisa = createProduct("Camisa Oxford", "Camisa blanca formal", 35.00, "L", "shirt1.jpg", "AVAILABLE", null, moda, null, null, daniel);
+        Product vestido = createProduct("Vestido Floral", "Vestido verano estampado", 55.50, "S", "dress1.jpg", "AVAILABLE", null, moda, null, null, eva);
+        Product chaqueta = createProduct("Chaqueta Cuero", "Chaqueta negra motero", 120.00, "M", "jacket1.jpg", "AVAILABLE", null, moda, null, null, alice);
+        Product vans = createProduct("Vans Old School", "Zapatillas skate", 70.00, "44", "vans.jpg", "AVAILABLE", null, moda, null, null, daniel);
+        Product sudadera = createProduct("Sudadera Hood", "Sudadera gris con capucha", 42.99, "XL", "hoodie1.jpg", "AVAILABLE", null, moda, null, null, carla);
+        Product falda = createProduct("Falda Plisada", "Falda midi plisada", 38.50, "M", "skirt1.jpg", "AVAILABLE", null, moda, null, null, eva);
+        Product pantalon = createProduct("Pantalón Cargo", "Pantalón militar verde", 49.99, "L", "pants1.jpg", "AVAILABLE", null, moda, null, null, daniel);
+        Product blazer = createProduct("Blazer Classic", "Blazer negro formal", 89.99, "M", "blazer1.jpg", "AVAILABLE", null, moda, null, null, alice);
+        Product jersey = createProduct("Jersey Lana", "Jersey cuello alto", 59.99, "L", "sweater1.jpg", "AVAILABLE", null, moda, null, null, eva);
+        Product chino = createProduct("Pantalón Chino", "Pantalón beige casual", 45.00, "M", "chinos1.jpg", "AVAILABLE", null, moda, null, null, carla);
 
-        // Create products
-        createProduct("T-Shirt", "Camiseta negra", 19.99, "L", "img2.jpg", "AVAILABLE", cart3, moda, exchange1, invoice1, alice);
-        createProduct("Nike Air", "Zapatillas deportivas", 75.00, "42", "img5.jpg", "AVAILABLE", cart3, moda, null, null, carla);
-        createProduct("Jeans Slim", "Vaqueros azules ajustados", 45.99, "M", "jeans1.jpg", "AVAILABLE", null, moda, null, null, alice);
-        createProduct("Adidas Boost", "Zapatillas running", 89.99, "43", "boost.jpg", "AVAILABLE", null, moda, null, null, carla);
-        createProduct("Camisa Oxford", "Camisa blanca formal", 35.00, "L", "shirt1.jpg", "AVAILABLE", null, moda, null, null, daniel);
-        createProduct("Vestido Floral", "Vestido verano estampado", 55.50, "S", "dress1.jpg", "AVAILABLE", null, moda, null, null, eva);
-        createProduct("Chaqueta Cuero", "Chaqueta negra motero", 120.00, "M", "jacket1.jpg", "AVAILABLE", null, moda, null, null, alice);
-        createProduct("Vans Old School", "Zapatillas skate", 70.00, "44", "vans.jpg", "AVAILABLE", null, moda, null, null, daniel);
-        createProduct("Sudadera Hood", "Sudadera gris con capucha", 42.99, "XL", "hoodie1.jpg", "AVAILABLE", null, moda, null, null, carla);
-        createProduct("Falda Plisada", "Falda midi plisada", 38.50, "M", "skirt1.jpg", "AVAILABLE", null, moda, null, null, eva);
-        createProduct("Pantalón Cargo", "Pantalón militar verde", 49.99, "L", "pants1.jpg", "AVAILABLE", null, moda, null, null, daniel);
-        createProduct("Blazer Classic", "Blazer negro formal", 89.99, "M", "blazer1.jpg", "AVAILABLE", null, moda, null, null, alice);
-        createProduct("Jersey Lana", "Jersey cuello alto", 59.99, "L", "sweater1.jpg", "AVAILABLE", null, moda, null, null, eva);
-        createProduct("Pantalón Chino", "Pantalón beige casual", 45.00, "M", "chinos1.jpg", "AVAILABLE", null, moda, null, null, carla);
     }
 
     private User createUser(String name, String username, String password, String email, String phone, Rol role) {
@@ -128,7 +126,7 @@ public class DataInitializer implements CommandLineRunner {
         return invoiceRepository.save(invoice);
     }
 
-    private Exchange createExchange(User owner, User requester, String status) {
+    private Exchange createExchange(User owner, User requester, String status, List<Product> products) {
         Exchange exchange = new Exchange();
         exchange.setExchangeDate(java.util.Date.from(LocalDateTime.now().atZone(java.time.ZoneId.systemDefault()).toInstant()));
         exchange.setStatus(status);
@@ -137,7 +135,28 @@ public class DataInitializer implements CommandLineRunner {
         if (status.equals("COMPLETED")) {
             exchange.setCompletionDate(java.util.Date.from(LocalDateTime.now().atZone(java.time.ZoneId.systemDefault()).toInstant()));
         }
-        return exchangeRepository.save(exchange);
+        
+        // Save the exchange first so it has an ID
+        Exchange savedExchange = exchangeRepository.save(exchange);
+        
+        // Now assign products to exchange
+        if (products != null && !products.isEmpty()) {
+            savedExchange.setProducts(new ArrayList<>(products));
+            
+            // Update the bidirectional relationship
+            for (Product product : products) {
+                if (product.getExchanges() == null) {
+                    product.setExchanges(new ArrayList<>());
+                }
+                product.getExchanges().add(savedExchange);
+                productRepository.save(product);
+            }
+            
+            // Save the exchange with the products
+            savedExchange = exchangeRepository.save(savedExchange);
+        }
+        
+        return savedExchange;
     }
 
     private Product createProduct(String name, String description, double price, String size, 
@@ -155,17 +174,8 @@ public class DataInitializer implements CommandLineRunner {
         product.setCategory(category);
         product.setInvoice(invoice);
         product.setUser(user);
+        product.setExchanges(new ArrayList<>());
         
-        // Save the product first
-        Product savedProduct = productRepository.save(product);
-        
-        // Then handle the exchange relationship if needed
-        if (exchange != null) {
-            // Now it's safe to add the saved product to the exchange
-            exchange.getProducts().add(savedProduct);
-            exchangeRepository.save(exchange);
-        }
-        
-        return savedProduct;
+        return productRepository.save(product);
     }
 }

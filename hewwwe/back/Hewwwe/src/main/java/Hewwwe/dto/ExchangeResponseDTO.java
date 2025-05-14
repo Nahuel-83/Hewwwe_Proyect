@@ -14,9 +14,10 @@ public class ExchangeResponseDTO {
     private Long exchangeId;
     private Date exchangeDate;
     private Date completionDate;
+    private String status;
     private Long requesterId;
     private String requesterName;
     private Long ownerId;
     private String ownerName;
-    private List<Long> productIds;
+    private List<ProductResponseDTO> products;
 }

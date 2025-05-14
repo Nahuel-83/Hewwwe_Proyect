@@ -164,6 +164,7 @@ public class UserServiceImpl implements UserService {
                 dto.setExchangeId(exchange.getExchangeId());
                 dto.setExchangeDate(exchange.getExchangeDate());
                 dto.setCompletionDate(exchange.getCompletionDate());
+                dto.setStatus(exchange.getStatus());
     
                 // Usuarios
                 if (exchange.getRequester() != null) {
@@ -176,13 +177,22 @@ public class UserServiceImpl implements UserService {
                 }
     
                 // Productos
-                List<Long> productIds = new ArrayList<>();
-                List<String> productNames = new ArrayList<>();
+                List<ProductResponseDTO> productDTOs = new ArrayList<>();
                 for (Product p : exchange.getProducts()) {
-                    productIds.add(p.getProductId());
-                    productNames.add(p.getName()); 
+                    ProductResponseDTO productDTO = new ProductResponseDTO();
+                    productDTO.setProductId(p.getProductId());
+                    productDTO.setName(p.getName());
+                    productDTO.setDescription(p.getDescription());
+                    productDTO.setPrice(p.getPrice());
+                    productDTO.setImage(p.getImage());
+                    productDTO.setSize(p.getSize());
+                    productDTO.setStatus(p.getStatus());
+                    productDTO.setPublicationDate(p.getPublicationDate());
+                    productDTO.setUserId(p.getUser().getUserId());
+                    
+                    productDTOs.add(productDTO);
                 }
-                dto.setProductIds(productIds);
+                dto.setProducts(productDTOs);
     
                 return dto;
             }).collect(Collectors.toList());
