@@ -1,0 +1,56 @@
+.exchanges-page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.exchange-card {
+  padding: 16px;
+  transition: all 0.3s ease;
+}
+
+.exchange-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.exchange-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.product-item {
+  display: flex;
+  margin-bottom: 8px;
+  padding: 8px;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.product-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 12px;
+}
+
+.product-details {
+  flex: 1;
+}
+
+@media (max-width: 600px) {
+  .exchanges-page-container {
+    padding: 16px;
+  }
+  
+  .exchange-card {
+    padding: 12px;
+  }
+  
+  .product-image {
+    width: 48px;
+    height: 48px;
+  }
+} 

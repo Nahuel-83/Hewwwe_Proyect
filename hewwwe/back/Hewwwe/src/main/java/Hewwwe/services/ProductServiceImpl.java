@@ -81,7 +81,7 @@ public class ProductServiceImpl implements ProductService {
         if (productDTO.getExchangeId() != null) {
             Exchange exchange = exchangeRepository.findById(productDTO.getExchangeId())
                     .orElseThrow(() -> new ResourceNotFoundException("Exchange not found"));
-            product.setExchange(exchange);
+            product.getExchanges().add(exchange);
         }
 
         Product savedProduct = productRepository.save(product);
@@ -132,10 +132,10 @@ public class ProductServiceImpl implements ProductService {
             dto.setCartId(existingProduct.getCart().getCartId());
         }
         
-        if (product.getExchange() != null && product.getExchange().getExchangeId() != null) {
-            dto.setExchangeId(product.getExchange().getExchangeId());
-        } else if (existingProduct.getExchange() != null) {
-            dto.setExchangeId(existingProduct.getExchange().getExchangeId());
+        // Check for exchanges in the existing product
+        if (!existingProduct.getExchanges().isEmpty()) {
+            // Just take the first exchange ID for backward compatibility
+            dto.setExchangeId(existingProduct.getExchanges().get(0).getExchangeId());
         }
         
         return save(dto);
@@ -166,10 +166,16 @@ public class ProductServiceImpl implements ProductService {
                         existingProduct.setCart(cart);
                     }
 
-                    if (product.getExchange() != null && product.getExchange().getExchangeId() != null) {
-                        Exchange exchange = exchangeRepository.findById(product.getExchange().getExchangeId())
+                    // Handle exchange relationship if provided
+                    if (product.getExchanges() != null && !product.getExchanges().isEmpty() && 
+                        product.getExchanges().get(0).getExchangeId() != null) {
+                        
+                        Exchange exchange = exchangeRepository.findById(product.getExchanges().get(0).getExchangeId())
                                 .orElseThrow(() -> new ResourceNotFoundException("Exchange not found"));
-                        existingProduct.setExchange(exchange);
+                        
+                        // Clear existing exchanges and add the new one
+                        existingProduct.getExchanges().clear();
+                        existingProduct.getExchanges().add(exchange);
                     }
 
                     Product updatedProduct = productRepository.save(existingProduct);
@@ -252,8 +258,9 @@ public class ProductServiceImpl implements ProductService {
         if (product.getCart() != null) {
             dto.setCartId(product.getCart().getCartId());
         }
-        if (product.getExchange() != null) {
-            dto.setExchangeId(product.getExchange().getExchangeId());
+        if (product.getExchanges() != null && !product.getExchanges().isEmpty() && 
+            product.getExchanges().get(0).getExchangeId() != null) {
+            dto.setExchangeId(product.getExchanges().get(0).getExchangeId());
         }
 
         return dto;

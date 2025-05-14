@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -48,9 +50,8 @@ public class Product {
     private Cart cart; // N-1 con Cart
     
     @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "exchange_id")
-    private Exchange exchange; // N-1 con Exchange
+    @ManyToMany(mappedBy = "products")
+    private List<Exchange> exchanges = new ArrayList<>(); // N-M con Exchange
 
     // Relación con la factura
     @JsonIgnore

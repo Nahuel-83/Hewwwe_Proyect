@@ -153,9 +153,19 @@ public class DataInitializer implements CommandLineRunner {
         product.setPublicationDate(java.util.Date.from(LocalDateTime.now().atZone(java.time.ZoneId.systemDefault()).toInstant()));
         product.setCart(cart);
         product.setCategory(category);
-        product.setExchange(exchange);
         product.setInvoice(invoice);
         product.setUser(user);
-        return productRepository.save(product);
+        
+        // Save the product first
+        Product savedProduct = productRepository.save(product);
+        
+        // Then handle the exchange relationship if needed
+        if (exchange != null) {
+            // Now it's safe to add the saved product to the exchange
+            exchange.getProducts().add(savedProduct);
+            exchangeRepository.save(exchange);
+        }
+        
+        return savedProduct;
     }
 }

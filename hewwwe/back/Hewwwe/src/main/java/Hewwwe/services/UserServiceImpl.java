@@ -141,7 +141,11 @@ public class UserServiceImpl implements UserService {
                     dto.setUserId(product.getUser().getUserId());
                     dto.setCategoryId(product.getCategory() != null ? product.getCategory().getCategoryId() : null);
                     dto.setCartId(product.getCart() != null ? product.getCart().getCartId() : null);
-                    dto.setExchangeId(product.getExchange() != null ? product.getExchange().getExchangeId() : null);
+                    
+                    // Si el producto está en algún intercambio, tomar el ID del primero
+                    dto.setExchangeId(product.getExchanges() != null && !product.getExchanges().isEmpty() 
+                        ? product.getExchanges().get(0).getExchangeId() 
+                        : null);
 
                     return dto;
                 }).collect(Collectors.toList()))

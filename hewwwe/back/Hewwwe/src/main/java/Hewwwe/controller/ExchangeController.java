@@ -17,6 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Date;
+import java.util.Arrays;
 
 /**
  * Controlador REST que maneja las operaciones relacionadas con los intercambios.
@@ -62,22 +65,41 @@ public class ExchangeController {
     }
 
     /**
-     * Crea un nuevo intercambio.
+     * Propone un intercambio entre dos usuarios con productos específicos.
      *
-     * @param exchangeDTO DTO con los datos del intercambio a crear
+     * @param request Datos de la propuesta de intercambio
      * @return ResponseEntity con el intercambio creado
      */
     @PostMapping
-    @Operation(summary = "Create a new exchange")
-    @ApiResponse(responseCode = "201", description = "Exchange created successfully")
+    @Operation(summary = "Propose an exchange between users")
+    @ApiResponse(responseCode = "201", description = "Exchange proposed successfully")
     @ApiResponse(responseCode = "400", description = "Invalid input")
-    public ResponseEntity<ExchangeResponseDTO> createExchange(@Valid @RequestBody ExchangeCreateDTO exchangeDTO) {
+    public ResponseEntity<ExchangeResponseDTO> proposeExchange(@RequestBody Map<String, Object> request) {
         try {
-            Exchange exchange = modelMapper.map(exchangeDTO, Exchange.class);
-            Exchange savedExchange = exchangeService.createExchange(exchange);
-            return new ResponseEntity<>(modelMapper.map(savedExchange, ExchangeResponseDTO.class), HttpStatus.CREATED);
+            Long ownerId = Long.valueOf(request.get("ownerId").toString());
+            Long requesterId = Long.valueOf(request.get("requesterId").toString());
+            Long ownerProductId = Long.valueOf(request.get("ownerProductId").toString());
+            Long requesterProductId = Long.valueOf(request.get("requesterProductId").toString());
+            
+            // Crear el DTO con los datos necesarios
+            ExchangeCreateDTO exchangeDTO = new ExchangeCreateDTO();
+            exchangeDTO.setStatus("PENDING");
+            exchangeDTO.setExchangeDate(new Date());
+            exchangeDTO.setOwnerId(ownerId);
+            exchangeDTO.setRequesterId(requesterId);
+            exchangeDTO.setProductIds(Arrays.asList(ownerProductId, requesterProductId));
+            
+            // Crear y guardar el intercambio
+            Exchange exchange = exchangeService.proposeExchange(
+                ownerId, 
+                requesterId, 
+                ownerProductId, 
+                requesterProductId
+            );
+            
+            return new ResponseEntity<>(modelMapper.map(exchange, ExchangeResponseDTO.class), HttpStatus.CREATED);
         } catch (Exception e) {
-            throw new RuntimeException("Error creating exchange: " + e.getMessage());
+            throw new RuntimeException("Error proposing exchange: " + e.getMessage());
         }
     }
 
@@ -190,5 +212,66 @@ public class ExchangeController {
             @RequestParam String status) {
         Exchange updatedExchange = exchangeService.updateExchangeStatus(id, status);
         return ResponseEntity.ok(modelMapper.map(updatedExchange, ExchangeResponseDTO.class));
+    }
+
+    /**
+     * Acepta un intercambio propuesto.
+     *
+     * @param id ID del intercambio
+     * @return ResponseEntity con el intercambio actualizado
+     */
+    @PutMapping("/{id}/accept")
+    @Operation(summary = "Accept an exchange proposal")
+    @ApiResponse(responseCode = "200", description = "Exchange accepted successfully")
+    @ApiResponse(responseCode = "404", description = "Exchange not found")
+    public ResponseEntity<ExchangeResponseDTO> acceptExchange(@PathVariable Long id) {
+        try {
+            Exchange updatedExchange = exchangeService.updateExchangeStatus(id, "ACCEPTED");
+            return ResponseEntity.ok(modelMapper.map(updatedExchange, ExchangeResponseDTO.class));
+        } catch (Exception e) {
+            throw new RuntimeException("Error accepting exchange: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Rechaza un intercambio propuesto.
+     *
+     * @param id ID del intercambio
+     * @return ResponseEntity con el intercambio actualizado
+     */
+    @PutMapping("/{id}/reject")
+    @Operation(summary = "Reject an exchange proposal")
+    @ApiResponse(responseCode = "200", description = "Exchange rejected successfully")
+    @ApiResponse(responseCode = "404", description = "Exchange not found")
+    public ResponseEntity<ExchangeResponseDTO> rejectExchange(@PathVariable Long id) {
+        try {
+            Exchange updatedExchange = exchangeService.updateExchangeStatus(id, "REJECTED");
+            return ResponseEntity.ok(modelMapper.map(updatedExchange, ExchangeResponseDTO.class));
+        } catch (Exception e) {
+            throw new RuntimeException("Error rejecting exchange: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Obtiene todos los intercambios de un usuario (solicitados y donde es propietario).
+     *
+     * @param userId ID del usuario
+     * @return ResponseEntity con la lista de todos los intercambios del usuario
+     */
+    @GetMapping("/user/{userId}")
+    @Operation(summary = "Get all exchanges for a user (both requested and owned)")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved user's exchanges")
+    public ResponseEntity<List<ExchangeResponseDTO>> getUserExchanges(@PathVariable Long userId) {
+        List<Exchange> requestedExchanges = exchangeService.getExchangesByRequesterId(userId);
+        List<Exchange> ownedExchanges = exchangeService.getExchangesByOwnerId(userId);
+        
+        // Combinar las listas
+        requestedExchanges.addAll(ownedExchanges);
+        
+        List<ExchangeResponseDTO> exchanges = requestedExchanges.stream()
+                .map(exchange -> modelMapper.map(exchange, ExchangeResponseDTO.class))
+                .toList();
+        
+        return ResponseEntity.ok(exchanges);
     }
 }

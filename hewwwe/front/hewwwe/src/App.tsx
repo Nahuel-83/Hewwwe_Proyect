@@ -20,6 +20,7 @@ import UserDetailPage from './pages/users/UserDetailPage';
 import CartPage from './pages/cart/CartPage';
 import MyAddressesPage from './pages/addresses/MyAddressesPage';
 import ProductsFormPage from './pages/products/ProductFormPage';
+import ExchangesPage from './pages/exchanges/ExchangesPage';
 
 // Pages Admin
 import AdminCategoriesPage from './pages/admin/category/AdminCategoriesPage';
@@ -62,6 +63,7 @@ function App() {
                 <Route path="products/new" element={<ProductsFormPage />} />
                 <Route path="my-addresses" element={<MyAddressesPage />} />
                 <Route path="users/:id/cart" element={<CartPage />} />
+                <Route path="exchanges" element={<ExchangesPage />} />
               </Route>
               
               {/* Admin Routes */}

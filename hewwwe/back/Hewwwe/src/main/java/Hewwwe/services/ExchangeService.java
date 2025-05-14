@@ -15,4 +15,5 @@ public interface ExchangeService {
     List<Exchange> getExchangesByRequesterId(Long requesterId);
     List<Exchange> getExchangesByOwnerId(Long ownerId);
     Exchange updateExchangeStatus(Long id, String status);
+    Exchange proposeExchange(Long ownerId, Long requesterId, Long ownerProductId, Long requesterProductId);
 }
