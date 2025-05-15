@@ -26,7 +26,7 @@ import { addToCart } from '../../api/cart';
 import { Product, User } from '../../types';
 import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'react-toastify';
-import '../../styles/components/ProductDetail.css';
+import '../../styles/pages/ProductDetailPage.css';
 
 const ProductDetailPage = () => {
   const { id } = useParams<{ id: string }>();

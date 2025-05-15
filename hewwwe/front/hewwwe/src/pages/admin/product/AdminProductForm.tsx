@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import '../../../styles/forms.css';
 import { createProduct, getProductById, updateProduct } from '../../../api/products';
 import { getAllCategories } from '../../../api/categories';
 import type { Product, Category } from '../../../types';
 import { toast } from 'react-toastify';
+import { uploadImage } from '../../../contexts/UploadCloud';
+import { CircularProgress } from '@mui/material';
 
 export default function ProductForm() {
   const [product, setProduct] = useState<Partial<Product>>({
@@ -19,6 +21,9 @@ export default function ProductForm() {
   const [categories, setCategories] = useState<Category[]>([]);
   const navigate = useNavigate();
   const { id } = useParams();
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [images, setImages] = useState<string[]>([]);
 
   useEffect(() => {
     loadCategories();
@@ -39,7 +44,13 @@ export default function ProductForm() {
   const loadProduct = async (productId: number) => {
     try {
       const response = await getProductById(productId);
-      setProduct(response.data);
+      const loadedProduct = response.data;
+      setProduct(loadedProduct);
+      
+      // Inicializar la matriz de imágenes si hay una imagen
+      if (loadedProduct.image) {
+        setImages([loadedProduct.image]);
+      }
     } catch (error) {
       toast.error('Error al cargar el producto');
       navigate('/admin/products');
@@ -69,6 +80,43 @@ export default function ProductForm() {
       ...prev,
       [name]: name === 'categoryId' ? Number(value) : value
     }));
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    try {
+      setUploadingImage(true);
+      const imageUrl = await uploadImage(file);
+      
+      // Actualizar el producto y la lista de imágenes
+      setProduct(prev => ({
+        ...prev,
+        image: imageUrl
+      }));
+      
+      setImages([imageUrl]);
+      
+      toast.success('Imagen subida correctamente');
+    } catch (error: any) {
+      toast.error('Error al subir la imagen: ' + (error.message || 'Error desconocido'));
+      console.error('Error al subir la imagen:', error);
+    } finally {
+      setUploadingImage(false);
+      // Limpiar el input de archivo
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setProduct(prev => ({
+      ...prev,
+      image: ''
+    }));
+    setImages([]);
   };
 
   return (
@@ -130,17 +178,58 @@ export default function ProductForm() {
               </select>
             </div>
           </div>
+          
           <div className="form-group">
-            <label htmlFor="image" className="form-label">Imagen URL</label>
-            <input
-              id="image"
-              type="text"
-              name="image"
-              className="form-input"
-              value={product.image}
-              onChange={handleChange}
-            />
+            <label className="form-label">Imagen</label>
+            <div style={{ marginBottom: '10px' }}>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                style={{ display: 'none' }}
+                id="image-upload"
+              />
+              <label htmlFor="image-upload" className="form-button form-button-secondary" style={{ display: 'inline-block', cursor: 'pointer', marginRight: '10px' }}>
+                {uploadingImage ? 'Subiendo...' : 'Seleccionar imagen'}
+                {uploadingImage && (
+                  <CircularProgress size={16} style={{ marginLeft: '8px', color: 'white' }} />
+                )}
+              </label>
+              
+              {product.image && (
+                <button 
+                  type="button" 
+                  className="form-button form-button-danger"
+                  onClick={handleRemoveImage}
+                >
+                  Eliminar imagen
+                </button>
+              )}
+            </div>
+            
+            {product.image && (
+              <div style={{ 
+                marginTop: '10px', 
+                border: '1px solid #ddd', 
+                padding: '10px', 
+                borderRadius: '4px',
+                position: 'relative'
+              }}>
+                <img 
+                  src={product.image} 
+                  alt="Vista previa del producto" 
+                  style={{ 
+                    maxWidth: '100%', 
+                    maxHeight: '200px', 
+                    display: 'block',
+                    margin: '0 auto'
+                  }} 
+                />
+              </div>
+            )}
           </div>
+          
           <div className="form-group" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
             <div style={{ flex: 1 }}>
               <label htmlFor="size" className="form-label">Talla</label>

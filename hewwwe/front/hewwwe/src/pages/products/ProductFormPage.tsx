@@ -11,7 +11,6 @@ import {
   FormHelperText,
   Typography,
   Box,
-  Grid,
   IconButton
 } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
@@ -116,7 +115,7 @@ export default function ProductFormPage() {
     }
   };
 
-  const handleImageChange = async (e) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       try {
