@@ -11,13 +11,13 @@ import {
   IconButton,
   TextField,
   InputAdornment,
-  Button
+  Chip
 } from '@mui/material';
 import {
   Delete as DeleteIcon,
   Search as SearchIcon
 } from '@mui/icons-material';
-import { getAllExchanges, deleteExchange, updateExchangeStatus } from '../../../api/exchanges';
+import { getAllExchanges, deleteExchange } from '../../../api/exchanges';
 import { Exchange } from '../../../types';
 import { toast } from 'react-toastify';
 import '../../../styles/pages/admin/AdminExchangesPage.css';
@@ -50,13 +50,29 @@ export default function AdminExchangesPage() {
     }
   };
 
-  const handleStatusUpdate = async (id: number, newStatus: string) => {
-    try {
-      await updateExchangeStatus(id, newStatus);
-      toast.success('Estado actualizado correctamente');
-      loadExchanges();
-    } catch (error) {
-      toast.error('Error al actualizar el estado');
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'PENDING':
+        return 'warning';
+      case 'ACCEPTED':
+        return 'success';
+      case 'REJECTED':
+        return 'error';
+      default:
+        return 'default';
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'PENDING':
+        return 'Pendiente';
+      case 'ACCEPTED':
+        return 'Aceptado';
+      case 'REJECTED':
+        return 'Rechazado';
+      default:
+        return status;
     }
   };
 
@@ -105,6 +121,7 @@ export default function AdminExchangesPage() {
                 <TableCell>Solicitante</TableCell>
                 <TableCell>Propietario</TableCell>
                 <TableCell>Fecha</TableCell>
+                <TableCell>Estado</TableCell>
                 <TableCell>Acciones</TableCell>
               </TableRow>
             </TableHead>
@@ -118,31 +135,22 @@ export default function AdminExchangesPage() {
                     {new Date(exchange.exchangeDate).toLocaleDateString()}
                   </TableCell>
                   <TableCell>
+                    <Chip 
+                      label={getStatusLabel(exchange.status)}
+                      color={getStatusColor(exchange.status)}
+                      size="small"
+                      className="status-chip"
+                    />
+                  </TableCell>
+                  <TableCell>
                     <IconButton
                       size="small"
                       color="error"
                       onClick={() => handleDelete(exchange.exchangeId)}
+                      title="Eliminar intercambio"
                     >
                       <DeleteIcon />
                     </IconButton>
-                    {exchange.status === 'PENDING' && (
-                      <>
-                        <Button
-                          size="small"
-                          color="success"
-                          onClick={() => handleStatusUpdate(exchange.exchangeId, 'ACCEPTED')}
-                        >
-                          Aceptar
-                        </Button>
-                        <Button
-                          size="small"
-                          color="error"
-                          onClick={() => handleStatusUpdate(exchange.exchangeId, 'REJECTED')}
-                        >
-                          Rechazar
-                        </Button>
-                      </>
-                    )}
                   </TableCell>
                 </TableRow>
               ))}

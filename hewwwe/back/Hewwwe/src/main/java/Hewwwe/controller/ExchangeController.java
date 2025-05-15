@@ -226,7 +226,7 @@ public class ExchangeController {
     @ApiResponse(responseCode = "404", description = "Exchange not found")
     public ResponseEntity<ExchangeResponseDTO> acceptExchange(@PathVariable Long id) {
         try {
-            Exchange updatedExchange = exchangeService.updateExchangeStatus(id, "ACCEPTED");
+            Exchange updatedExchange = exchangeService.acceptExchangeAndMarkProductsAsSold(id);
             return ResponseEntity.ok(modelMapper.map(updatedExchange, ExchangeResponseDTO.class));
         } catch (Exception e) {
             throw new RuntimeException("Error accepting exchange: " + e.getMessage());

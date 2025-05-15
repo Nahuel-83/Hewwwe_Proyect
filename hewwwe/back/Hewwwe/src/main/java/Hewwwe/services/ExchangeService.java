@@ -16,4 +16,12 @@ public interface ExchangeService {
     List<Exchange> getExchangesByOwnerId(Long ownerId);
     Exchange updateExchangeStatus(Long id, String status);
     Exchange proposeExchange(Long ownerId, Long requesterId, Long ownerProductId, Long requesterProductId);
+    
+    /**
+     * Acepta un intercambio y marca todos los productos involucrados como vendidos (SOLD)
+     * 
+     * @param id ID del intercambio a aceptar
+     * @return El intercambio actualizado
+     */
+    Exchange acceptExchangeAndMarkProductsAsSold(Long id);
 }

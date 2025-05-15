@@ -9,6 +9,7 @@ import Hewwwe.repository.ProductRepository;
 import Hewwwe.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ExchangeServiceImpl implements ExchangeService {
 
     private final ExchangeRepository exchangeRepository;
@@ -68,6 +70,25 @@ public class ExchangeServiceImpl implements ExchangeService {
     public Exchange updateExchangeStatus(Long id, String status) {
         Exchange exchange = getExchangeById(id);
         exchange.setStatus(status);
+        return exchangeRepository.save(exchange);
+    }
+
+    @Override
+    @Transactional
+    public Exchange acceptExchangeAndMarkProductsAsSold(Long id) {
+        // Obtener el intercambio
+        Exchange exchange = getExchangeById(id);
+        
+        // Cambiar el estado del intercambio a ACCEPTED
+        exchange.setStatus("ACCEPTED");
+        
+        // Marcar todos los productos del intercambio como SOLD
+        for (Product product : exchange.getProducts()) {
+            product.setStatus("SOLD");
+            productRepository.save(product);
+        }
+        
+        // Guardar y devolver el intercambio actualizado
         return exchangeRepository.save(exchange);
     }
 

@@ -65,17 +65,86 @@
   color: #2f2f2f;
 }
 
-/* Image preview */
-.image-preview {
-  width: 100%;
-  max-height: 200px;
-  margin-top: 16px;
-  border-radius: 4px;
-  overflow: hidden;
+/* Image upload component */
+.image-upload-container {
+  margin: 20px 0;
 }
 
-.image-preview img {
+.image-upload-item {
+  margin-bottom: 10px;
+}
+
+.file-input-label {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+
+.upload-button {
+  width: 96px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  border: 2px dashed #aaa;
+  border-radius: 8px;
+  background-color: #f8f8f8;
+  transition: all 0.3s ease;
+}
+
+.upload-button:hover {
+  border-color: #2f2f2f;
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.upload-button svg {
+  color: #777;
+  font-size: 32px;
+}
+
+.upload-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+}
+
+.image-preview-wrapper {
+  margin: 0 10px 10px 0;
+}
+
+.image-preview-item {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.image-preview-item img {
   width: 100%;
-  height: 200px;
+  height: 100%;
   object-fit: cover;
+}
+
+.remove-image-button {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  color: white !important;
+  padding: 2px !important;
+  margin: 2px !important;
+}
+
+.remove-image-button:hover {
+  background-color: rgba(0, 0, 0, 0.7) !important;
 } 

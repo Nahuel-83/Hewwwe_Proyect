@@ -30,8 +30,10 @@ export default function ProductsPage() {
     try {
       setIsProductsLoading(true);
       const response = await getAllProducts();
+      console.log('All products loaded:', response.data);
       setProducts(response.data);
     } catch (error) {
+      console.error('Error loading products:', error);
       toast.error('Error al cargar los productos');
     } finally {
       setIsProductsLoading(false);
@@ -97,6 +99,26 @@ export default function ProductsPage() {
     }
   };
 
+  // Filter products that are only AVAILABLE and not the user's own products
+  const availableProducts = products.filter(product => {
+    // Log each product status for debugging
+    console.log(`Product ${product.productId} (${product.name}) - Status: ${product.status}`);
+    
+    // Filter out sold products
+    if (product.status !== 'AVAILABLE') {
+      console.log(`Product ${product.productId} filtered out - Status: ${product.status}`);
+      return false;
+    }
+    
+    // If authenticated, filter out user's own products
+    if (isAuthenticated && user && product.userId === user.userId) {
+      console.log(`Product ${product.productId} filtered out - User's own product`);
+      return false;
+    }
+    
+    return true;
+  });
+
   return (
     <div className="products-container">
       <div className="products-content">
@@ -105,63 +127,60 @@ export default function ProductsPage() {
           <Typography>Loading products...</Typography>
         ) : (
           <div className="products-grid">
-            {products
-              .filter(product => {
-                // If authenticated, filter out user's own products
-                if (isAuthenticated && user) {
-                  return product.userId !== user.userId;
-                }
-                // If not authenticated, show all
-                return true;
-              })
-              .map((product) => (
-              <Card
-                key={product.productId}
-                className="product-card"
-                onClick={() => navigate(`/products/${product.productId}`)}
-              >
-                <CardMedia
-                  component="img"
-                  className="product-image"
-                  image={product.image}
-                  alt={product.name}
-                />
-                <CardContent>
-                  <Typography gutterBottom variant="h6" component="div">
-                    {product.name}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    {product.description}
-                  </Typography>
-                  <Typography variant="h6" color="primary">
-                    {product.price}€
-                  </Typography>
-                </CardContent>
-                <CardActions sx={{ p: 2, pt: 0, display: 'flex', justifyContent: 'space-between' }}>
-                  <Chip
-                    label={product.status}
-                    color={
-                      product.status === 'AVAILABLE' ? 'success' :
-                      product.status === 'RESERVED' ? 'warning' : 'error'
-                    }
-                    size="small"
+            {availableProducts.length === 0 ? (
+              <Typography variant="h6" className="no-products-message">
+                No hay productos disponibles en este momento
+              </Typography>
+            ) : (
+              availableProducts.map((product) => (
+                <Card
+                  key={product.productId}
+                  className="product-card"
+                  onClick={() => navigate(`/products/${product.productId}`)}
+                >
+                  <CardMedia
+                    component="img"
+                    className="product-image"
+                    image={product.image}
+                    alt={product.name}
                   />
-                  
-                  {isAuthenticated && product.status === 'AVAILABLE' && (
-                    <Button
+                  <CardContent>
+                    <Typography gutterBottom variant="h6" component="div">
+                      {product.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                      {product.description}
+                    </Typography>
+                    <Typography variant="h6" color="primary">
+                      {product.price}€
+                    </Typography>
+                  </CardContent>
+                  <CardActions sx={{ p: 2, pt: 0, display: 'flex', justifyContent: 'space-between' }}>
+                    <Chip
+                      label={product.status}
+                      color={
+                        product.status === 'AVAILABLE' ? 'success' :
+                        product.status === 'RESERVED' ? 'warning' : 'error'
+                      }
                       size="small"
-                      variant="outlined"
-                      color={isProductInCart(product.productId) ? 'error' : 'primary'}
-                      startIcon={isProductInCart(product.productId) ? <RemoveCartIcon /> : <CartIcon />}
-                      onClick={(e) => handleToggleCart(e, product)}
-                      disabled={cartLoading}
-                    >
-                      {isProductInCart(product.productId) ? 'Quitar' : 'Añadir'}
-                    </Button>
-                  )}
-                </CardActions>
-              </Card>
-            ))}
+                    />
+                    
+                    {isAuthenticated && (
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        color={isProductInCart(product.productId) ? 'error' : 'primary'}
+                        startIcon={isProductInCart(product.productId) ? <RemoveCartIcon /> : <CartIcon />}
+                        onClick={(e) => handleToggleCart(e, product)}
+                        disabled={cartLoading}
+                      >
+                        {isProductInCart(product.productId) ? 'Quitar' : 'Añadir'}
+                      </Button>
+                    )}
+                  </CardActions>
+                </Card>
+              ))
+            )}
           </div>
         )}
       </div>

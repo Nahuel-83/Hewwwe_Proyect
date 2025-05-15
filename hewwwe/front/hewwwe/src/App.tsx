@@ -61,6 +61,7 @@ function App() {
                 <Route path="users/:id" element={<UserDetailPage />} />
                 <Route path="my-products" element={<MyProductsPage />} />
                 <Route path="products/new" element={<ProductsFormPage />} />
+                <Route path="products/:id/edit" element={<ProductsFormPage />} />
                 <Route path="my-addresses" element={<MyAddressesPage />} />
                 <Route path="users/:id/cart" element={<CartPage />} />
                 <Route path="exchanges" element={<ExchangesPage />} />

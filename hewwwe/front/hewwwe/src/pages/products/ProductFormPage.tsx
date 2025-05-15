@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   TextField,
   Button,
@@ -9,22 +9,32 @@ import {
   MenuItem,
   CircularProgress,
   FormHelperText,
-  Typography
+  Typography,
+  Box,
+  Grid,
+  IconButton
 } from '@mui/material';
-import { createProduct } from '../../api/products';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import CloseIcon from '@mui/icons-material/Close';
+import { createProduct, getProductById, updateProduct } from '../../api/products';
 import { getAllCategories } from '../../api/categories';
 import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'react-toastify';
-import { Category } from '../../types';
+import { Category, Product } from '../../types';
 import '../../styles/pages/ProductFormPage.css';
+import { uploadImage } from '../../contexts/UploadCloud';
 
 export default function ProductFormPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { id } = useParams(); // Get product ID from URL params
+  const isEditMode = !!id; // Check if we're in edit mode
+  
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
-  const [imagePreview, setImagePreview] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -32,6 +42,7 @@ export default function ProductFormPage() {
     price: '',
     size: '',
     image: '',
+    images: [] as string[],
     categoryId: ''
   });
   
@@ -44,16 +55,12 @@ export default function ProductFormPage() {
 
   useEffect(() => {
     loadCategories();
-  }, []);
-
-  useEffect(() => {
-    // Update image preview when image URL changes
-    if (formData.image) {
-      setImagePreview(formData.image);
-    } else {
-      setImagePreview('');
+    
+    // If in edit mode, load the product data
+    if (isEditMode && id) {
+      loadProduct(parseInt(id));
     }
-  }, [formData.image]);
+  }, [id]);
 
   const loadCategories = async () => {
     try {
@@ -65,6 +72,31 @@ export default function ProductFormPage() {
       console.error('Error loading categories:', error);
     } finally {
       setLoadingCategories(false);
+    }
+  };
+
+  const loadProduct = async (productId: number) => {
+    try {
+      setLoading(true);
+      const response = await getProductById(productId);
+      const product = response.data;
+      
+      // Set form data with existing product values
+      setFormData({
+        name: product.name,
+        description: product.description,
+        price: product.price.toString(),
+        size: product.size || '',
+        image: product.image || '',
+        images: product.image ? [product.image] : [],
+        categoryId: product.categoryId.toString()
+      });
+    } catch (error) {
+      toast.error('Error al cargar el producto');
+      console.error('Error loading product:', error);
+      navigate('/my-products');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -82,6 +114,41 @@ export default function ProductFormPage() {
         [name]: ''
       });
     }
+  };
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        setUploadingImage(true);
+        const imageUrl = await uploadImage(file);
+        
+        setFormData({
+          ...formData,
+          image: imageUrl,
+          images: [...formData.images, imageUrl]
+        });
+        
+        toast.success('Imagen subida correctamente');
+      } catch (error: any) {
+        console.error('Error al subir la imagen:', error);
+        const errorMessage = error.message || 'Error al subir la imagen. Por favor, inténtalo de nuevo.';
+        toast.error(errorMessage);
+      } finally {
+        setUploadingImage(false);
+      }
+    }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    const newImages = [...formData.images];
+    newImages.splice(index, 1);
+    
+    setFormData({
+      ...formData,
+      images: newImages,
+      image: newImages.length > 0 ? newImages[0] : ''
+    });
   };
 
   const handleSelectChange = (e: any) => {
@@ -148,34 +215,44 @@ export default function ProductFormPage() {
       }
       
       // Create a product object that matches the backend's ProductCreateDTO structure exactly
-      const productData = {
+      const productData: Partial<Product> = {
         name: formData.name,
         description: formData.description,
         price: Number(formData.price),
         size: formData.size,
         image: formData.image || 'https://via.placeholder.com/150',
-        status: 'AVAILABLE',
-        publicationDate: new Date(),
-        userId: user.userId,
+        status: 'AVAILABLE' as const,
         categoryId: Number(formData.categoryId)
       };
       
-      console.log('Enviando datos del producto:', productData);
+      if (isEditMode && id) {
+        // Update existing product
+        await updateProduct(parseInt(id), productData);
+        toast.success('Producto actualizado exitosamente');
+      } else {
+        // Create new product with additional fields for creation
+        const newProductData: Partial<Product> & { 
+          publicationDate: string; 
+          userId: number;
+        } = {
+          ...productData,
+          publicationDate: new Date().toISOString(),
+          userId: user.userId
+        };
+        
+        await createProduct(newProductData);
+        toast.success('Producto creado exitosamente');
+      }
       
-      // Use type assertion to bypass TypeScript's type checking
-      const response = await createProduct(productData as any);
-      console.log('Respuesta del servidor:', response);
-      
-      toast.success('Producto creado exitosamente');
       navigate('/my-products');
     } catch (error: any) {
-      console.error('Error creating product:', error);
+      console.error(`Error ${isEditMode ? 'updating' : 'creating'} product:`, error);
       
       // Mostrar mensaje de error más específico si está disponible
       if (error.response && error.response.data && error.response.data.message) {
         toast.error(`Error: ${error.response.data.message}`);
       } else {
-        toast.error('Error al crear el producto. Por favor, inténtalo de nuevo.');
+        toast.error(`Error al ${isEditMode ? 'actualizar' : 'crear'} el producto. Por favor, inténtalo de nuevo.`);
       }
     } finally {
       setLoading(false);
@@ -187,7 +264,7 @@ export default function ProductFormPage() {
       <div className="product-form-content">
         <div className="product-form-header">
           <Typography variant="h4" className="product-form-title">
-            Nuevo Producto
+            {isEditMode ? 'Editar Producto' : 'Nuevo Producto'}
           </Typography>
         </div>
         
@@ -246,22 +323,43 @@ export default function ProductFormPage() {
               onChange={handleChange}
             />
             
-            <TextField
-              margin="normal"
-              fullWidth
-              id="image"
-              label="URL de la imagen"
-              name="image"
-              placeholder="https://example.com/image.jpg"
-              value={formData.image}
-              onChange={handleChange}
-            />
-            
-            {imagePreview && (
-              <div className="image-preview">
-                <img src={imagePreview} alt="Vista previa del producto" />
-              </div>
-            )}
+            <Box className="image-upload-container" sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, my: 2 }}>
+              <Box className="image-upload-item">
+                <input
+                  type="file"
+                  accept="image/*"
+                  name="fileInput"
+                  id="fileInput"
+                  style={{ display: 'none' }}
+                  onChange={handleImageChange}
+                />
+                <label className="file-input-label" htmlFor="fileInput">
+                  <span className="upload-button">
+                    <AddPhotoAlternateIcon />
+                  </span>
+                  {uploadingImage && (
+                    <div className="upload-loading">
+                      <CircularProgress size={24} />
+                    </div>
+                  )}
+                </label>
+              </Box>
+              
+              {formData.images.map((image, index) => (
+                <Box key={index} className="image-preview-wrapper">
+                  <div className="image-preview-item">
+                    <img src={image} alt={`Producto ${index + 1}`} />
+                    <IconButton
+                      size="small"
+                      className="remove-image-button"
+                      onClick={() => handleRemoveImage(index)}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                  </div>
+                </Box>
+              ))}
+            </Box>
             
             <FormControl 
               fullWidth 
@@ -310,7 +408,7 @@ export default function ProductFormPage() {
                 className="form-submit-button"
                 startIcon={loading && <CircularProgress size={20} color="inherit" />}
               >
-                {loading ? 'Creando...' : 'Crear Producto'}
+                {loading ? (isEditMode ? 'Actualizando...' : 'Creando...') : (isEditMode ? 'Actualizar Producto' : 'Crear Producto')}
               </Button>
             </div>
           </form>

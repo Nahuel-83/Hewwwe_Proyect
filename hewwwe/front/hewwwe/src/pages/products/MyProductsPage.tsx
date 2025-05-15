@@ -44,6 +44,10 @@ export default function MyProductsPage() {
       toast.error('Error al eliminar el producto');
     }
   };
+  
+  const handleCardClick = (productId: number) => {
+    navigate(`/products/${productId}`);
+  };
 
   return (
     <div className="my-products-container">
@@ -76,31 +80,37 @@ export default function MyProductsPage() {
                   key={product.productId}
                   className="my-product-card"
                 >
-                  <img
-                    className="my-product-image"
-                    src={product.image}
-                    alt={product.name}
-                    onClick={() => navigate(`/products/${product.productId}`)}
-                  />
-                  <div className="my-product-content">
-                    <Typography variant="h6" component="h2">
-                      {product.name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" className="my-product-description">
-                      {product.description}
-                    </Typography>
-                    <Typography className="my-product-price">
-                      {product.price}€
-                    </Typography>
-                    <div className="my-product-status">
-                      <Chip
-                        label={product.status}
-                        color={
-                          product.status === 'AVAILABLE' ? 'success' :
-                          product.status === 'RESERVED' ? 'warning' : 'error'
-                        }
-                        size="small"
+                  <div 
+                    className="my-product-card-content"
+                    onClick={() => product.productId && handleCardClick(product.productId)}
+                  >
+                    <div className="my-product-image-container">
+                      <img
+                        className="my-product-image"
+                        src={product.image}
+                        alt={product.name}
                       />
+                    </div>
+                    <div className="my-product-content">
+                      <Typography variant="h6" component="h2">
+                        {product.name}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" className="my-product-description">
+                        {product.description}
+                      </Typography>
+                      <Typography className="my-product-price">
+                        {product.price}€
+                      </Typography>
+                      <div className="my-product-status">
+                        <Chip
+                          label={product.status}
+                          color={
+                            product.status === 'AVAILABLE' ? 'success' :
+                            product.status === 'RESERVED' ? 'warning' : 'error'
+                          }
+                          size="small"
+                        />
+                      </div>
                     </div>
                   </div>
                   <div className="my-product-actions">
@@ -108,7 +118,12 @@ export default function MyProductsPage() {
                       variant="outlined"
                       size="small" 
                       startIcon={<EditIcon />}
-                      onClick={() => navigate(`/products/${product.productId}/edit`)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (product.productId) {
+                          navigate(`/products/${product.productId}/edit`);
+                        }
+                      }}
                     >
                       Editar
                     </Button>
@@ -117,7 +132,8 @@ export default function MyProductsPage() {
                       color="error"
                       size="small"
                       startIcon={<DeleteIcon />}
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         if (product.productId !== undefined) {
                           handleDelete(product.productId);
                         }

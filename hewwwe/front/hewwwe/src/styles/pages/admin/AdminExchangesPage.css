@@ -26,3 +26,9 @@
   color: white;
   font-weight: bold;
 }
+
+.status-chip {
+  font-weight: 500;
+  min-width: 80px;
+  text-align: center;
+}

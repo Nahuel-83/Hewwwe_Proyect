@@ -6,35 +6,70 @@ import {
   CardContent,
   Chip,
   Button,
+  CircularProgress,
 } from '@mui/material';
-import { getUserExchanges, updateExchangeStatus } from '../../api/exchanges';
-import { Exchange } from '../../types';
+import { getUserExchanges, updateExchangeStatus, acceptExchange } from '../../api/exchanges';
+import { getAllProducts } from '../../api/products';
+import { Exchange, Product, ExchangeStatus } from '../../types';
 import { toast } from 'react-toastify';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function ExchangePage() {
   const [exchanges, setExchanges] = useState<Exchange[]>([]);
-  const userId = 1; // TODO: Get from auth context
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
+  const userId = user?.userId || 0;
 
   useEffect(() => {
-    loadExchanges();
-  }, []);
+    if (userId > 0) {
+      loadExchanges();
+    }
+  }, [userId]);
 
   const loadExchanges = async () => {
     try {
       const response = await getUserExchanges(userId);
       setExchanges(response.data);
+      console.log('Exchanges loaded:', response.data);
     } catch (error) {
+      console.error('Error loading exchanges:', error);
       toast.error('Error al cargar intercambios');
     }
   };
 
-  const handleUpdateStatus = async (exchangeId: number, newStatus: string) => {
+  const handleUpdateStatus = async (exchangeId: number, newStatus: ExchangeStatus, products: Product[]) => {
     try {
-      await updateExchangeStatus(exchangeId, newStatus);
-      toast.success('Estado actualizado');
-      loadExchanges();
+      setLoading(true);
+      
+      console.log(`Updating exchange ${exchangeId} status to ${newStatus}`);
+      
+      if (newStatus === 'ACCEPTED') {
+        // Usar el endpoint específico para aceptar que ya maneja la actualización de productos en el backend
+        await acceptExchange(exchangeId);
+        toast.success('Intercambio aceptado. Los productos han sido marcados como vendidos.');
+        
+        // Forzar recarga de la página para actualizar todos los datos
+        window.location.reload();
+      } else {
+        // Para rechazo, seguir usando el endpoint normal
+        await updateExchangeStatus(exchangeId, newStatus);
+        toast.success('Intercambio rechazado');
+        await loadExchanges();
+      }
+      
     } catch (error) {
-      toast.error('Error al actualizar estado');
+      console.error('Error updating exchange status:', error);
+      toast.error('Error al actualizar el estado del intercambio');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getOtherPartyName = (exchange: Exchange) => {
+    if (exchange.ownerId === userId) {
+      return exchange.requesterName || "Usuario desconocido";
+    } else {
+      return exchange.ownerName || "Usuario desconocido";
     }
   };
 
@@ -70,30 +105,31 @@ export default function ExchangePage() {
                   />
                 </Box>
                 <Typography gutterBottom>
-                  Con: {exchange.owner.userId === userId ? 
-                    exchange.requester.name : 
-                    exchange.owner.name}
+                  Con: {getOtherPartyName(exchange)}
                 </Typography>
                 <Typography variant="subtitle2" gutterBottom>Productos:</Typography>
                 {exchange.products.map(product => (
                   <Typography key={product.productId} color="text.secondary">
-                    - {product.name}
+                    - {product.name} ({product.status})
                   </Typography>
                 ))}
-                {exchange.status === 'PENDING' && exchange.owner.userId === userId && (
+                {exchange.status === 'PENDING' && exchange.ownerId === userId && (
                   <Box sx={{ mt: 2 }}>
                     <Button 
                       variant="contained" 
                       color="success"
-                      onClick={() => handleUpdateStatus(exchange.exchangeId, 'ACCEPTED')}
+                      onClick={() => handleUpdateStatus(exchange.exchangeId, 'ACCEPTED', exchange.products)}
                       sx={{ mr: 1 }}
+                      disabled={loading}
+                      startIcon={loading && <CircularProgress size={20} color="inherit" />}
                     >
-                      Aceptar
+                      {loading ? 'Procesando...' : 'Aceptar'}
                     </Button>
                     <Button 
                       variant="contained" 
                       color="error"
-                      onClick={() => handleUpdateStatus(exchange.exchangeId, 'REJECTED')}
+                      onClick={() => handleUpdateStatus(exchange.exchangeId, 'REJECTED', exchange.products)}
+                      disabled={loading}
                     >
                       Rechazar
                     </Button>
